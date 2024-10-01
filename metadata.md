@@ -1,5 +1,7 @@
 ## Scotland Health Inequalities Vulnerability Metadata
 
+For details about what each indicator is measuring, see the [underlying indicators for the ONS Health Index for England](https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexunderlyingdataengland).
+
 | Domain | Indicator | Year | Source | License | Indicator Code Added to `R/` | Data Added to `data/` |
 | --- | --- | --- | --- | --- | --- | --- |
 | Healthy Lives | Alcohol Misuse | 2019-20 | [ScotPHO](https://scotland.shinyapps.io/ScotPHO_profiles_tool/) | [ScotPHO license](https://www.scotpho.org.uk/about-us/scotpho-website-policies-and-statements/copyright) | :heavy_check_mark: | :heavy_check_mark: |
