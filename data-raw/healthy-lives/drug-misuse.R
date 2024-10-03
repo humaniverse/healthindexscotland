@@ -1,37 +1,50 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load libs ----
+library(tidyverse)
+library(rio)
+library(geographr)
+library(demographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Drug-related hospital admissions
-
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
-
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_2d95cf86/session/0e0bd240aaee0883942e38a71c49ca53/download/download_table_csv?w=2d95cf86",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
-
-drugs_raw <-
-  read_csv(tf)
-
-unlink(tf)
-rm(tf)
-
-drugs <-
-  drugs_raw %>%
-  filter(area_type == "Council area") %>%
+# ---- Get data ----
+# Population
+population_2022 <- population22_ltla19_scotland |>
+  filter(sex == "Persons") |>
   select(
-    lad_code = area_code,
-    drug_admissions_per_100000 = measure
+    ltla19_name,
+    ltla19_code,
+    population_2022 = all_ages
   )
 
-write_rds(drugs, "data/vulnerability/health-inequalities/scotland/healthy-lives/drug-misuse.rds")
+# Drug related admissions
+# Source: https://www.opendata.nhs.scot/dataset/drug-related-hospital-statistics-scotland
+drug_raw <- import(
+  "https://www.opendata.nhs.scot/dataset/a961302c-aeb7-49b2-9691-9d3da82ca0d9/resource/46f9d70b-8517-4af3-b65e-dbcd13dfa388/download/drug_related_hospital_stays_council.csv"
+)
+
+drug <- drug_raw |>
+  filter(
+    FinancialYear %in% c("2021/22")
+  ) |>
+  select(
+    ltla19_code = CA,
+    drug_related_stays = EASRStays, # Age-sex standardised
+    year = FinancialYear
+  )
+
+# ---- Join datasets ----
+hl_drug_misuse <- drug |>
+  left_join(population_2022, by = c("ltla19_code")) |>
+  mutate(drug_related_stays_per_100k = (((as.double(drug_related_stays)) /
+    as.double(population_2022)) * 100000)) |>
+  slice(-1) |>
+  select(ltla19_code, drug_related_stays_per_100k, year)
+
+# Council codes were revised in 2018 and 2019
+# Check 2011 code is same as 2019
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+hl_drug_misuse$ltla19_code %in% ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_drug_misuse, overwrite = TRUE)

@@ -1,7 +1,6 @@
 # ---- Load libs ----
 library(tidyverse)
 library(rio)
-library(janitor)
 library(geographr)
 library(demographr)
 
@@ -35,7 +34,7 @@ alcohol <- alcohol_raw |>
 hl_alcohol_misuse <- alcohol |>
   left_join(population_2022, by = c("ltla11_code" = "ltla19_code")) |>
   mutate(alcohol_admissions_per_100k = (((as.double(alcohol_related_admissions)) /
-                                           as.double(population_2022)) * 100000)) |>
+    as.double(population_2022)) * 100000)) |>
   slice(-1) |>
   select(ltla19_code = ltla11_code, alcohol_admissions_per_100k, year)
 
