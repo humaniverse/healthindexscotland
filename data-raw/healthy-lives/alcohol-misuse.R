@@ -3,23 +3,16 @@ library(tidyverse)
 library(rio)
 library(janitor)
 library(geographr)
+library(demographr)
 
 # ---- Get data ----
 # Population
-# Source: https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020).
-population_raw <- import(
-  "https://www.nrscotland.gov.uk/files//statistics/population-estimates/mid-22/mid-year-pop-est-22-data.xlsx",
-  sheet = "Table 1"
-)
-
-population_2022 <- population_raw |>
-  row_to_names(row_number = 3) |>
-  filter(`Area type` == "Council area") |>
-  filter(Sex == "Persons") |>
+population_2022 <- population22_ltla19_scotland |>
+  filter(sex == "Persons") |>
   select(
-    ltla11_name = `Area name`,
-    ltla11_code = `Area code`,
-    population_2022 = `All ages`
+    ltla19_name,
+    ltla19_code,
+    population_2022 = all_ages
   )
 
 # Alcohol related admissions
@@ -40,7 +33,7 @@ alcohol <- alcohol_raw |>
 
 # ---- Join datasets ----
 hl_alcohol_misuse <- alcohol |>
-  left_join(population_2022, by = c("ltla11_code")) |>
+  left_join(population_2022, by = c("ltla11_code" = "ltla19_code")) |>
   mutate(alcohol_admissions_per_100k = (((as.double(alcohol_related_admissions)) /
                                            as.double(population_2022)) * 100000)) |>
   slice(-1) |>
