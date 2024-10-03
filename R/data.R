@@ -47,3 +47,22 @@
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
 #'
 "hl_drug_misuse"
+
+#' Percentage of Healthy Eating (2016-19)
+#'
+#' A dataset containing statistics on fruit and vegetable consumption in
+#' each Council, 2016-19.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{healthy_eating_percent}{Percentage of people that consume
+#' 5 portions of more of fruit and vegetable per day}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
+#'
+"hl_healthy_eating"
