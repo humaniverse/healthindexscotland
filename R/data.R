@@ -48,7 +48,27 @@
 #'
 "hl_drug_misuse"
 
-#' Percentage of Healthy Eating (2016-19)
+#' Percentage of Children with Developmental Concerns (2022-23)
+#'
+#' A dataset containing statistics on early childhood developmental concerns in
+#' each Council, 2022-23.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{developmental_concerns_percent}{Percentage of developmental reviews with
+#' a concern in one or more domains, out of total number of recorded reviews while
+#' child is 2 and in the cohort.}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.opendata.nhs.scot/dataset/27-30-month-review-statistics/resource/018ba0e1-6562-43bb-82c5-97b6c6cc22d8}
+#'
+"hl_early_years_development"
+
+#' Percentage of People that Eat Healthy (2016-19)
 #'
 #' A dataset containing statistics on fruit and vegetable consumption in
 #' each Council, 2016-19.
@@ -58,7 +78,7 @@
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
 #' \item{healthy_eating_percent}{Percentage of people that consume
-#' 5 portions of more of fruit and vegetable per day}
+#' 5 portions or more of fruit and vegetable per day}
 #' \item{year}{Time period}
 #'
 #' ...
@@ -72,7 +92,6 @@
 #' A dataset containing statistics on the rate of non-fatal workplace injuries
 #' per 100,000 in each Council, 2022-23.
 #'
-#'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
@@ -85,3 +104,39 @@
 #' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
 #'
 "hl_workplace_safety"
+
+#' Percentage of People Meeting Recommended Activity Levels (2018-22)
+#'
+#' A dataset containing statistics on activity levels in
+#' each Council, 2018-22.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{activity_levels_met_percent}{Percentage of people that meet the recommended
+#' activity levels}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
+#'
+"hl_physical_activity"
+
+#' Percentage of Current Smokers (2018-22)
+#'
+#' A dataset containing statistics on smoking status in
+#' each Council, 2018-22.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{smoking_percent}{Percentage of people that are current smokers}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
+#'
+"hl_smoking"

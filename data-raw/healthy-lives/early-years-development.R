@@ -1,37 +1,41 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load libs ----
+library(tidyverse)
+library(rio)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Developmental concerns at 27-30 months
-
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
-
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_6e7d3244/session/dd8c3ad2e0839649080e20e6a675705f/download/download_table_csv?w=6e7d3244",
-  write_disk(tf <- tempfile(fileext = ".csv"))
+# ---- Get data ----
+# Developmental concerns at 27-30 months
+# Source: https://www.opendata.nhs.scot/dataset/27-30-month-review-statistics/resource/018ba0e1-6562-43bb-82c5-97b6c6cc22d8
+ecd_raw <- import(
+  "https://www.opendata.nhs.scot/dataset/f4ee46d4-cda9-4180-b6be-0f0e45ee3c8c/resource/018ba0e1-6562-43bb-82c5-97b6c6cc22d8/download/open27mlatotals.csv",
 )
 
-eyd_raw <-
-  read_csv(tf)
-
-unlink(tf)
-rm(tf)
-
-early_development <-
-  eyd_raw %>%
-  filter(area_type == "Council area") %>%
+hl_early_years_development <- ecd_raw |>
+  filter(
+    FinancialYear %in% c("2022/23")
+  ) |>
   select(
-    lad_code = area_code,
-    early_development_percent = measure
-  )
+    ltla19_code = CA,
+    total_reviews = NumberOfReviews,
+    concerns = ConcernAny,
+    year = FinancialYear
+  ) |>
+  mutate(
+    developmental_concerns_percent = concerns / total_reviews * 100
+  ) |>
+  select(-total_reviews, -concerns) |>
+  slice(-1) |>
+  relocate(year, .after = developmental_concerns_percent)
 
-write_rds(early_development, "data/vulnerability/health-inequalities/scotland/healthy-lives/early-years-development.rds")
+
+# Council codes were revised in 2018 and 2019
+# Check 2011 code is same as 2019
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+hl_early_years_development$ltla19_code %in% ltla19_code
+ltla19_code %in% hl_ecd$ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_early_years_development, overwrite = TRUE)
