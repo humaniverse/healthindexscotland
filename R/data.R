@@ -66,3 +66,22 @@
 #' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
 #'
 "hl_healthy_eating"
+
+#' Rate of Non-Fatal Workplace Injuries (2022-23)
+#'
+#' A dataset containing statistics on the rate of non-fatal workplace injuries
+#' per 100,000 in each Council, 2022-23.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
+#' injuries per 100k population}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
+#'
+"hl_workplace_safety"
