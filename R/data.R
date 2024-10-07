@@ -48,6 +48,26 @@
 #'
 "hl_drug_misuse"
 
+#' Percentage of Children with Developmental Concerns (2022-23)
+#'
+#' A dataset containing statistics on early childhood developmental concerns in
+#' each Council, 2022-23.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{developmental_concerns_percent}{Percentage of developmental reviews with
+#' a concern in one or more domains, out of total number of recorded reviews while
+#' child is 2 and in the cohort.}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.opendata.nhs.scot/dataset/27-30-month-review-statistics/resource/018ba0e1-6562-43bb-82c5-97b6c6cc22d8}
+#'
+"hl_early_years_development"
+
 #' Percentage of People that Eat Healthy (2016-19)
 #'
 #' A dataset containing statistics on fruit and vegetable consumption in
