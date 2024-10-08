@@ -1,71 +1,35 @@
+# ---- Load packages ----
 library(readr)
 library(httr)
-library(dplyr)
+library(tidyverse)
 library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Child healthy weight in primary 1
+# ---- Scrape URL ----
+# Source: https://www.opendata.nhs.scot/dataset/primary-1-body-mass-index-bmi-statistics/resource/4a3daa0f-1580-4a59-ac9e-64d9a31a4429
+url <- "https://www.opendata.nhs.scot/dataset/01fe4008-23f8-4b34-b8f6-c38699a2f00d/resource/4a3daa0f-1580-4a59-ac9e-64d9a31a4429/download/od_p1bmi_ca_clin.csv"
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+# ---- Download and read URL as temp file ----
+tf <- tempfile(fileext = ".csv")
+GET(url, write_disk(tf))
+child_bmi_raw <- read_csv(tf)
+unlink(tf)
+print(head(child_bmi_raw))
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_7cc7e89a/session/f576cc4dd52b8b5f0d22db794bb83854/download/download_table_csv?w=7cc7e89a",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
+# ---- Clean data ----
+hl_overweight_obesity_children <- child_bmi_raw |>
+  filter(SchoolYear == "2022/23") |>
+  select(`CA`, `ClinOverweightObeseAndSeverelyObese`, `SchoolYear`) |>
+  rename(ltla19_code = 1,
+         overweight_obese_percentage = 2,
+         year = 3)
 
-child_weight_raw <-
-  read_csv(tf)
+# Council codes were revised in 2018 and 2019
+# Check 2011 code is same as 2019
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
 
-child_weight <-
-  child_weight_raw %>%
-  filter(area_type == "Council area") %>%
-  select(
-    lad_code = area_code,
-    healthy_weight_percent = measure
-  ) %>%
-  mutate(
-    unhealthy_weight_percent = (100 - healthy_weight_percent) / 100
-  ) %>%
-  select(-healthy_weight_percent)
+hl_overweight_obesity_children$ltla19_code %in% ltla19_code
 
-# Impute missing data
-# Source: https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/methodsusedtodevelopthehealthindexforengland2015to2018
-# Reason for missing: unkown
-# Strategy: replace with mean for the LAD's HB's where available or data set
-#           when not
-
-hb_scores <-
-  lookup_hb_lad %>%
-  select(ends_with("code")) %>%
-  left_join(child_weight, by = "lad_code") %>%
-  group_by(hb_code) %>%
-  mutate(hb_score = mean(unhealthy_weight_percent, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(
-    hb_score = if_else(
-      is.nan(hb_score),
-      NA_real_,
-      hb_score
-    )
-  )
-
-child_weight <-
-  hb_scores %>%
-  mutate(
-    child_unhealthy_weight_percent = case_when(
-      is.na(unhealthy_weight_percent) & !is.na(hb_score) ~ hb_score,
-      is.na(unhealthy_weight_percent) & is.na(hb_score) ~ mean(unhealthy_weight_percent, na.rm = TRUE),
-      TRUE ~ unhealthy_weight_percent,
-    )
-  ) %>%
-  select(lad_code, child_unhealthy_weight_percent)
-
-write_rds(child_weight, "data/vulnerability/health-inequalities/scotland/healthy-lives/overweight-children.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_overweight_obesity_children, overwrite = TRUE)
