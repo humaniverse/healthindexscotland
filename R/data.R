@@ -22,6 +22,26 @@
 #'
 "hl_alcohol_misuse"
 
+#' Percentage of Absolute Child Poverty (2022-2023)
+#'
+#' A dataset containing statistics on the percentage of children (aged under
+#' 16) living in absolute low income families in each Council, 2022-23.
+#'
+#'
+#' @format A data drame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{child_poverty_percentage}{Percentage of children under 16 living in
+#' absolute low incomes families (where a household's income is below 60% of
+#' the median income in 2010/11, adjusted for inflation).}
+#' \item{year}{Financial Year}
+#'
+#' ...
+#' }
+#' @source \url{ https://www.gov.uk/government/statistics/children-in-low-income-families-local-area-statistics-2014-to-2023}
+#'
+"hl_child_poverty"
+
 #' Rate of Drug Related Hospital Stays (2021/22)
 #'
 #' A dataset containing statistics on the rate of drug related hospital stays in
