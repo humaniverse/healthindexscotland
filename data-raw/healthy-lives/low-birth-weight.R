@@ -1,22 +1,27 @@
+# ---- Load packages ----
 library(readr)
 library(httr)
-library(dplyr)
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# ---- Get data ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
 # Indicator: Healthy birth weight
 
 # Interactively generate the data by:
-#   1. Navigating the the source (above)
+#   1. Navigating the Source (above)
 #   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
+#   3. 'Select what data you want'. Selecting the relevant indicator
+#      (Healthy birth weight)
+#   4. 'Select what areas you want'. Ticking 'All available geographies'
+#   5. 'Select the time period'. Moving the time period slider until the latest
+#      data shows (currently 2020-2023)
+#   6. Right-clicking on 'Download data' and clicking 'Copy Link'
 #   7. Pasting the link into the GET request below
 #   8. Running the code below
 
 GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_1f998bbe/session/24180ffd708f74879b57a09212462e75/download/download_table_csv?w=1f998bbe",
+  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_24295f36/session/2cbfa6bd6c7cc9114c6a007d90054974/download/download_table_csv?w=24295f36",
   write_disk(tf <- tempfile(fileext = ".csv"))
 )
 
@@ -26,16 +31,20 @@ low_birth_weight_raw <-
 unlink(tf)
 rm(tf)
 
-low_birth_weight <-
-  low_birth_weight_raw %>%
-  filter(area_type == "Council area") %>%
-  select(
-    lad_code = area_code,
-    healthy_birth_weight_percent = measure
-  ) %>% 
-  mutate(
-    unhealthy_birth_weight_percent = (100 - healthy_birth_weight_percent)/100
-  ) %>% 
-  select(-healthy_birth_weight_percent)
+# ---- Get data ----
+hl_low_birth_weight <- low_birth_weight_raw |>
+  filter(area_type == "Council area", year == "2021") |>
+  mutate(low_birth_weight_percentage = (100 - measure) / 100) |>
+  select(`area_code`, `low_birth_weight_percentage`, `year`)|>
+  rename(ltla19_code = 1)
 
-write_rds(low_birth_weight, "data/vulnerability/health-inequalities/scotland/healthy-lives/low-birth-weight.rds")
+# Council codes were revised in 2018 and 2019
+# Check codes are the same as 2019
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+hl_low_birth_weight$ltla19_code %in% ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_low_birth_weight, overwrite = TRUE)
