@@ -21,7 +21,7 @@ library(geographr)
 
 # ---- Download and read URL as temp file ----
 GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_e2399e3a/session/b8397c5ca4d95d1d1675ee1bd582172e/download/download_table_csv?w=e2399e3a",
+  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_8ad1497b/session/57df6f324dd2fb071fadc1c54b15a3b2/download/download_table_csv?w=8ad1497b",
   write_disk(tf <- tempfile(fileext = ".csv"))
 )
 
@@ -39,14 +39,6 @@ hl_teenage_pregnancy <- teenage_pregnancy_raw |>
     ltla19_code = 1,
     teenage_pregnancies_per_1k = 2
   )
-
-# Council codes were revised in 2018 and 2019
-# Check 2011 code is same as 2019
-ltla19_code <- lookup_ltla_ltla |>
-  filter(str_detect(ltla19_code, "^S")) |>
-  pull(ltla19_code)
-
-hl_teenage_pregnancy$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(hl_teenage_pregnancy, overwrite = TRUE)
