@@ -97,9 +97,9 @@
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
 #' \item{overweight_obese_percentage}{Percentage of children clinically classed
-#' as overweight, obese, or severely obese. BMI is used as the unit of measurement.
+#' as overweight, obese, and severely obese. BMI is used as the unit of measurement.
 #' Based on children in Primary 1 (aged 4-5).}
-#' \item{year}{Time period}
+#' \item{year}{School Year period}
 #'
 #' ...
 #' }

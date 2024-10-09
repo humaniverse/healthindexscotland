@@ -1,5 +1,4 @@
 # ---- Load packages ----
-library(readr)
 library(httr)
 library(tidyverse)
 library(geographr)
@@ -13,23 +12,15 @@ tf <- tempfile(fileext = ".csv")
 GET(url, write_disk(tf))
 child_bmi_raw <- read_csv(tf)
 unlink(tf)
-print(head(child_bmi_raw))
 
 # ---- Clean data ----
 hl_overweight_obesity_children <- child_bmi_raw |>
   filter(SchoolYear == "2022/23") |>
   select(`CA`, `ClinOverweightObeseAndSeverelyObese`, `SchoolYear`) |>
+  mutate(ClinOverweightObeseAndSeverelyObese = ClinOverweightObeseAndSeverelyObese * 100) |>
   rename(ltla19_code = 1,
          overweight_obese_percentage = 2,
          year = 3)
-
-# Council codes were revised in 2018 and 2019
-# Check 2011 code is same as 2019
-ltla19_code <- lookup_ltla_ltla |>
-  filter(str_detect(ltla19_code, "^S")) |>
-  pull(ltla19_code)
-
-hl_overweight_obesity_children$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(hl_overweight_obesity_children, overwrite = TRUE)
