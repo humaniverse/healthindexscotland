@@ -87,6 +87,25 @@
 #'
 "hl_healthy_eating"
 
+#'Percentage of Live Births at Term with Low Birth Weight (2021)
+#'
+#'A dataset containing statistics on low birth weights in each Council, 2021.
+#'
+#'
+#'@format A data frame with 32 rows and 3 variables:
+#'\describe{
+#'\item{ltla19_code}{Local Authority Code}
+#'\item{low_birth_weight_percentage}{Percentage of babies born to term
+#'(>= 37 gestation weeks) at low birth weight. Based on aggregate data from
+#'2020/21 to 2022/23 financial years}
+#'\item{year}{Time period}
+#'
+#'...
+#'}
+#'@source \url{ https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+#'
+"hl_low_birth_weight"
+
 #' Percentage of People Meeting Recommended Activity Levels (2018-22)
 #'
 #' A dataset containing statistics on activity levels in
