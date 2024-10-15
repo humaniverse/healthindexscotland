@@ -197,3 +197,24 @@
 #' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
 #'
 "hl_smoking"
+
+#' Percentage of People in Unemployment (2021-22)
+#'
+#' A dataset containing statistics on estimated unemployment rates in each Council, 2021-22. Estimates based on a model
+#' which utilises the Annual Population Survey estimates of unemployment along with the Claimant Count averaged over 12 months.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{unemployment_percentage}{Estimated percentage of people that are unemployed.
+#' Unemployment is defined as someone aged 16+ without a job who were available
+#' to start work in the two weeks following their interview and who had either
+#' looked for work in the four weeks prior to interview or were waiting to start
+#' a job they had already obtained}
+#' \item{year}{Financial Year}
+#'
+#' ...
+#' }
+#' @source \url{ https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/modelledunemploymentforlocalandunitaryauthoritiesm01}
+#'
+"hl_unemployment"
