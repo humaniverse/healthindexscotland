@@ -92,7 +92,6 @@
 #' A dataset containing statistics on percentage of children clinically classed
 #' as overweight, obese, and severely obese in each Council, 2022/23.
 #'
-#'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
@@ -107,11 +106,28 @@
 #'
 "hl_overweight_obesity_children"
 
+#' Rate of Non-Fatal Workplace Injuries (2022-23)
+#'
+#' A dataset containing statistics on the rate of non-fatal workplace injuries
+#' per 100,000 in each Council, 2022-23.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
+#' injuries per 100k population}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
+#'
+"hl_workplace_safety"
+
 #' Percentage of People Meeting Recommended Activity Levels (2018-22)
 #'
 #' A dataset containing statistics on activity levels in
 #' each Council, 2018-22.
-#'
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
