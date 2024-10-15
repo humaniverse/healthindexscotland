@@ -87,11 +87,47 @@
 #'
 "hl_healthy_eating"
 
+#' Percentage of Children Overweight/Obese (2022/23)
+#'
+#' A dataset containing statistics on percentage of children clinically classed
+#' as overweight, obese, and severely obese in each Council, 2022/23.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{overweight_obese_percentage}{Percentage of children clinically classed
+#' as overweight, obese, and severely obese. BMI is used as the unit of measurement.
+#' Based on children in Primary 1 (aged 4-5).}
+#' \item{year}{School Year period}
+#'
+#' ...
+#' }
+#' @source \url{ https://www.opendata.nhs.scot/dataset/primary-1-body-mass-index-bmi-statistics/resource/4a3daa0f-1580-4a59-ac9e-64d9a31a4429}
+#'
+"hl_overweight_obesity_children"
+
+#' Rate of Non-Fatal Workplace Injuries (2022-23)
+#'
+#' A dataset containing statistics on the rate of non-fatal workplace injuries
+#' per 100,000 in each Council, 2022-23.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
+#' injuries per 100k population}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
+#'
+"hl_workplace_safety"
+
 #' Percentage of People Meeting Recommended Activity Levels (2018-22)
 #'
 #' A dataset containing statistics on activity levels in
 #' each Council, 2018-22.
-#'
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
