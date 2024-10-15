@@ -25,32 +25,28 @@ cardiovascular_conditions <- cardiovascular_conditions_raw |>
          `AdmissionType` == "All",
          `Sex` == "All") |>
   rename(ltla19_code = 2,
-         discharge_rate_per_100k = 13) |>
+         discharge_number = 11) |>
   group_by(ltla19_code) |>
   summarise(
-    total_discharge_rate_per_100k = sum(discharge_rate_per_100k, na.rm = TRUE)
+    total_discharge_number = sum(discharge_number, na.rm = TRUE)
   ) |>
   mutate(year = "2022/23",
-         av_discharge_rate_per_100k = (total_discharge_rate_per_100k / 4)) |>
-  select(`ltla19_code`, `av_discharge_rate_per_100k`, `year`) |>
+         av_discharge_number = (total_discharge_number / 4))|>
+  rename(av_discharge_number = 4) |>
+  select(`ltla19_code`, `av_discharge_number`, `year`) |>
   slice(-33)
 
 # ---- Join datasets ---
 hl_cardiovascular_conditions <- cardiovascular_conditions |>
   left_join(population_2022, by = c("ltla19_code" = "ltla19_code")) |>
+  mutate(
+    av_discharge_number = as.numeric(av_discharge_number),
+    population_2022 = as.numeric(population_2022),
+    av_percentage_discharged = ((av_discharge_number / population_2022)) * 1000) |>
+  rename(discharges_per_1k = 6) |>
+  select(`ltla19_code`, `discharges_per_1k`, `year`)
 
-
-
-# what i need to do is go back to the cardiovascular conditions dataset and
-# reintroduce number of discharges and get the mean average from number of
-# discharges. Can call it `av_discharge_total` = so dataset is LA ID, av_discharge_total,
-# and year. THEN join datasets (pop and CV) where  av_discharge_rate_per_100k =
-# av_discharge_total / pop_2022 * 100000!!
-
-  mutate(av_discharge_rate_per_100k = (((as.double(av_discharge_rate_per_100k)) /
-                                           as.double(population_2022)) * 100000))
-
-
-
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_cardiovascular_conditions, overwrite = TRUE)
 
 

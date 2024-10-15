@@ -22,6 +22,27 @@
 #'
 "hl_alcohol_misuse"
 
+#' Percentage of Discharges per 1,000 for Cardiovascular Conditions (2022/23)
+#'
+#' A dataset containing statistics on the percentage of discharges per 1,000 for
+#' cardiovascular conditions in each Council, 2022/23.
+#'
+#'
+#' @format A data frame with 32 variables and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{discharges_per_1k}{Percentage of discharges per 1k population.
+#' Cardiovascular conditions includes angina, coronary heart disease, heart
+#' attack, and heart failure. Total number of discharges was calculated and the
+#' un-weighted average was created here, to represent cardiovascular conditions.}
+#' \item{year}{Financial year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
+#'
+"hl_cardiovascular_conditions"
+
 #' Rate of Drug Related Hospital Stays (2021/22)
 #'
 #' A dataset containing statistics on the rate of drug related hospital stays in
