@@ -161,8 +161,11 @@ hl_vaccine_coverage <-
   left_join(childhood_coverage, by = "ltla19_code") |>
   select(-year.x, -year.y) |>
   group_by(ltla19_code) |>
-  mutate(vaccine_coverage_percentage = (total_av_percentage_coverage.x +
+  mutate(vaccine_coverage_percentage = ((total_av_percentage_coverage.x +
                                           total_av_percentage_coverage.y +
-                                          total_av_percentage_coverage) / 3) |>
+                                          total_av_percentage_coverage) / 3),
+         year = "2022/23") |>
   select(`ltla19_code`, `vaccine_coverage_percentage`, `year`)
 
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_vaccine_coverage, overwrite = TRUE)

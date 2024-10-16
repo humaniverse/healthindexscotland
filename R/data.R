@@ -159,3 +159,28 @@
 #' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
 #'
 "hl_smoking"
+
+#' Percentage of Vaccine Coverage (2023)
+#'
+#' A dataset containing statistics on vaccine coverage in each Council, 2022/23.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{vaccine_coverage_percentage}{Percentage of vaccine coverage. Includes
+#' HPV immunisation statistics (S1-S4, typically aged 11/12-15/16); teenage
+#' booster immunisation statistics (Td/IPV and MenACWY vaccines for S3-S4,
+#' typically aged 13/14-15/16); and childhood immunisation statistics (includes
+#' 6in1, PCV, rotavirus, MenB, (12 months); 6in1, MMR1, Hib/MenC, PCVb,
+#' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
+#' 4in1, MMR2 (4-6 years))}
+#' \item{year}{School Year}
+#'
+#' ...
+#' }
+#' @source \url{https://publichealthscotland.scot/publications/hpv-immunisation-statistics-scotland/hpv-immunisation-statistics-scotland-school-year-202223/}
+#' @source \url{https://publichealthscotland.scot/publications/teenage-booster-immunisation-statistics-scotland/teenage-booster-immunisation-statistics-scotland-school-year-202223/#:~:text=Pupils%20who%20miss%20the%20routine,77.3%25%2C%20MenACWY%2077.4%25).}
+#' @source \url{https://publichealthscotland.scot/publications/childhood-immunisation-statistics-scotland/childhood-immunisation-statistics-scotland-quarter-ending-30-june-2024/}
+#'
+"hl_vaccine_coverage"
