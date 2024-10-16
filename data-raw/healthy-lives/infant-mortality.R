@@ -1,3 +1,42 @@
+# ---- Load packages ----
+library(httr)
+library(readxl)
+library(tidyverse)
+library(geographr)
+library(demographr)
+
+# Quarter 3 2023
+# ---- Get data ----
+# Source: https://webarchive.nrscotland.gov.uk/20240326182106/https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/quarterly-births-deaths-and-other-vital-events/3rd-quarter-2023
+GET(
+  "https://webarchive.nrscotland.gov.uk/20240326182106mp_/https://www.nrscotland.gov.uk/files//statistics/births-marriages-deaths-quarterly/23/q3/quarter-3-2023-tables.xlsx",
+  write_disk(tf <- tempfile(fileext = ".xlsx"))
+)
+
+q3_births_raw <- read_excel(tf, sheet = 6, skip = 3)
+
+# ---- Clean data ----
+q3_
+
+
+
+
+# Sources for:
+# Q4 2023 - https://webarchive.nrscotland.gov.uk/20240326182120/https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/quarterly-births-deaths-and-other-vital-events/4th-quarter-2023
+# dataset url - https://webarchive.nrscotland.gov.uk/20240326182120mp_/https://www.nrscotland.gov.uk/files//statistics/births-marriages-deaths-quarterly/23/q4/quarter-4-23-tables.xlsx
+
+# Q1 2024 - https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/quarterly-births-deaths-and-other-vital-events/1st-quarter-2024
+# dataset url - https://www.nrscotland.gov.uk/files//statistics/births-marriages-deaths-quarterly/24/quarter-1-24-tables.xlsx
+
+# Q2 2024 - https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/quarterly-births-deaths-and-other-vital-events/2nd-quarter-2024
+# dataset url - https://www.nrscotland.gov.uk/files//statistics/births-marriages-deaths-quarterly/24/quarter-2-24-tables.xlsx
+
+
+
+
+
+
+
 library(readr)
 library(httr)
 library(dplyr)
