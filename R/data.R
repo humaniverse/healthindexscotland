@@ -218,3 +218,21 @@
 #' @source \url{ https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/modelledunemploymentforlocalandunitaryauthoritiesm01}
 #'
 "hl_unemployment"
+
+#' Road traffic volume
+#'
+#' A dataset containing volume of road traffic (millions of vehicle miles per
+#' square kilometre) in Scottish Local Authorities.
+#'
+#' The raw local authority traffic figures give the total volume (vehicle miles)
+#' of traffic across each local authority for the whole year.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{traffic_volume}{}
+#' ...
+#' }
+#' @source \url{https://roadtraffic.dft.gov.uk/}
+#'
+"places_traffic_volume"
