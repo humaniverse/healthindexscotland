@@ -28,23 +28,21 @@ cardiovascular_conditions <- cardiovascular_conditions_raw |>
          discharge_number = 11) |>
   group_by(ltla19_code) |>
   summarise(
-    total_discharge_number = sum(discharge_number, na.rm = TRUE)
+    cardiovascular_discharge_number = sum(discharge_number, na.rm = TRUE)
   ) |>
-  mutate(year = "2022/23",
-         av_discharge_number = (total_discharge_number / 4))|>
-  rename(av_discharge_number = 4) |>
-  select(`ltla19_code`, `av_discharge_number`, `year`) |>
+  mutate(year = "2022/23") |>
+  select(`ltla19_code`, `cardiovascular_discharge_number`, `year`) |>
   slice(-33)
 
 # ---- Join datasets ---
 hl_cardiovascular_conditions <- cardiovascular_conditions |>
   left_join(population_2022, by = c("ltla19_code" = "ltla19_code")) |>
   mutate(
-    av_discharge_number = as.numeric(av_discharge_number),
+    cardiovascular_discharge_number = as.numeric(cardiovascular_discharge_number),
     population_2022 = as.numeric(population_2022),
-    av_percentage_discharged = ((av_discharge_number / population_2022)) * 1000) |>
-  rename(discharges_per_1k = 6) |>
-  select(`ltla19_code`, `discharges_per_1k`, `year`)
+    av_percentage_discharged = ((cardiovascular_discharge_number / population_2022)) * 1000) |>
+  rename(cardiovascular_discharges_per_1k = 6) |>
+  select(`ltla19_code`, `cardiovascular_discharges_per_1k`, `year`)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(hl_cardiovascular_conditions, overwrite = TRUE)

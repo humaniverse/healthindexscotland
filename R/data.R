@@ -31,16 +31,16 @@
 #' @format A data frame with 32 variables and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
-#' \item{discharges_per_1k}{Percentage of discharges per 1k population.
+#' \item{cardiovascular_discharges_per_1k}{Percentage of total cardiovascular discharges per 1k population.
 #' Cardiovascular conditions includes angina, coronary heart disease, heart
-#' attack, and heart failure. Total number of discharges was calculated and the
-#' un-weighted average was created here, to represent cardiovascular conditions.}
+#' attack, and heart failure. Scottish 2022 mid year population estimates were used}
 #' \item{year}{Financial year}
 #'
 #' ...
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
-#'
+#' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
+
 "hl_cardiovascular_conditions"
 
 #' Percentage of Absolute Child Poverty (2022-2023)
