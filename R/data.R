@@ -224,7 +224,6 @@
 #' A dataset containing statistics on smoking status in
 #' each Council, 2018-22.
 #'
-#'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
@@ -236,6 +235,21 @@
 #' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
 #'
 "hl_smoking"
+
+#' Crude Rate of Teenage Pregnancies (2019-2021)
+#'
+#' A dataset containing crude rate of teenage pregnancies per 1,000 aged 15-19
+#' in each Council, 2019-2021.
+#'
+#' \item{teenage_pregnancy_per_1k}{Crude rate of teenage pregnancies per 1,000
+#' females aged 15-19}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+#'
+"hl_teenage_pregnancy"
 
 #' Percentage of People in Unemployment (2021-22)
 #'
@@ -261,7 +275,6 @@
 #' Percentage of Childhood Vaccine Coverage (2023)
 #'
 #' A dataset containing statistics on childhood vaccine coverage in each Council, 2022/23.
-#'
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{

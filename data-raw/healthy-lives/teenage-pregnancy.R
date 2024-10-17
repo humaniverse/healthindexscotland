@@ -1,37 +1,44 @@
-library(readr)
+# ---- Load packages ----
 library(httr)
-library(dplyr)
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Teenage pregnancies
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
 
-# Interactively generate the data by:
+# Interactively generate the full ScotPHO dataset by:
 #   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+#   2. Clicking the 'Download data' link on the top right
+#   3. 'Select a dataset' - 'Main dataset
+#   4. Tick 'Council area'
+#   5. Get the URL from the download data button
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_fc77483c/session/67a67a28dbe325e8ddab44ab6037e5c5/download/download_table_csv?w=fc77483c",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
+# The URL is session-based; new URL will need to be generated each time this code is run.
+# The full ScotPHO dataset is saved in data-raw/health-lives/data/ as it is used in other indicators
 
-pregnancy_raw <-
-  read_csv(tf)
+# ---- Download and read URL as temp file ----
+# GET(
+#   "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_37cec01a/session/27e32ac7b3d83983d9374b1ee92b332d/download/data_tab-datatable_downloads-downloadCSV?w=37cec01a",
+#   write_disk("data-raw/healthy-lives/data/scotpho_data.csv", overwrite = TRUE)
+# )
 
-unlink(tf)
-rm(tf)
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-pregnancy <-
-  pregnancy_raw %>%
-  filter(area_type == "Council area") %>%
+# ---- Clean data ----
+hl_teenage_pregnancy <- full_data_raw |>
+  filter(area_type == "Council area" &
+    indicator == "Teenage pregnancies") |>
   select(
-    lad_code = area_code,
-    teenage_pregnancies_per_1000 = measure
-  )
+    ltla19_code = `area_code`,
+    teenage_pregnancy_per_1k = `measure`
+  ) |>
+  mutate(year = "2019-2021")
 
-write_rds(pregnancy, "data/vulnerability/health-inequalities/scotland/healthy-lives/teenage-pregnancy.rds")
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+hl_teenage_pregnancy$ltla19_code %in% ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_teenage_pregnancy, overwrite = TRUE)
