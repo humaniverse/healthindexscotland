@@ -236,3 +236,21 @@
 #' @source \url{ https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/modelledunemploymentforlocalandunitaryauthoritiesm01}
 #'
 "hl_unemployment"
+
+#' Rough sleeping
+#'
+#' A dataset containing statistics on number of homelessness applications where
+#' at least one member of the household was sleeping rough within the previous
+#' three months, normalised per 100,000 residents.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{rough_sleeping_per_10k}{number of homelessness applications where
+#' at least one member of the household was sleeping rough within the previous
+#' three months, normalised per 100,000 residents.}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
+#'
+"places_rough_sleeping"
