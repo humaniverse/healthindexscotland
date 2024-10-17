@@ -125,6 +125,24 @@
 #'
 "hl_national_five_attainment"
 
+#' Percentage of Adults Overweight/Obese (2016-19)
+#'
+#' A dataset containing statistics on percentage of adults clinically classed
+#' as overweight and obese in each Council, 2016-19.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{adult_overweight_obesity_percentage}{Percentage of adults clinically classed
+#' as overweight and obese.}
+#' \item{year}{Time frame}
+#'
+#' ...
+#' }
+#' @source \url{https://statistics.gov.scot/resource?uri=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data}
+#'
+"hl_overweight_obesity_adults"
+
 #' Percentage of Children Overweight/Obese (2022/23)
 #'
 #' A dataset containing statistics on percentage of children clinically classed

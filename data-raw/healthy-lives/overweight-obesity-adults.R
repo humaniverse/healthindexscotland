@@ -15,7 +15,7 @@ hl_overweight_obesity_adults <- health_survey_raw |>
   rename(ltla19_code = 1,
          overweight_obesity_percentage = 7,
          year = 4) |>
-  select(`ltla19_code`, `overweight_obesity_percentage`, `year`)
+  select(`ltla19_code`, adult_overweight_obesity_percentage = overweight_obesity_percentage, `year`)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(hl_overweight_obesity_adults, overwrite = TRUE)
