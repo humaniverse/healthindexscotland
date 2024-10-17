@@ -8,7 +8,7 @@
 A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla19_code}{Local Authority Code}
-\item{unemployment_percentage}{Percentage of people that are unemployed.
+\item{unemployment_percentage}{Estimated percentage of people that are unemployed.
 Unemployment is defined as someone aged 16+ without a job who were available
 to start work in the two weeks following their interview and who had either
 looked for work in the four weeks prior to interview or were waiting to start
@@ -25,6 +25,7 @@ a job they had already obtained}
 hl_unemployment
 }
 \description{
-A dataset containing statistics on unemployment in each Council, 2021-22.
+A dataset containing statistics on estimated unemployment rates in each Council, 2021-22. Estimates based on a model
+which utilises the Annual Population Survey estimates of unemployment along with the Claimant Count averaged over 12 months.
 }
 \keyword{datasets}
