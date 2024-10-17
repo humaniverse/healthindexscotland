@@ -258,6 +258,26 @@
 #'
 "hl_unemployment"
 
+#' Percentage of Childhood Vaccine Coverage (2023)
+#'
+#' A dataset containing statistics on childhood vaccine coverage in each Council, 2022/23.
+#'
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{child_vaccine_coverage_percentage}{Percentage of vaccine coverage. Includes
+#' childhood immunisation statistics (6in1, PCV, rotavirus, MenB, (12 months); 6in1, MMR1, Hib/MenC, PCVb,
+#' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
+#' 4in1, MMR2 (4-6 years))}
+#' \item{year}{School Year}
+#'
+#' ...
+#' }
+#' @source \url{https://publichealthscotland.scot/publications/childhood-immunisation-statistics-scotland/childhood-immunisation-statistics-scotland-quarter-ending-30-june-2024/}
+#'
+"hl_child_vaccine_coverage"
+
 #' Rough sleeping
 #'
 #' A dataset containing statistics on number of homelessness applications where
