@@ -63,6 +63,25 @@
 #'
 "hl_child_poverty"
 
+#' Percentage of Childhood Vaccine Coverage (2023)
+#'
+#' A dataset containing statistics on childhood vaccine coverage in each Council, 2022/23.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{child_vaccine_coverage_percentage}{Percentage of vaccine coverage. Includes
+#' childhood immunisation statistics (6in1, PCV, rotavirus, MenB, (12 months); 6in1, MMR1, Hib/MenC, PCVb,
+#' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
+#' 4in1, MMR2 (4-6 years))}
+#' \item{year}{School Year}
+#'
+#' ...
+#' }
+#' @source \url{https://publichealthscotland.scot/publications/childhood-immunisation-statistics-scotland/childhood-immunisation-statistics-scotland-quarter-ending-30-june-2024/}
+#'
+"hl_child_vaccine_coverage"
+
 #' Rate of Drug Related Hospital Stays (2021/22)
 #'
 #' A dataset containing statistics on the rate of drug related hospital stays in
@@ -127,6 +146,21 @@
 #' @source \url{ https://statistics.gov.scot/slice?dataset=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data&http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23measureType=http%3A%2F%2Fstatistics.gov.scot%2Fdef%2Fmeasure-properties%2Fpercent&http%3A%2F%2Fpurl.org%2Flinked-data%2Fsdmx%2F2009%2Fdimension%23refPeriod=http%3A%2F%2Freference.data.gov.uk%2Fid%2Fgregorian-interval%2F2016-01-01T00%3A00%3A00%2FP4Y}
 #'
 "hl_healthy_eating"
+
+#' Percentage of Babies Born Not at a Healthy Birth Weight (2020-2022)
+#'
+#' A dataset containing percentage babies born not at a healthy birth weight.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{not_healthy_birth_rate_percentage}{Percentage of babies born not at a healthy birth weight}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"hl_low_birth_weight"
 
 #' Percentage Grade A-C in Maths and English, Provisional National 5 Attainments (2024)
 #'
@@ -201,23 +235,23 @@
 #'
 "hl_physical_activity"
 
-#' Rate of Non-Fatal Workplace Injuries (2022-23)
+#' Crude Rate of School Exclusion (2019-2021)
 #'
-#' A dataset containing statistics on the rate of non-fatal workplace injuries
-#' per 100,000 in each Council, 2022-23.
+#' A dataset containing crude rate of school exclusion rate 1,000 aged 15-19
+#' in each Council, 2019-2021.
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
-#' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
-#' injuries per 100k population}
-#' \item{year}{Time period}
+#' \item{pupil_absence_per_1k}{Crude exclusion rate of pupil absence per 1,000
+#' students}
+#' \item{year}{School year}
 #'
 #' ...
 #' }
-#' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
-"hl_workplace_safety"
+"hl_pupil_absence"
 
 #' Percentage of Current Smokers (2018-22)
 #'
@@ -241,6 +275,9 @@
 #' A dataset containing crude rate of teenage pregnancies per 1,000 aged 15-19
 #' in each Council, 2019-2021.
 #'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
 #' \item{teenage_pregnancy_per_1k}{Crude rate of teenage pregnancies per 1,000
 #' females aged 15-19}
 #' \item{year}{Time period - three year aggregate}
@@ -272,24 +309,40 @@
 #'
 "hl_unemployment"
 
-#' Percentage of Childhood Vaccine Coverage (2023)
+#' Rate of Non-Fatal Workplace Injuries (2022-23)
 #'
-#' A dataset containing statistics on childhood vaccine coverage in each Council, 2022/23.
+#' A dataset containing statistics on the rate of non-fatal workplace injuries
+#' per 100,000 in each Council, 2022-23.
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
-#' \item{child_vaccine_coverage_percentage}{Percentage of vaccine coverage. Includes
-#' childhood immunisation statistics (6in1, PCV, rotavirus, MenB, (12 months); 6in1, MMR1, Hib/MenC, PCVb,
-#' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
-#' 4in1, MMR2 (4-6 years))}
-#' \item{year}{School Year}
+#' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
+#' injuries per 100k population}
+#' \item{year}{Time period}
 #'
 #' ...
 #' }
-#' @source \url{https://publichealthscotland.scot/publications/childhood-immunisation-statistics-scotland/childhood-immunisation-statistics-scotland-quarter-ending-30-june-2024/}
+#' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
 #'
-"hl_child_vaccine_coverage"
+"hl_workplace_safety"
+
+#' Percentage participation of Young People in Education, Training or Employment (2023)
+#'
+#' A dataset containing data on participation of young people in education, training
+#' or employment, by Council (2023).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{young_people_participation_education_training_employment_percentage}{Percentage
+#' of 16-19 year olds in education, training or employment}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"hl_young_people_training"
 
 #' Rough sleeping
 #'

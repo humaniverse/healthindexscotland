@@ -29,8 +29,8 @@ hl_teenage_pregnancy <- full_data_raw |>
   filter(area_type == "Council area" &
     indicator == "Teenage pregnancies") |>
   select(
-    ltla19_code = `area_code`,
-    teenage_pregnancy_per_1k = `measure`
+    ltla19_code = area_code,
+    teenage_pregnancy_per_1k = measure
   ) |>
   mutate(year = "2019-2021")
 

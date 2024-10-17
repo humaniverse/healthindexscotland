@@ -1,37 +1,29 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: School exclusion rate
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_bd032e08/session/5988c5462255845c9828e43c026dfc53/download/download_table_csv?w=bd032e08",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
-
-absence_raw <-
-  read_csv(tf)
-
-unlink(tf)
-rm(tf)
-
-pupil_absence <-
-  absence_raw %>%
-  filter(area_type == "Council area") %>%
+# ---- Clean data ----
+hl_pupil_absence <- full_data_raw |>
+  filter(area_type == "Council area" &
+    indicator == "School exclusion rate") |>
   select(
-    lad_code = area_code,
-    pupil_absence_per_1000 = measure
+    ltla19_code = `area_code`,
+    pupil_absence_per_1k = `measure`,
+    year
   )
 
-write_rds(pupil_absence, "data/vulnerability/health-inequalities/scotland/healthy-lives/pupil-absence.rds")
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+hl_pupil_absence$ltla19_code %in% ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(hl_pupil_absence, overwrite = TRUE)
