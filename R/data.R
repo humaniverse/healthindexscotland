@@ -124,22 +124,21 @@
 #'
 "hl_smoking"
 #'
-#' Crude Rate of Teenage Pregnancies (2020)
+#' Crude Rate of Teenage Pregnancies (2019-2021)
 #'
 #' A dataset containing crude rate of teenage pregnancies per 1,000 aged 15-19
-#' in each Council, 2020.
+#' in each Council, 2019-2021.
 #'
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
-#' \item{teenage_pregnancies_per_1k}{Crude rate of teenage pregnancies per 1,000
-#' females aged 15-19. Data is from 2020, based on 2019-2021 calendar years;
-#' 3-year aggregates}
-#' \item{year}{Time period}
+#' \item{teenage_pregnancy_per_1k}{Crude rate of teenage pregnancies per 1,000
+#' females aged 15-19}
+#' \item{year}{Time period - three year aggregate}
 #'
 #' ...
 #' }
-#' @source \url{ https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
 "hl_teenage_pregnancy"
