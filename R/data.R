@@ -22,6 +22,25 @@
 #'
 "hl_alcohol_misuse"
 
+#' Percentage of Cancer Screening Uptake (2020-2022)
+#'
+#' A dataset containing statistics on the percentage of cancer screening uptake
+#' in each Council, 2020-2022/
+#'
+#'
+#' @format A data frame with 32 row and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{cancer_screening_uptake}{Percentage of cancer screening uptake. Only
+#' bowel cancer screening uptake is included here.}
+#' \item{year}{Time period - three year aggregates}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+#'
+"hl_cancer_screening"
+
 #' Percentage of Discharges per 1,000 for Cardiovascular Conditions (2022/23)
 #'
 #' A dataset containing statistics on the percentage of discharges per 1,000 for

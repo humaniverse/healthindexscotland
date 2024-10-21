@@ -5,13 +5,7 @@
 \alias{hp_traffic_volume}
 \title{Road traffic volume (2023)}
 \format{
-A data frame with 32 rows and 2 variables:
-\describe{
-\item{ltla21_code}{Local Authority Code}
-\item{traffic_volume}{}
-\item{year}{Year}
-...
-}
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 32 rows and 3 columns.
 }
 \source{
 \url{https://roadtraffic.dft.gov.uk/}
@@ -26,5 +20,11 @@ square kilometre) in Scottish Local Authorities.
 \details{
 The raw local authority traffic figures give the total volume (vehicle miles)
 of traffic across each local authority for the whole year.
+\describe{
+\item{ltla21_code}{Local Authority Code}
+\item{traffic_volume}{}
+\item{year}{Year}
+...
+}
 }
 \keyword{datasets}
