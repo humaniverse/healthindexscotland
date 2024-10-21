@@ -31,7 +31,7 @@ alcohol <- alcohol_raw |>
   )
 
 # ---- Join datasets ----
-hl_alcohol_misuse <- alcohol |>
+lives_alcohol_misuse <- alcohol |>
   left_join(population_2022, by = c("ltla11_code" = "ltla19_code")) |>
   mutate(alcohol_admissions_per_100k = (((as.double(alcohol_related_admissions)) /
     as.double(population_2022)) * 100000)) |>
@@ -44,7 +44,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-hl_alcohol_misuse$ltla19_code %in% ltla19_code
+lives_alcohol_misuse$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_alcohol_misuse, overwrite = TRUE)
+usethis::use_data(lives_alcohol_misuse, overwrite = TRUE)

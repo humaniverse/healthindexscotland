@@ -20,7 +20,7 @@
 #' @source \url{https://www.opendata.nhs.scot/dataset/alcohol-related-hospital-statistics-scotland/resource/b0b520e8-3507-46cd-a9b5-cff03007bb57}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
 #'
-"hl_alcohol_misuse"
+"lives_alcohol_misuse"
 
 #' Percentage of Discharges per 1,000 for Cardiovascular Conditions (2022/23)
 #'
