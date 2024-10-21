@@ -262,6 +262,9 @@
 #' nearest sports centre in each Intermediate Zone within a Council Area. This may
 #' include sports centres located in England.
 #'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #'   \item{ltla21_code}{Local Authority Code}

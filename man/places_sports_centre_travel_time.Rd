@@ -26,4 +26,8 @@ sports centre in each Council Areas. This is based on the travel time to the
 nearest sports centre in each Intermediate Zone within a Council Area. This may
 include sports centres located in England.
 }
+\details{
+Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+and are based on travelling by public transport on a weekday morning.
+}
 \keyword{datasets}
