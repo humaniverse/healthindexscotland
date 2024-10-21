@@ -162,7 +162,7 @@
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"hl_infant_mortality"
+"lives_infant_mortality"
 
 #' Percentage of Babies Born Not at a Healthy Birth Weight (2020-2022)
 #'
