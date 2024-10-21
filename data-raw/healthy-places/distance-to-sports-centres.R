@@ -14,7 +14,7 @@ Sys.setenv(TRAVELTIME_KEY = "<INSERT YOUR API KEY HERE>")
 scotland_bb <-
   getbb("Scotland")
 
-# Search for sport centre
+# Search for sport centres
 sports_centre <-
   opq(scotland_bb, timeout = 1000) |>
   add_osm_feature("leisure", "sports_centre") |>
@@ -25,7 +25,7 @@ gb_lad <-
   boundaries_ltla21 |>
   filter(!str_detect(ltla21_code, "^N"))
 
-# Some sport centre are in Northern Ireland - remove them from the dataset
+# Some sport centres are in Northern Ireland - remove them from the dataset
 sco_sports <-
   sports_centre$osm_points[gb_lad, ] |>
   select(osm_id) |>
@@ -221,57 +221,50 @@ for (i in 4:nrow(sco_lad)) {
   }
 
   # Save progress to disc after each LAD
-  write_csv(sports_centre_travel_time, str_glue("data-raw/sports_centre_travel_time-{i-3}.csv"))
+  # NOTE: Please manually delete these files once the loop completes
+  write_csv(sports_centre_travel_time, str_glue("data-raw/healthy-places/sports_centre_travel_time-{i-3}.csv"))
 
   print(str_glue("Finished Council Area {i - 3} of {nrow(sco_lad) - 3}"))
 }
 
+# Save the complete dataset for travel time from Intermediate Zones to sports centres
+# This won't be available in the R package itself but want to keep it in the GitHub repo
+# since it takes quite a while to calculate
+write_csv(sports_centre_travel_time, "data-raw/healthy-places/sports_centre_travel_time.csv")
 
+# Look up Local Authorities for each Intermediate Zone and sports centre
+lookup_iz_lad <-
+  lookup_dz11_iz11_ltla20 |>
+  distinct(iz11_code, ltla21_code = ltla20_code, ltla_name = ltla20_name)
 
-sports_centre_travel_time
+sports_centre_travel_time <-
+  sports_centre_travel_time |>
+  left_join(lookup_iz_lad)
 
+# What are the fastest travel times within each Intermediate Zone?
+sports_centre_travel_time_fastest <-
+  sports_centre_travel_time |>
+  select(-osm_id) |>  # We don't need to know the sports centre ID for this
+  group_by(iz11_code) |>
+  filter(travel_time_mins == min(travel_time_mins)) |>
+  ungroup() |>
+  distinct()
 
+# Plot the distribution of fastest travel times within each Local Authority
+sports_centre_travel_time_fastest |>
+  ggplot(aes(x = travel_time_mins)) +
+  geom_histogram(binwidth = 5) +
+  facet_wrap(~ltla_name, scales = "free")
 
-# Save sport centre for the Python script
-write_sf(sco_sports, "data-raw/healthy-places/points.geojson")
+# Calculate average travel time for each Local Authority
+# Several of the distributions of travel times within Local Authorities are skewed
+# so we'll take the median travel time
+places_sports_centre_travel_time <-
+  sports_centre_travel_time_fastest |>
+  group_by(ltla21_code) |>
+  summarise(median_travel_time = median(travel_time_mins, na.rm = TRUE)) |>
+  ungroup() |>
+  mutate(year = year(now()))
 
-# ---- Source Python code ----
-# Set virtual environment using Conda:
-#   - Use the conda-env.txt file to recreate the virtual environment locally
-#   - The argument 'required = FALSE' has been set to only suggest to use a
-#     Conda virtual env in the first instance. If you choose to not use Conda,
-#     the call to source_python() below should still run if you have the correct
-#     dependencies installed. See: https://rstudio.github.io/reticulate/reference/use_python.html
-# use_condaenv(condaenv = "resilience-index", required = FALSE)
-
-# Source python script that computes distance to points
-# This requires the following to be installed:
-# - numpy
-# - pandas
-# - geopandas
-# - scipy
-# - networkx
-# - pandana
-source_python("data-raw/healthy-places/distance-to-points.py")
-
-# ---- Resume R Execution ----
-# Load the Data Zone travel distances to sport centre
-sports_dist <- read_csv("data/vulnerability/health-inequalities/scotland/healthy-places/points-lsoa.csv")
-
-sports_dist <-
-  sports_dist |>
-  select(dz_code = lsoa11cd, mean_distance_nearest_three_points) |>
-  mutate(mean_distance_nearest_three_points = mean_distance_nearest_three_points / 1000) |>
-  # convert to km
-
-  # Merge Council Area codes
-  left_join(geographr::lookup_dz_iz_lad, by = "dz_code") |>
-  # Take mean distance to a pharmacy for LSOAs within a Local Authority
-  group_by(lad_code) |>
-  summarise(sports_centre_distance = mean(mean_distance_nearest_three_points))
-
-write_rds(sports_dist, "data/vulnerability/health-inequalities/scotland/healthy-places/distance-to-sports-centres.rds")
-
-# Don't need these files anymore
-file.remove("data/vulnerability/health-inequalities/scotland/healthy-places/points.geojson")
-file.remove("data/vulnerability/health-inequalities/scotland/healthy-places/points-lsoa.csv")
+# ---- Save output to data/ folder ----
+usethis::use_data(places_sports_centre_travel_time, overwrite = TRUE)
