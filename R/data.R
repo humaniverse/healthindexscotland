@@ -215,7 +215,7 @@
 #' }
 #' @source \url{ https://www.opendata.nhs.scot/dataset/primary-1-body-mass-index-bmi-statistics/resource/4a3daa0f-1580-4a59-ac9e-64d9a31a4429}
 #'
-"hl_overweight_obesity_children"
+"lives_overweight_obesity_children"
 
 #' Percentage of People Meeting Recommended Activity Levels (2018-22)
 #'
