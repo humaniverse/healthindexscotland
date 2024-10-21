@@ -342,7 +342,7 @@
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"hl_young_people_training"
+"lives_young_people_training"
 
 #' Road traffic volume (2023)
 #'
