@@ -178,7 +178,7 @@
 #' }
 #' @source \url{https://www.sqa.org.uk/sqa/105123.html}
 #'
-"hl_national_five_attainment"
+"lives_national_five_attainment"
 
 #' Percentage of Adults Overweight/Obese (2016-19)
 #'
