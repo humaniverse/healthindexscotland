@@ -126,7 +126,7 @@
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/27-30-month-review-statistics/resource/018ba0e1-6562-43bb-82c5-97b6c6cc22d8}
 #'
-"hl_early_years_development"
+"lives_early_years_development"
 
 #' Percentage of People that Eat Healthy (2016-19)
 #'
