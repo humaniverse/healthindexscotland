@@ -344,6 +344,23 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "hl_young_people_training"
 
+#' Road traffic volume (2023)
+#'
+#' A dataset containing volume of road traffic (millions of vehicle miles per
+#' square kilometre) in Scottish Local Authorities.
+#'
+#' The raw local authority traffic figures give the total volume (vehicle miles)
+#' of traffic across each local authority for the whole year.
+#' \describe{
+#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{traffic_volume}{}
+#'   \item{year}{Year}
+#' ...
+#' }
+#' @source \url{https://roadtraffic.dft.gov.uk/}
+#'
+"hp_traffic_volume"
+
 #' Rough sleeping
 #'
 #' A dataset containing statistics on number of homelessness applications where
@@ -361,3 +378,4 @@
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 #'
 "places_rough_sleeping"
+
