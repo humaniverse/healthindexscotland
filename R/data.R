@@ -80,7 +80,7 @@
 #' }
 #' @source \url{https://publichealthscotland.scot/publications/childhood-immunisation-statistics-scotland/childhood-immunisation-statistics-scotland-quarter-ending-30-june-2024/}
 #'
-"hl_child_vaccine_coverage"
+"lives_child_vaccine_coverage"
 
 #' Rate of Drug Related Hospital Stays (2021/22)
 #'
