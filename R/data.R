@@ -219,7 +219,7 @@
 #'
 "hl_unemployment"
 
-#' Road traffic volume
+#' Road traffic volume (2023)
 #'
 #' A dataset containing volume of road traffic (millions of vehicle miles per
 #' square kilometre) in Scottish Local Authorities.
@@ -231,8 +231,9 @@
 #' \describe{
 #'   \item{ltla21_code}{Local Authority Code}
 #'   \item{traffic_volume}{}
+#'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://roadtraffic.dft.gov.uk/}
 #'
-"places_traffic_volume"
+"hp_traffic_volume"

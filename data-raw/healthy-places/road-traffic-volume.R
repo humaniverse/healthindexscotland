@@ -87,11 +87,12 @@ traffic <-
 #   )
 
 # Normalise traffic volume by land area (Km^2)
-places_traffic_volume <-
+hp_traffic_volume <-
   traffic |>
   left_join(areas, by = "ltla21_code") |>
   mutate(traffic_volume = vehicle_km_millions / area_km_squared) |>
-  select(ltla21_code, traffic_volume)
+  select(ltla21_code, traffic_volume) |>
+  mutate(year = 2023 )
 
 # ---- Save output to data/ folder ----
-usethis::use_data(places_traffic_volume, overwrite = TRUE)
+usethis::use_data(hp_traffic_volume, overwrite = TRUE)
