@@ -286,7 +286,7 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
-"hl_teenage_pregnancy"
+"lives_teenage_pregnancy"
 
 #' Percentage of People in Unemployment (2021-22)
 #'

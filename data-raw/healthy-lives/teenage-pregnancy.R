@@ -25,7 +25,7 @@ library(geographr)
 full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
 # ---- Clean data ----
-hl_teenage_pregnancy <- full_data_raw |>
+lives_teenage_pregnancy <- full_data_raw |>
   filter(area_type == "Council area" &
     indicator == "Teenage pregnancies") |>
   select(
@@ -38,7 +38,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-hl_teenage_pregnancy$ltla19_code %in% ltla19_code
+lives_teenage_pregnancy$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_teenage_pregnancy, overwrite = TRUE)
+usethis::use_data(lives_teenage_pregnancy, overwrite = TRUE)
