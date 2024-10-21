@@ -35,7 +35,7 @@ cardiovascular_conditions <- cardiovascular_conditions_raw |>
   slice(-33)
 
 # ---- Join datasets ---
-hl_cardiovascular_conditions <- cardiovascular_conditions |>
+lives_cardiovascular_conditions <- cardiovascular_conditions |>
   left_join(population_2022, by = c("ltla19_code" = "ltla19_code")) |>
   mutate(
     cardiovascular_discharge_number = as.numeric(cardiovascular_discharge_number),
@@ -45,6 +45,6 @@ hl_cardiovascular_conditions <- cardiovascular_conditions |>
   select(`ltla19_code`, `cardiovascular_discharges_per_1k`, `year`)
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_cardiovascular_conditions, overwrite = TRUE)
+usethis::use_data(lives_cardiovascular_conditions, overwrite = TRUE)
 
 

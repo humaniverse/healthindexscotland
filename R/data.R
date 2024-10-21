@@ -41,7 +41,7 @@
 #' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
 
-"hl_cardiovascular_conditions"
+"lives_cardiovascular_conditions"
 
 #' Percentage of Absolute Child Poverty (2022-2023)
 #'
