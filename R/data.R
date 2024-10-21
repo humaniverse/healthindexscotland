@@ -160,7 +160,7 @@
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"hl_low_birth_weight"
+"lives_low_birth_weight"
 
 #' Percentage Grade A-C in Maths and English, Provisional National 5 Attainments (2024)
 #'
