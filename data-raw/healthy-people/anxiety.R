@@ -1,42 +1,34 @@
+# The 'Average (mean)' estimate provides the score out of 0-10. The other
+# estimates are thresholds (percentages) described in the QMI:
+# https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing/methodologies/personalwellbeingintheukqmi.
+# Orkney Islands missing data in latest collection years. 2020-21 most recent
+# completed data.
+
+# ---- Load packages ----
 library(httr)
 library(readxl)
-library(readr)
-library(dplyr)
-library(stringr)
+library(tidyverse)
+library(rio)
 
-# Source: https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/1
-GET(
-  "https://download.ons.gov.uk/downloads/datasets/wellbeing-local-authority/editions/time-series/versions/1.xlsx",
-  write_disk(tf <- tempfile(fileext = ".xlsx"))
-)
-
+# ---- Get data ----
+# Source: https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4
 anxiety_raw <-
-  read_excel(tf, sheet = "Dataset", skip = 2)
+  import("https://download.ons.gov.uk/downloads/datasets/wellbeing-local-authority/editions/time-series/versions/4.csv")
 
-# The 'Average (mean)' estimate provides the score out of 0-10. The other estimates are
-# thresholds (percentages) described in the QMI: https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing/methodologies/personalwellbeingintheukqmi
-anxiety <-
-  anxiety_raw %>%
-  filter(Estimate == "Average (mean)") %>%
-  filter(MeasureOfWellbeing == "Anxiety") %>%
-  filter(str_detect(`Geography code`, "^S")) %>%
+# ---- Clean data ----
+people_anxiety <- anxiety_raw |>
+  filter(
+    str_starts(`administrative-geography`, "S"),
+    MeasureOfWellbeing == "Anxiety",
+    Estimate == "Average (mean)",
+    Time == "2020-21"
+  ) |>
   select(
-    lad_code = `Geography code`,
-    anxiety_score_out_of_10 = `2019-20`
-  )
+    ltla19_code = `administrative-geography`,
+    anxiety_score_out_of_10 = `v4_3`,
+    year = `Time`
+  ) |>
+  slice(-15)
 
-# Replace old LAD codes with updates 2019 codes, and remove Scotland aggregate (S92000003)
-# Lookup: https://github.com/drkane/geo-lookups/blob/master/la_all_codes.csv
-lookup <-
-  read_csv("https://raw.githubusercontent.com/drkane/geo-lookups/master/la_all_codes.csv") %>%
-  select(lad_code_old = LADCD, lad_code = LAD20CD) %>%
-  filter(str_detect(lad_code_old, "^S"))
-
-anxiety <-
-  anxiety %>%
-  filter(lad_code != "S92000003") %>%
-  rename(lad_code_old = lad_code) %>%
-  left_join(lookup, by = "lad_code_old") %>%
-  select(lad_code, anxiety_score_out_of_10)
-
-write_rds(anxiety, "data/vulnerability/health-inequalities/scotland/healthy-people/anxiety.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(people_anxiety, overwrite = TRUE)
