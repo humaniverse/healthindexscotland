@@ -307,7 +307,7 @@
 #' }
 #' @source \url{ https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/modelledunemploymentforlocalandunitaryauthoritiesm01}
 #'
-"hl_unemployment"
+"lives_unemployment"
 
 #' Rate of Non-Fatal Workplace Injuries (2022-23)
 #'
