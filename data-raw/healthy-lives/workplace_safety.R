@@ -13,7 +13,7 @@ download.file(url, temp_file, mode = "wb")
 workplace_safety_raw <- read_excel(temp_file, sheet = 5, skip = 7)
 
 # ---- Clean data ----
-hl_workplace_safety <- workplace_safety_raw |>
+lives_workplace_safety <- workplace_safety_raw |>
   filter(str_starts(`Area code\r\n[Note 10]`, "S")) |>
   rename(year = 1) |>
   slice(which(str_starts(`year`, "2022/23"))) |>
@@ -30,7 +30,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-hl_workplace_safety$ltla19_code %in% ltla19_code
+lives_workplace_safety$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_workplace_safety, overwrite = TRUE)
+usethis::use_data(lives_workplace_safety, overwrite = TRUE)

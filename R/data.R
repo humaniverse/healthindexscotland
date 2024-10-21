@@ -325,7 +325,7 @@
 #' }
 #' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
 #'
-"hl_workplace_safety"
+"lives_workplace_safety"
 
 #' Percentage participation of Young People in Education, Training or Employment (2023)
 #'
