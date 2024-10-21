@@ -39,7 +39,7 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
-"hl_cancer_screening"
+"lives_cancer_screening"
 
 #' Percentage of Discharges per 1,000 for Cardiovascular Conditions (2022/23)
 #'
