@@ -251,7 +251,7 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
-"hl_pupil_absence"
+"lives_pupil_absence"
 
 #' Percentage of Current Smokers (2018-22)
 #'
