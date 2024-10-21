@@ -7,7 +7,7 @@ library(geographr)
 health_survey <-
   read_csv("https://statistics.gov.scot/downloads/cube-table?uri=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data")
 
-hl_physical_activity <-
+lives_physical_activity <-
   health_survey |>
   filter(
     `Scottish Health Survey Indicator` == "Summary activity levels: Meets recommendations",
@@ -27,8 +27,8 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-hl_physical_activity$ltla19_code %in% ltla19_code
-ltla19_code %in% hl_physical_activity$ltla19_code
+lives_physical_activity$ltla19_code %in% ltla19_code
+ltla19_code %in% lives_physical_activity$ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_physical_activity, overwrite = TRUE)
+usethis::use_data(lives_physical_activity, overwrite = TRUE)
