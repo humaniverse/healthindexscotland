@@ -106,7 +106,7 @@
 #' @source \url{https://www.opendata.nhs.scot/dataset/drug-related-hospital-statistics-scotland/resource/46f9d70b-8517-4af3-b65e-dbcd13dfa388}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
 #'
-"hl_drug_misuse"
+"lives_drug_misuse"
 
 #' Percentage of Children with Developmental Concerns (2022-23)
 #'
