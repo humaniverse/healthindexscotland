@@ -147,6 +147,23 @@
 #'
 "hl_healthy_eating"
 
+#' Rate of infant mortality (2017-2021)
+#'
+#' A dataset containing statistics on the rate of infant mortality in each
+#' Council, 2017-2021.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authroity Code}
+#' \item{infant_mortality_rate_per_1k}{Rate of infants per 1k that have died
+#' under the age of 1}
+#' \item{year}{Time period - five year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"hl_infant_mortality"
+
 #' Percentage of Babies Born Not at a Healthy Birth Weight (2020-2022)
 #'
 #' A dataset containing percentage babies born not at a healthy birth weight.
