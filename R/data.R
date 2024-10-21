@@ -61,7 +61,7 @@
 #' }
 #' @source \url{ https://www.gov.uk/government/statistics/children-in-low-income-families-local-area-statistics-2014-to-2023}
 #'
-"hl_child_poverty"
+"lives_child_poverty"
 
 #' Percentage of Childhood Vaccine Coverage (2023)
 #'
