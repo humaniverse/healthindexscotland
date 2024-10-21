@@ -196,7 +196,7 @@
 #' }
 #' @source \url{https://statistics.gov.scot/resource?uri=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fscottish-health-survey-local-area-level-data}
 #'
-"hl_overweight_obesity_adults"
+"lives_overweight_obesity_adults"
 
 #' Percentage of Children Overweight/Obese (2022/23)
 #'
