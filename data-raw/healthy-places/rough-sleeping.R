@@ -71,7 +71,8 @@ rough_sleeping <-
 places_rough_sleeping <-
   rough_sleeping |>
   mutate(rough_sleeping_per_10k = rough_sleeping_count / pop_count * 100000) |>
-  select(ltla21_code, rough_sleeping_per_10k)
+  select(ltla21_code, rough_sleeping_per_10k) |>
+  mutate(year = "2023-24")
 
 # ---- Save output to data/ folder ----
 usethis::use_data(places_rough_sleeping, overwrite = TRUE)

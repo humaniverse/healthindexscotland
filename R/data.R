@@ -370,7 +370,7 @@
 #' \describe{
 #' \item{ltla19_code}{Local Authority Code}
 #' \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
-#' of life satisfaction out of 10}
+#' of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
 #' \item{year}{Time period}
 #'
 #' ...
@@ -378,7 +378,7 @@
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
 
-#' Rough sleeping
+#' Rough sleeping (2023-24)
 #'
 #' A dataset containing statistics on number of homelessness applications where
 #' at least one member of the household was sleeping rough within the previous
@@ -390,6 +390,7 @@
 #'   \item{rough_sleeping_per_10k}{number of homelessness applications where
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.}
+#' #'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
