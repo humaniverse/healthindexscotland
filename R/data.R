@@ -69,7 +69,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{child_vaccine_coverage_percentage}{Percentage of vaccine coverage. Includes
 #' childhood immunisation statistics (6in1, PCV, rotavirus, MenB, (12 months); 6in1, MMR1, Hib/MenC, PCVb,
 #' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
