@@ -11,8 +11,7 @@ ltla_lookup <- lookup_ltla_ltla |>
 replacements <- c("City of Edinburgh" = "The City of Edinburgh",
                   "Glasgow City" = "City of Glasgow",
                   "Na h-Eileanan Siar" = "Comhairle Na h-Eileanan Siar",
-                  "Moray" = "The Moray",
-                  "City of Leeds" = "The City of Leeds")
+                  "Moray" = "The Moray")
 
 ltla_name <- ltla_lookup |>
   mutate(ltla19_name = str_replace_all(ltla19_name, replacements)) |>
@@ -36,7 +35,8 @@ for (i in 2:33) {
     filter(Subject %in% c("English", "Mathematics")) |>
     summarise(national_five_attainment_percent = mean(as.numeric(`Grade A-C Percentage 2023`), na.rm = TRUE)*100) |>
     mutate(ltla19_name = ltla_name[i-1])
-    print(ltla_name[i-1])
+
+  print(ltla_name[i-1])
 
   attainment_combined <- bind_rows(attainment_combined, attainment)
 }
@@ -44,8 +44,7 @@ for (i in 2:33) {
 replacements_reverse <- c("The City of Edinburgh" = "City of Edinburgh",
                   "City of Glasgow" = "Glasgow City",
                   "Comhairle Na h-Eileanan Siar" = "Na h-Eileanan Siar",
-                  "The Moray" = "Moray",
-                  "The City of Leeds" = "City of Leeds")
+                  "The Moray" = "Moray")
 
 lives_national_five_attainment <- attainment_combined |>
   mutate(ltla19_name = str_replace_all(ltla19_name, replacements_reverse)) |>
