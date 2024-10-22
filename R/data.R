@@ -147,6 +147,23 @@
 #'
 "lives_healthy_eating"
 
+
+#' Percentage of Job Related Training (2023-24)
+#'
+#' A dataset containing job related training in Scottish councils.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla19_code}{Local Authority Code}
+#' \item{job_related_training_perc}{Percentage of all who received job related
+#'  training in last 4 wks - aged 16-64}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.nomisweb.co.uk/datasets/apsnew}
+"lives_job_training"
+
 #' Percentage of Babies Born Not at a Healthy Birth Weight (2020-2022)
 #'
 #' A dataset containing percentage babies born not at a healthy birth weight.

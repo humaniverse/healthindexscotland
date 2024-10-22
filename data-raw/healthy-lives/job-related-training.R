@@ -1,101 +1,34 @@
-library(readr)
-library(readxl)
-library(httr)
-library(dplyr)
-library(tidyr)
+# ---- Load libs ----
 library(geographr)
+library(tidyverse)
 
-# Load population estimates
-# source: https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2019
-GET(
-  "https://www.nrscotland.gov.uk/files//statistics/population-estimates/mid-19/mid-year-pop-est-19-data.xlsx",
-  write_disk(tf <- tempfile(fileext = ".xlsx"))
-)
-
-pop_raw <- read_excel(tf, sheet = "Table 2", range = "A4:C38")
-
-# Calculate population estimates
-pop <-
-  pop_raw %>%
-  slice(-(1:2)) %>%
-  select(lad_code = `Area code1`, pop_count = `All Ages`)
-
+# ---- Get and clean data ----
 # The NOMIS API query creator was used to generate the url in the GET request:
 # Source: https://www.nomisweb.co.uk/datasets/apsnew
-# Data Set: Annual Population Survery
+# Data Set: Annual Population Survey
 # Indicator: T22a (Job related training (SIC 2007)
-training_raw <- read_csv("http://www.nomisweb.co.uk/api/v01/dataset/NM_17_1.data.csv?geography=1946157405...1946157408,1946157416,1946157409...1946157415,1946157418...1946157424,1946157417,1946157425...1946157436,2013265931&date=latest&cell=404693507,404694275&measures=20100,20701&select=date_name,geography_name,geography_code,cell_name,measures_name,obs_value,obs_status_name")
+training_raw <- read_csv("https://www.nomisweb.co.uk/api/v01/dataset/NM_17_5.data.csv?geography=1807745025...1807745028,1807745030...1807745032,1807745034...1807745083,1807745085,1807745282,1807745283,1807745086...1807745155,1807745157...1807745164,1807745166...1807745170,1807745172...1807745177,1807745179...1807745194,1807745196,1807745197,1807745199,1807745201...1807745218,1807745221,1807745222,1807745224,1807745226...1807745231,1807745233,1807745234,1807745236...1807745244&date=latest&variable=18,416&measures=20599,21001,21002,21003")
 
-# Keep vars of interest
-training <-
-  training_raw %>%
+lives_job_training <-
+  training_raw |>
+  filter(str_detect(GEOGRAPHY_CODE, "^S") &
+    VARIABLE_NAME == "% of all who received job related training in last  4 wks - aged 16-64" &
+    MEASURES_NAME == "Variable") |>
   select(
-    lad_name = GEOGRAPHY_NAME,
-    lad_code = GEOGRAPHY_CODE,
-    measures_name = MEASURES_NAME,
-    count = OBS_VALUE
-  ) %>%
-  filter(measures_name == "Value") %>%
-  select(-measures_name)
-
-# Remove Scotland Aggregate and add counts for part-time and full-time employment
-training <-
-  training %>%
-  filter(lad_code != "S92000003") %>%
-  group_by(lad_code) %>%
-  summarise(count = sum(count))
-
-# Match LAD codes to population counts
-# https://www.opendata.nhs.scot/dataset/geography-codes-and-labels/resource/967937c4-8d67-4f39-974f-fd58c4acfda5
-# Look at the 'CADateArchived' column to view changes
-training <-
-  training %>%
+    ltla19_code = GEOGRAPHY_CODE,
+    `job_related_training_perc` = OBS_VALUE
+  ) |>
   mutate(
-    lad_code = case_when(
-      lad_code == "S12000015" ~ "S12000047",
-      lad_code == "S12000024" ~ "S12000048",
-      lad_code == "S12000044" ~ "S12000050",
-      lad_code == "S12000046" ~ "S12000049",
-      TRUE ~ lad_code
-    )
+    year = "2023-2024"
   )
 
-# Join population counts and calculate relative rate
-training <-
-  training %>%
-  left_join(pop, by = "lad_code") %>%
-  mutate(job_related_training_percent = count / pop_count) %>%
-  select(-count, -pop_count)
+# Check all codes
+ltla19_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
 
-# Impute missing data
-# Source: https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/methodsusedtodevelopthehealthindexforengland2015to2018
-# Reason for missing: small sample size
-# Strategy: replace with mean for that LAD's HB
-missing_hb_code <-
-  lookup_hb_lad %>%
-  filter(lad_code == "S12000005") %>%
-  pull(hb_code)
+lives_job_training$ltla19_code %in% ltla19_code
+ltla19_code %in% lives_job_training$ltla19_code
 
-matching_lad_codes <-
-  lookup_hb_lad %>%
-  filter(hb_code == missing_hb_code) %>%
-  filter(lad_code != "S12000005") %>%
-  pull(lad_code)
-
-missing_hb_score <-
-  training %>%
-  filter(lad_code %in% matching_lad_codes) %>%
-  pull(job_related_training_percent) %>%
-  mean()
-
-training <-
-  training %>%
-  mutate(
-    job_related_training_percent = if_else(
-      is.na(job_related_training_percent),
-      missing_hb_score,
-      job_related_training_percent
-    )
-  )
-
-write_rds(training, "data/vulnerability/health-inequalities/scotland/healthy-lives/job-related-training.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(lives_job_training, overwrite = TRUE)
