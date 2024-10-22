@@ -17,9 +17,9 @@ unemployment_raw <-
 # ---- Clean data ----
 lives_unemployment <- unemployment_raw |>
   select(2, 235) |>
-  rename(ltla19_code = 1,
+  rename(ltla24_code = 1,
          unemployment_percentage = 2) |>
-  filter(str_starts(`ltla19_code`, "S")) |>
+  filter(str_starts(`ltla24_code`, "S")) |>
   mutate(year = "2021/22")
 
 # Council codes were revised in 2018 and 2019
@@ -27,7 +27,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_unemployment$ltla19_code %in% ltla19_code
+lives_unemployment$ltla24_code %in% ltla19_code
 
 # Match 2019 LAD codes
 # https://www.opendata.nhs.scot/dataset/geography-codes-and-labels/resource/967937c4-8d67-4f39-974f-fd58c4acfda5
@@ -35,12 +35,12 @@ lives_unemployment$ltla19_code %in% ltla19_code
 lives_unemployment <-
   lives_unemployment |>
   mutate(
-    ltla19_code = case_when(
-      ltla19_code == "S12000015" ~ "S12000047",
-      ltla19_code == "S12000024" ~ "S12000048",
-      ltla19_code == "S12000046" ~ "S12000049",
-      ltla19_code == "S12000044" ~ "S12000050",
-      TRUE ~ ltla19_code
+    ltla24_code = case_when(
+      ltla24_code == "S12000015" ~ "S12000047",
+      ltla24_code == "S12000024" ~ "S12000048",
+      ltla24_code == "S12000046" ~ "S12000049",
+      ltla24_code == "S12000044" ~ "S12000050",
+      TRUE ~ ltla24_code
     )
   )
 
