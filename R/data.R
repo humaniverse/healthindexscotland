@@ -259,7 +259,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{pupil_absence_per_1k}{Crude exclusion rate of pupil absence per 1,000
 #' students}
 #' \item{year}{School year}
