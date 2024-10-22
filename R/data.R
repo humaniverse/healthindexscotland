@@ -241,7 +241,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{activity_levels_met_percent}{Percentage of people that meet the recommended
 #' activity levels}
 #' \item{year}{Time period}
