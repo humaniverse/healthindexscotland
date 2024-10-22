@@ -333,7 +333,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
 #' injuries per 100k population}
 #' \item{year}{Time period}
