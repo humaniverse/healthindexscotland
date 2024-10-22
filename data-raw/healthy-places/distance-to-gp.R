@@ -27,9 +27,7 @@ gb_lad <-
 # Some GPs are in Northern Ireland - remove them from the dataset
 sco_GPs <-
   GPs$osm_points[gb_lad, ] |>
-  select(osm_id) |>
-  # Artificially pre-pend some letters so the IDs get interpreted as strings by Travel Time
-  mutate(osm_id = paste0("SC", osm_id))
+  select(osm_id)
 
 # - Test plot to check GP locations -
 # gb_lad |>
@@ -139,6 +137,19 @@ iz11_centroids <-
 
 # Set up tibbles to store results
 GP_travel_time <- tibble()
+
+# pharmacy_travel_time <-
+#   pharmacy_travel_time |>
+#   select(-ltla21_code, -ltla_name)
+
+
+# Remove the ones from a partial loop
+# pharmacy_travel_time <-
+#   pharmacy_travel_time |>
+#   filter(!iz11_code %in% current_iz_codes)
+
+# TUESDAY
+# Start loop at i = 25
 
 # Start loop at row 4; the first three rows are the English LADs
 # We don't need to calculate travel times within them
