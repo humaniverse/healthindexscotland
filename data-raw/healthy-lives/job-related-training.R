@@ -42,7 +42,9 @@ lives_job_training |>
 # Don't need the LTLA name column anymore
 lives_job_training <-
   lives_job_training |>
+  rename(ltla24_code = ltla21_code) |>
   select(-ltla21_name)
+
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_job_training, overwrite = TRUE)

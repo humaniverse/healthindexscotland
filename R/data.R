@@ -154,7 +154,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{job_related_training_perc}{Percentage of all who received job related
 #'  training in last 4 wks - aged 16-64}
 #' \item{year}{Time period}
