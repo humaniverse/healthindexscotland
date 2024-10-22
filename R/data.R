@@ -282,7 +282,7 @@
 #' A dataset containing the average (median) travel time (in minutes) to the nearest
 #' pharmacy in each Council Area. This is based on the travel time to the
 #' nearest pharmacy in each Intermediate Zone within a Council Area. This may
-#' include pharmacy located in England.
+#' include pharmacies located in England.
 #'
 #' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
 #' and are based on travelling by public transport on a weekday morning.
