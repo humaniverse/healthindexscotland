@@ -7,7 +7,7 @@
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{developmental_concerns_percent}{Percentage of developmental reviews with
 a concern in one or more domains, out of total number of recorded reviews while
 child is 2 and in the cohort.}
