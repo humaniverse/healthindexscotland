@@ -15,7 +15,8 @@ lives_job_training <-
     VARIABLE_NAME == "% of all who received job related training in last  4 wks - aged 16-64" &
     MEASURES_NAME == "Variable") |>
   select(
-    ltla19_code = GEOGRAPHY_CODE,
+    ltla21_code = GEOGRAPHY_CODE,
+    ltla21_name = GEOGRAPHY_NAME,
     `job_related_training_perc` = OBS_VALUE
   ) |>
   mutate(
@@ -23,12 +24,25 @@ lives_job_training <-
   )
 
 # Check all codes
-ltla19_code <- lookup_ltla_ltla |>
-  filter(str_detect(ltla19_code, "^S")) |>
-  pull(ltla19_code)
+ltla21_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla21_code, "^S")) |>
+  pull(ltla21_code)
 
-lives_job_training$ltla19_code %in% ltla19_code
-ltla19_code %in% lives_job_training$ltla19_code
+dplyr::setequal(lives_job_training$ltla21_code, ltla21_code)
+
+# Check codes match correct names
+lives_job_training |>
+  left_join(
+    lookup_ltla_ltla |>
+      filter(str_detect(ltla21_code, "^S")) |>
+      distinct(ltla21_code, name = ltla21_name)
+  ) |>
+  count(ltla21_name == name)
+
+# Don't need the LTLA name column anymore
+lives_job_training <-
+  lives_job_training |>
+  select(-ltla21_name)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_job_training, overwrite = TRUE)
