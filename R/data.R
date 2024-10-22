@@ -6,7 +6,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{alcohol_admissions_per_100k}{Rate of patient admissions per 100k population,
 #' based on number of patient admissions and using European Age-sex Standardised Rates.
 #' The number of patients is defined as the number of unique individuals treated
