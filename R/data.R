@@ -90,7 +90,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{drug_related_stays_per_100k}{Rate of hospital stays per 100k population,
 #'  using European Age-sex Standardised Rates.A hospital stay, also described as
 #'  a continuous inpatient stay or CIS, is defined as an unbroken period of time
