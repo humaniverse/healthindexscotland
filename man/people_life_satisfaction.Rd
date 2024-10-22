@@ -7,7 +7,7 @@
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
 of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
 \item{year}{Time period}

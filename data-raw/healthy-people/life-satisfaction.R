@@ -25,7 +25,7 @@ people_life_satisfaction <- life_satisfaction_raw |>
   ) |>
   slice(-15) |>
   select(
-    ltla19_code = `administrative-geography`,
+    ltla24_code = `administrative-geography`,
     life_satisfaction_score_out_of_10 = `v4_3`,
     year = `Time`
   )
