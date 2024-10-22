@@ -3,7 +3,7 @@
 \docType{data}
 \name{places_sports_centre_travel_time}
 \alias{places_sports_centre_travel_time}
-\title{Distance to sports facilities}
+\title{Travel time to sports facilities}
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
@@ -22,7 +22,7 @@ places_sports_centre_travel_time
 }
 \description{
 A dataset containing the average (median) travel time (in minutes) to the nearest
-sports centre in each Council Areas. This is based on the travel time to the
+sports centre in each Council Area. This is based on the travel time to the
 nearest sports centre in each Intermediate Zone within a Council Area. This may
 include sports centres located in England.
 }

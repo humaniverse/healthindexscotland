@@ -255,10 +255,10 @@
 #'
 "places_rough_sleeping"
 
-#' Distance to sports facilities
+#' Travel time to sports facilities
 #'
 #' A dataset containing the average (median) travel time (in minutes) to the nearest
-#' sports centre in each Council Areas. This is based on the travel time to the
+#' sports centre in each Council Area. This is based on the travel time to the
 #' nearest sports centre in each Intermediate Zone within a Council Area. This may
 #' include sports centres located in England.
 #'
