@@ -186,7 +186,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{national_five_attainment_percent}{Grade A-C percentage in Maths
 #' and English (average of the two subjects taken)}
 #' \item{year}{Time period}
