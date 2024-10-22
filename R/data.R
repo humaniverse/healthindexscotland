@@ -222,7 +222,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{overweight_obese_percentage}{Percentage of children clinically classed
 #' as overweight, obese, and severely obese. BMI is used as the unit of measurement.
 #' Based on children in Primary 1 (aged 4-5).}
