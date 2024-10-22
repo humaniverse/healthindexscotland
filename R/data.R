@@ -136,7 +136,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{healthy_eating_percent}{Percentage of people that consume
 #' 5 portions or more of fruit and vegetable per day}
 #' \item{year}{Time period}
