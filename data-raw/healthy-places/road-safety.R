@@ -43,8 +43,9 @@ areas <-
 places_road_safety <-
   road_safety |>
   left_join(areas, by = "ltla21_code") |>
-  mutate(road_safety = accident_count / area_km_squared) |>
-  select(ltla21_code, road_safety)
+  mutate(road_accident_count_by_area = accident_count / area_km_squared) |>
+  select(ltla21_code, road_accident_count_by_area) |>
+  mutate(year = 2022)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(places_road_safety, overwrite = TRUE)

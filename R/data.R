@@ -219,7 +219,7 @@
 #'
 "hl_unemployment"
 
-#' Road safety
+#' Road safety (2022)
 #'
 #' A dataset containing number of people killed or seriously injured in each
 #' Scottish Council Area in 2022 (latest available data), normalised by the area
@@ -228,7 +228,8 @@
 #' @format A data frame with 32 rows and 2 variables:
 #' \describe{
 #' \item{ltla21_code}{Local Authority Code}
-#' \item{road_safety}{Number of people killed or seriously injured, normalised by land area (km^2)}
+#' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
+#' \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://statistics.gov.scot/data/road-safety}
