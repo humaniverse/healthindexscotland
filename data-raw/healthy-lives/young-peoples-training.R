@@ -10,16 +10,12 @@ library(geographr)
 full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
 # ---- Clean data ----
-lives_low_birth_weight <- full_data_raw |>
+lives_young_people_training <- full_data_raw |>
   filter(area_type == "Council area" &
-    indicator == "Healthy birth weight") |>
-  mutate(
-    not_healthy_birth_rate_percentage = 100 - measure,
-    year = "2020-2022"
-  ) |>
+    indicator == "Annual participation (in education, training or employment) measure for 16 – 19 year olds") |>
   select(
     ltla19_code = area_code,
-    not_healthy_birth_rate_percentage,
+    young_people_participation_education_training_employment_percentage = measure,
     year
   )
 
@@ -27,7 +23,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_low_birth_weight$ltla19_code %in% ltla19_code
+lives_young_people_training$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(lives_low_birth_weight, overwrite = TRUE)
+usethis::use_data(lives_young_people_training, overwrite = TRUE)

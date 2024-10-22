@@ -31,7 +31,7 @@ drug <- drug_raw |>
   )
 
 # ---- Join datasets ----
-hl_drug_misuse <- drug |>
+lives_drug_misuse <- drug |>
   left_join(population_2022, by = c("ltla19_code")) |>
   mutate(drug_related_stays_per_100k = (((as.double(drug_related_stays)) /
     as.double(population_2022)) * 100000)) |>
@@ -44,7 +44,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-hl_drug_misuse$ltla19_code %in% ltla19_code
+lives_drug_misuse$ltla19_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_drug_misuse, overwrite = TRUE)
+usethis::use_data(lives_drug_misuse, overwrite = TRUE)
