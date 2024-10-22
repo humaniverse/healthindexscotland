@@ -140,22 +140,9 @@ iz11_centroids <-
 # Set up tibbles to store results
 pharmacy_travel_time <- tibble()
 
-# pharmacy_travel_time <-
-#   pharmacy_travel_time |>
-#   select(-ltla21_code, -ltla_name)
-
-
-# Remove the ones from a partial loop
-# pharmacy_travel_time <-
-#   pharmacy_travel_time |>
-#   filter(!iz11_code %in% current_iz_codes)
-
-# TUESDAY
-# Start loop at i = 25
-
 # Start loop at row 4; the first three rows are the English LADs
 # We don't need to calculate travel times within them
-for (i in 25:nrow(sco_lad)) {
+for (i in 4:nrow(sco_lad)) {
   current_ltla_code <- sco_lad[i,]$ltla21_code
 
   current_iz_codes <-
