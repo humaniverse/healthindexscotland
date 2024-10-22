@@ -276,3 +276,25 @@
 #' @source \url{https://openstreetmap.org/}
 #'
 "places_sports_centre_travel_time"
+
+#' Travel time to pharmacies
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' pharmacy in each Council Area. This is based on the travel time to the
+#' nearest pharmacy in each Intermediate Zone within a Council Area. This may
+#' include pharmacy located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{median_travel_time}{Median travel time (in minutes) to the nearest
+#'   pharmacy among all the Intermediate Zones within a Local Authority}
+#'   \item{year}{Year the data was last updated}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_pharmacy_travel_time"
