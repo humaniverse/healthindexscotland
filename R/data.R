@@ -369,14 +369,14 @@
 #' The raw local authority traffic figures give the total volume (vehicle miles)
 #' of traffic across each local authority for the whole year.
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{ltla24_code}{Local Authority Code}
 #'   \item{traffic_volume}{}
 #'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://roadtraffic.dft.gov.uk/}
 #'
-"hp_traffic_volume"
+"places_traffic_volume"
 
 #' Average Measurement of Life Satisfaction Out of 10 (2020-21)
 #'
