@@ -397,10 +397,11 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
-#' Average Measurement of Life Satisfaction Out of 10 (2020-21)
+#' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
+#' (2020-21))
 #'
 #' A dataset containing statistics of personal ratings on feelings of life
-#' satisfaction out of 10, by Council (2020-21).
+#' satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
