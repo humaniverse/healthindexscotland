@@ -5,11 +5,12 @@
 \alias{places_air_pollution}
 \title{Air pollution (2023)}
 \format{
-A data frame with 32 rows and 2 variables:
+A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
 \item{year}{Year}
+
 ...
 }
 }
