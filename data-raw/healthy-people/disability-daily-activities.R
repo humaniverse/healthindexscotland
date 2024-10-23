@@ -1,43 +1,71 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(rio)
+library(geographr)
+library(demographr)
 
-# The NOMIS API query creator was used to generate the url in the GET request:
-# Source: https://www.nomisweb.co.uk/datasets/apsnew
-# Data Set: Annual Population Survery
-# Indicator: % aged 16-64 who are EA core or work-limiting disabled
-disability_raw <- read_csv("http://www.nomisweb.co.uk/api/v01/dataset/NM_17_5.data.csv?geography=1946157405...1946157408,1946157416,1946157409...1946157415,1946157418...1946157424,1946157417,1946157425...1946157436,2013265931&date=latest&variable=1733&measures=20599,21001,21002,21003&select=date_name,geography_name,geography_code,variable_name,measures_name,obs_value,obs_status_name")
+# ---- Get data ----
+# Disability data
+# Source: https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49
+disability_raw <- import("https://s3-eu-west-1.amazonaws.com/statistics.digitalresources.jisc.ac.uk/dkan/files/2022/NRS/UV303a/census_2022_UV303a_Disability_by_sex_by_age_20_Local_authority_CA2019.csv")
 
-# Keep vars of interest
-disability <-
-  disability_raw %>%
+# Population and code data
+population_2022 <- population22_ltla19_scotland |>
+  filter(sex == "Persons") |>
   select(
-    lad_code = GEOGRAPHY_CODE,
-    measures_name = MEASURES_NAME,
-    disability_daily_activities_percent = OBS_VALUE
-  ) %>%
-  filter(measures_name == "Variable") %>%
-  select(-measures_name)
-
-# Remove Scotland Aggregate and convert to decimal
-disability <-
-  disability %>%
-  filter(lad_code != "S92000003") %>%
-  mutate(disability_daily_activities_percent = disability_daily_activities_percent / 100)
-
-# Match 2019 LAD codes
-# https://www.opendata.nhs.scot/dataset/geography-codes-and-labels/resource/967937c4-8d67-4f39-974f-fd58c4acfda5
-# Look at the 'CADateArchived' column to view changes
-disability <-
-  disability %>%
-  mutate(
-    lad_code = case_when(
-      lad_code == "S12000015" ~ "S12000047",
-      lad_code == "S12000024" ~ "S12000048",
-      lad_code == "S12000046" ~ "S12000049",
-      lad_code == "S12000044" ~ "S12000050",
-      TRUE ~ lad_code
-    )
+    ltla19_name,
+    ltla19_code,
+    population_2022 = all_ages
   )
 
-write_rds(disability, "data/vulnerability/health-inequalities/scotland/healthy-people/disability-daily-activities.rds")
+# ---- Clean data ----
+disability_daily_activities <- disability_raw |>
+  filter(
+    Sex == "All people",
+    Disability %in% c(
+      "All people", "Day-to-day activities limited a lot",
+      "Day-to-day activities limited a little"
+    ),
+    Age %in% c(
+      "16 to 17", "18 to 19", "20 to 24", "25 to 29",
+      "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54",
+      "55 to 59", "60 to 64"
+    )
+  ) |>
+  group_by(`Council Area 2019`, `Disability`) |>
+  mutate(total_count = sum(Count, na.rm = TRUE)) |>
+  ungroup() |>
+  distinct(`Council Area 2019`, `Disability`, `total_count`) |>
+  mutate(
+    total_disability_daily_activity =
+      sum(
+        total_count[Disability %in% c(
+          "Day-to-day activities limited a lot",
+          "Day-to-day activities limited a little"
+        )],
+        na.rm = TRUE
+      ), .by = `Council Area 2019`
+  ) |>
+  filter(Disability == "All people") |>
+  mutate(
+    disability_daily_activities_percentage = (total_disability_daily_activity /
+      total_count) * 100,
+    year = "2022"
+  ) |>
+  select(
+    ltla19_name = `Council Area 2019`,
+    disability_daily_activities_percentage,
+    year
+  )
+
+# Combine LA ID data
+people_disability_daily_activities <- disability_daily_activities |>
+  left_join(population_2022, by = c("ltla19_name" = "ltla19_name")) |>
+  select(
+    ltla24_code = ltla19_code,
+    disability_daily_activities_percentage,
+    year
+  )
+
+# ---- Save output to data/ folder ----
+usethis::use_data(people_disability_daily_activities, overwrite = TRUE)
