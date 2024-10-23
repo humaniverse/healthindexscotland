@@ -1,37 +1,28 @@
-library(readr)
-library(httr)
-library(dplyr)
+# England's Health Index includes bowel, breast, and cervical cancers for
+# cancer-screening indicator. Scotland does not have data on cervical cancer
+# and latest breast cancer screening data is from 2010-2012 aggregate. Only bowel
+# cancer screening data included here.
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Bowel screening uptake
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_4b5bef35/session/d3363e91131c1e11b471592329ee0ea9/download/download_table_csv?w=4b5bef35",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-cancer_screening_raw <-
-  read_csv(tf)
+# ---- Clean data ----
+lives_cancer_screening <- full_data_raw |>
+  filter(area_type == "Council area" &
+           indicator == "Bowel screening uptake") |>
+  mutate(year = "2020-2022") |>
+  select(ltla24_code = area_code,
+         cancer_screening_uptake = measure,
+         year)
 
-unlink(tf)
-rm(tf)
+# ---- Save output to data/ folder ----
+usethis::use_data(lives_cancer_screening, overwrite = TRUE)
 
-cancer_screening <-
-  cancer_screening_raw %>%
-  filter(area_type == "Council area") %>%
-  select(
-    lad_code = area_code,
-    cancer_screening_percent = measure
-  )
-
-write_rds(cancer_screening, "data/vulnerability/health-inequalities/scotland/healthy-lives/cancer-screening.rds")
