@@ -344,14 +344,14 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
-#' Average Measurement of Anxiety Out of 10 (2020-21)
+#' Average Measurement of Anxiety Out of 10 (2022-23 / Orkney Islands (2020-21))
 #'
 #' A dataset containing statistics of personal ratings on feelings of
-#' anxiety out of 10, by Council (2020-21).
+#' anxiety out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
 #' anxiety out of 10}
 #' \item{year}{Time period}
