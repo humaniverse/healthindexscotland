@@ -47,12 +47,14 @@ replacements_reverse <- c("The City of Edinburgh" = "City of Edinburgh",
                   "The Moray" = "Moray",
                   "The City of Leeds" = "City of Leeds")
 
-hl_national_five_attainment <- attainment_combined |>
+lives_national_five_attainment <- attainment_combined |>
   mutate(ltla19_name = str_replace_all(ltla19_name, replacements_reverse)) |>
   left_join(ltla_lookup) |>
-  select(ltla19_code, national_five_attainment_percent) |>
+  select(
+    ltla24_code = ltla19_code,
+    national_five_attainment_percent) |>
   mutate(year = 2024) |>
   distinct()
 
  # ---- Save output to data/ folder ----
- usethis::use_data(hl_national_five_attainment, overwrite = TRUE)
+ usethis::use_data(lives_national_five_attainment, overwrite = TRUE)
