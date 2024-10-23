@@ -219,15 +219,16 @@
 #'
 "hl_unemployment"
 
-#' Air pollution
+#' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
 #' Scottish Council Area. Uses the anthropogenic component.
 #'
 #' @format A data frame with 32 rows and 2 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{ltla24_code}{Local Authority Code}
 #'   \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
+#'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
