@@ -14,7 +14,7 @@ lives_infant_mortality <- full_data_raw |>
   filter(area_type == "Council area" &
            indicator == "Infant deaths, aged 0-1 years") |>
   mutate(year = "2017-2021") |>
-  select(ltla19_code = area_code,
+  select(ltla24_code = area_code,
          infant_mortality_rate_per_1k = measure,
          year)
 
