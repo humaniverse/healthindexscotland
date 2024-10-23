@@ -397,6 +397,22 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Child Mental Wellbeing Score (2013)
+#'
+#' A dataset containing secondary school pupils' mental wellbeing scores (2013).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{child_mental_wellbeing_score}{Mean mental wellbeing score for S4 pupils.
+#' Higher is better.}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_child_mental_health"
+
 #' Average Measurement of Life Satisfaction Out of 10 (2020-21)
 #'
 #' A dataset containing statistics of personal ratings on feelings of life
