@@ -3,11 +3,11 @@
 \docType{data}
 \name{people_happiness}
 \alias{people_happiness}
-\title{Average Measurement of Happiness Out of 10 (2020-21)}
+\title{Average Measurement of Happiness Out of 10 (2022-23 / Orkney Islands (2020-21))}
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{happiness_score_out_of_10}{Average personal ratings on feelings of
 happiness out of 10}
 \item{year}{Time period}
@@ -23,6 +23,6 @@ people_happiness
 }
 \description{
 A dataset containing statistics of personal ratings on feelings of
-happiness out of 10, by Council (2020-21).
+happiness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 }
 \keyword{datasets}
