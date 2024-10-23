@@ -7,7 +7,7 @@
 \format{
 A data frame with 32 rows and 2 variables:
 \describe{
-\item{ltla21_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
 \item{year}{Year}
 ...
