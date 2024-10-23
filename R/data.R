@@ -361,14 +361,27 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Average Measurement of Life Satisfaction Out of 10 (2020-21)
+#'
+#' A dataset containing statistics of personal ratings on feelings of life
+#' satisfaction out of 10, by Council (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
+#' of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
+"people_life_satisfaction"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
 #' Scottish Council Area. Uses the anthropogenic component.
-#'
-#' @format A data frame with 32 rows and 2 variables:
-#' \describe{
-#'   \item{ltla24_code}{Local Authority Code}
 #'   \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
 #'   \item{year}{Year}
 #' ...
@@ -376,6 +389,44 @@
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
 #'
 "places_air_pollution"
+
+#' Low-level crime (2023-4)
+#'
+#' A dataset containing statistics on 'low-level crime' per 10,000 people in Scottish
+#' Council Areas. England's Health Index defines 'low-level crimes' as bicycle theft
+#' and shoplifting. Of the two, Scotland only publishes shoplifting data. There
+#' are other crimes listed that could potentially count as 'low-level crimes'
+#' but we will avoid making a potentially arbitrary judgement here.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
+#'   \item{year}{Year}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
+#'
+"places_low_level_crime"
+
+#' Personal crime (2023-24)
+#'
+#' A dataset containing statistics on 'personal crime' per 10,000 people in Scottish
+#' Council Areas. 'Personal crime' is defined as
+#' - Non-sexual crimes of violence (includes robbery)
+#' - Sexual crimes
+#' - Damage and reckless behaviour
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
+#'   \item{year}{Year}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
+#'
+"places_personal_crime"
 
 #' Road traffic volume (2023)
 #'
@@ -393,23 +444,6 @@
 #' @source \url{https://roadtraffic.dft.gov.uk/}
 #'
 "places_traffic_volume"
-
-#' Average Measurement of Life Satisfaction Out of 10 (2020-21)
-#'
-#' A dataset containing statistics of personal ratings on feelings of life
-#' satisfaction out of 10, by Council (2020-21).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
-#' of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
-#' \item{year}{Time period}
-#'
-#' ...
-#' }
-#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
-"people_life_satisfaction"
 
 #' Road safety (2022)
 #'
@@ -446,3 +480,4 @@
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 #'
 "places_rough_sleeping"
+

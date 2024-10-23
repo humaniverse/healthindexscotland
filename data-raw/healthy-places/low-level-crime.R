@@ -27,30 +27,21 @@ crime_raw <-
     skip = 4
   )
 
-# England's Health Index defines 'personal crimes' as:
-# - violence against the person
-# - sexual offences
-# - robbery
-# - theft
-# - criminal damage
-# - arson
-#
-# We don't have the exact same categories for Scotland but have chosen:
-# - Non-sexual crimes of violence (includes robbery)
-# - Sexual crimes
-# - Damage and reckless behaviour
+# England's Health Index defines 'low-level crimes' as bicycle theft and shoplifting
+# We only have shoplifting in Scotland. There are other crimes listed that could potentially count
+# as 'low-level crimes' but we will avoid making a potentially arbitrary judgement here.
 crime <-
   crime_raw |>
 
   filter(
     `Local Authority` != "Scotland",
-    Crime == "Total",
-    `Crime group` %in% c("Non-sexual crimes of violence", "Sexual crimes", "Damage and reckless behaviour")
+    `Crime group` == "Crimes of dishonesty",
+    Crime == "Shoplifting"
   ) |>
 
   select(
     ltla21_name = `Local Authority`,
-    personal_crimes_per_10000 = `2023-24`
+    low_level_crimes_per_10000 = `2023-24`
   ) |>
 
   mutate(
@@ -64,10 +55,10 @@ crime <-
   ) |>
 
   group_by(ltla21_name) |>
-  summarise(personal_crimes_per_10000 = sum(personal_crimes_per_10000)) |>
+  summarise(low_level_crimes_per_10000 = sum(low_level_crimes_per_10000)) |>
   ungroup()
 
-places_personal_crime <-
+places_low_level_crime <-
   crime |>
   left_join(lookup, by = "ltla21_name") |>
   relocate(ltla21_code) |>
@@ -76,4 +67,4 @@ places_personal_crime <-
   rename(ltla24_code = ltla21_code)
 
 # ---- Save output to data/ folder ----
-usethis::use_data(places_personal_crime, overwrite = TRUE)
+usethis::use_data(places_low_level_crime, overwrite = TRUE)
