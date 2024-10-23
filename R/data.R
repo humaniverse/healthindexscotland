@@ -361,6 +361,22 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Air pollution (2023)
+#'
+#' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
+#' Scottish Council Area. Uses the anthropogenic component.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
+#'   \item{year}{Year}
+#' ...
+#' }
+#' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
+#'
+"places_air_pollution"
+
 #' Road traffic volume (2023)
 #'
 #' A dataset containing volume of road traffic (millions of vehicle miles per
@@ -430,4 +446,3 @@
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 #'
 "places_rough_sleeping"
-
