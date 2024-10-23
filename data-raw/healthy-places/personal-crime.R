@@ -71,7 +71,9 @@ places_personal_crime <-
   crime |>
   left_join(lookup, by = "ltla21_name") |>
   relocate(ltla21_code) |>
-  select(-ltla21_name)
+  select(-ltla21_name) |>
+  mutate(year = "2023-24") |>
+  rename(ltla24_code = ltla21_code)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(places_personal_crime, overwrite = TRUE)

@@ -219,7 +219,7 @@
 #'
 "hl_unemployment"
 
-#' Personal crime
+#' Personal crime (2023-24)
 #'
 #' A dataset containing statistics on 'personal crime' per 10,000 people in Scottish
 #' Council Areas. 'Personal crime' is defined as
@@ -229,15 +229,16 @@
 #'
 #' @format A data frame with 32 rows and 2 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
+#'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
 #'
 "places_personal_crime"
 
-#' Low-level crime
+#' Low-level crime (2023-4)
 #'
 #' A dataset containing statistics on 'low-level crime' per 10,000 people in Scottish
 #' Council Areas. England's Health Index defines 'low-level crimes' as bicycle theft
@@ -247,8 +248,9 @@
 #'
 #' @format A data frame with 32 rows and 2 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
+#'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
+#'   \item{year}{Year}
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
