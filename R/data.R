@@ -397,6 +397,23 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Average Measurement of Happiness Out of 10 (2022-23 / Orkney Islands (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of
+#' happiness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
+#' happiness out of 10}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
+"people_happiness"
+
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
 #'
@@ -429,7 +446,6 @@
 #' ...
 #' }
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
-#'
 "places_air_pollution"
 
 #' Low-level crime (2023-4)
@@ -445,10 +461,10 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
 #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
-#'
 "places_low_level_crime"
 
 #' Personal crime (2023-24)
@@ -464,10 +480,10 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
 #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
-#'
 "places_personal_crime"
 
 #' Road traffic volume (2023)
@@ -481,10 +497,10 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{traffic_volume}{}
 #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://roadtraffic.dft.gov.uk/}
-#'
 "places_traffic_volume"
 
 #' Road safety (2022)
@@ -498,10 +514,10 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
 #' \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://statistics.gov.scot/data/road-safety}
-#'
 "places_road_safety"
 
 #' Rough sleeping (2023-24)
@@ -517,9 +533,9 @@
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.}
 #' #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
-#'
 "places_rough_sleeping"
 
