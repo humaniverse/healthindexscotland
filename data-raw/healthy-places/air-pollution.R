@@ -3,32 +3,27 @@ library(dplyr)
 library(stringr)
 library(geographr)
 
-# Lookup
-lookup <-
-  boundaries_lad %>%
-  select(-geometry) %>%
-  as_tibble() %>%
-  filter(str_detect(lad_code, "^S"))
-
+# Population-weighted annual mean PM2.5 data (by local authority)
 # Source: https://uk-air.defra.gov.uk/data/pcm-data
 air_pollution_raw <-
   read_csv(
-    "https://uk-air.defra.gov.uk/datastore/pcm/popwmpm252019byUKlocalauthority.csv",
+    "https://uk-air.defra.gov.uk/datastore/pcm/popwmpm252023byUKlocalauthority.csv",
     skip = 2
   )
 
 # Use the anthropogenic component for health burden calculations
 air_pollution <-
-  air_pollution_raw %>%
+  air_pollution_raw |>
   select(
-    lad_name = `Local Authority`,
-    air_pollution_weighted = `PM2.5 2019 (anthropogenic)`
+    ltla24_code = `LA code`,
+    air_pollution_weighted = `PM2.5 2023 (anthropogenic)`
   )
 
-# Join
-air_pollution <-
-  lookup %>%
-  left_join(air_pollution, by = "lad_name") %>%
-  select(-lad_name)
+places_air_pollution <-
+  air_pollution |>
+  filter(str_detect(ltla24_code, "^S")) |>
+  mutate(year = 2023)
 
-write_rds(air_pollution, "data/vulnerability/health-inequalities/scotland/healthy-places/air-pollution.rds")
+
+# ---- Save output to data/ folder ----
+usethis::use_data(places_air_pollution, overwrite = TRUE)

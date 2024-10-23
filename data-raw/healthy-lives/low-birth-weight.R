@@ -18,16 +18,16 @@ lives_low_birth_weight <- full_data_raw |>
     year = "2020-2022"
   ) |>
   select(
-    ltla19_code = area_code,
+    ltla24_code = area_code,
     not_healthy_birth_rate_percentage,
     year
   )
 
-ltla19_code <- lookup_ltla_ltla |>
+ltla24_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_low_birth_weight$ltla19_code %in% ltla19_code
+lives_low_birth_weight$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_low_birth_weight, overwrite = TRUE)

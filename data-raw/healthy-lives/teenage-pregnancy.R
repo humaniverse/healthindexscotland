@@ -29,7 +29,7 @@ lives_teenage_pregnancy <- full_data_raw |>
   filter(area_type == "Council area" &
     indicator == "Teenage pregnancies") |>
   select(
-    ltla19_code = area_code,
+    ltla24_code = area_code,
     teenage_pregnancy_per_1k = measure
   ) |>
   mutate(year = "2019-2021")
@@ -38,7 +38,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_teenage_pregnancy$ltla19_code %in% ltla19_code
+lives_teenage_pregnancy$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_teenage_pregnancy, overwrite = TRUE)

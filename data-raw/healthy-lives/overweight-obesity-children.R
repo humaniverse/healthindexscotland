@@ -18,7 +18,7 @@ lives_overweight_obesity_children <- child_bmi_raw |>
   filter(SchoolYear == "2022/23") |>
   select(`CA`, `ClinOverweightObeseAndSeverelyObese`, `SchoolYear`) |>
   mutate(ClinOverweightObeseAndSeverelyObese = ClinOverweightObeseAndSeverelyObese * 100) |>
-  rename(ltla19_code = 1,
+  rename(ltla24_code = 1,
          overweight_obese_percentage = 2,
          year = 3)
 

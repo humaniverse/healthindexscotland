@@ -128,7 +128,9 @@ childhood_coverage <- childhood_coverage |>
   left_join(population_2022, by = c("ltla19_name" = "ltla19_name"))
 
 lives_child_vaccine_coverage <- childhood_coverage |>
-  select(`ltla19_code`, child_vaccine_coverage_percentage = `total_av_percentage_coverage`, `year`)
+  select(
+    ltla24_code = ltla19_code,
+    child_vaccine_coverage_percentage = total_av_percentage_coverage, year)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_child_vaccine_coverage, overwrite = TRUE)

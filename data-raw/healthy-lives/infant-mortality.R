@@ -1,37 +1,23 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Infant deaths, ages 0-1 years
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_bf38394a/session/b36bf6618e0e15fa0175acb6560866c3/download/download_table_csv?w=bf38394a",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
+# ---- Clean data ----
+lives_infant_mortality <- full_data_raw |>
+  filter(area_type == "Council area" &
+           indicator == "Infant deaths, aged 0-1 years") |>
+  mutate(year = "2017-2021") |>
+  select(ltla24_code = area_code,
+         infant_mortality_rate_per_1k = measure,
+         year)
 
-infant_mortality_raw <-
-  read_csv(tf)
+# ---- Save output to data/ folder ----
+usethis::use_data(lives_infant_mortality, overwrite = TRUE)
 
-unlink(tf)
-rm(tf)
-
-infant_mortality <-
-  infant_mortality_raw %>%
-  filter(area_type == "Council area") %>%
-  select(
-    lad_code = area_code,
-    infant_mortality_per_1000 = measure
-  )
-
-write_rds(infant_mortality, "data/vulnerability/health-inequalities/scotland/healthy-lives/infant-mortality.rds")

@@ -17,7 +17,7 @@ lives_physical_activity <-
     FeatureType == "Council Area"
   ) |>
   select(
-    ltla19_code = FeatureCode,
+    ltla24_code = FeatureCode,
     activity_levels_met_percent = Value,
     year = DateCode
   )
@@ -27,8 +27,8 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_physical_activity$ltla19_code %in% ltla19_code
-ltla19_code %in% lives_physical_activity$ltla19_code
+lives_physical_activity$ltla24_code %in% ltla19_code
+ltla19_code %in% lives_physical_activity$ltla24_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_physical_activity, overwrite = TRUE)

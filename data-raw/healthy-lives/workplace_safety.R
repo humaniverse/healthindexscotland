@@ -20,9 +20,9 @@ lives_workplace_safety <- workplace_safety_raw |>
   slice(2:33) |>
   rename(
     non_fatal_injuries_per_100k_employees = 8,
-    ltla19_code = 2
+    ltla24_code = 2
   ) |>
-  select(`ltla19_code`, `non_fatal_injuries_per_100k_employees`, `year`)
+  select(`ltla24_code`, `non_fatal_injuries_per_100k_employees`, `year`)
 
 # Council codes were revised in 2018 and 2019
 # Check 2011 code is same as 2019
@@ -30,7 +30,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_workplace_safety$ltla19_code %in% ltla19_code
+lives_workplace_safety$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_workplace_safety, overwrite = TRUE)

@@ -15,7 +15,7 @@ lives_early_years_development <- ecd_raw |>
     FinancialYear %in% c("2022/23")
   ) |>
   select(
-    ltla19_code = CA,
+    ltla24_code = CA,
     total_reviews = NumberOfReviews,
     concerns = ConcernAny,
     year = FinancialYear
@@ -34,7 +34,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_early_years_development$ltla19_code %in% ltla19_code
+lives_early_years_development$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_early_years_development, overwrite = TRUE)

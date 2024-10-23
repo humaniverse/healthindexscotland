@@ -7,7 +7,7 @@
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{unemployment_percentage}{Estimated percentage of people that are unemployed.
 Unemployment is defined as someone aged 16+ without a job who were available
 to start work in the two weeks following their interview and who had either

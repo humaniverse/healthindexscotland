@@ -7,7 +7,7 @@
 \format{
 A data drame with 32 rows and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{child_poverty_percentage}{Percentage of children under 16 living in
 absolute low incomes families (where a household's income is below 60\% of
 the median income in 2010/11, adjusted for inflation).}
