@@ -19,7 +19,7 @@ lives_cancer_screening <- full_data_raw |>
   filter(area_type == "Council area" &
            indicator == "Bowel screening uptake") |>
   mutate(year = "2020-2022") |>
-  select(ltla19_code = area_code,
+  select(ltla24_code = area_code,
          cancer_screening_uptake = measure,
          year)
 

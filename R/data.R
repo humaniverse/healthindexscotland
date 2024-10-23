@@ -30,7 +30,7 @@
 #'
 #' @format A data frame with 32 row and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{cancer_screening_uptake}{Percentage of cancer screening uptake. Only
 #' bowel cancer screening uptake is included here.}
 #' \item{year}{Time period - three year aggregates}
