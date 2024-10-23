@@ -3,14 +3,15 @@
 \docType{data}
 \name{places_rough_sleeping}
 \alias{places_rough_sleeping}
-\title{Rough sleeping}
+\title{Rough sleeping (2023-24)}
 \format{
 A data frame with 32 rows and 2 variables:
 \describe{
-\item{ltla21_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{rough_sleeping_per_10k}{number of homelessness applications where
 at least one member of the household was sleeping rough within the previous
 three months, normalised per 100,000 residents.}
+#'   \item{year}{Year}
 ...
 }
 }

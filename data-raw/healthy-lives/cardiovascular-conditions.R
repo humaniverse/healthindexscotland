@@ -24,25 +24,25 @@ cardiovascular_conditions <- cardiovascular_conditions_raw |>
          `AgeGroup` == "All",
          `AdmissionType` == "All",
          `Sex` == "All") |>
-  rename(ltla19_code = 2,
+  rename(ltla24_code = 2,
          discharge_number = 11) |>
-  group_by(ltla19_code) |>
+  group_by(ltla24_code) |>
   summarise(
     cardiovascular_discharge_number = sum(discharge_number, na.rm = TRUE)
   ) |>
   mutate(year = "2022/23") |>
-  select(`ltla19_code`, `cardiovascular_discharge_number`, `year`) |>
+  select(`ltla24_code`, `cardiovascular_discharge_number`, `year`) |>
   slice(-33)
 
 # ---- Join datasets ---
 lives_cardiovascular_conditions <- cardiovascular_conditions |>
-  left_join(population_2022, by = c("ltla19_code" = "ltla19_code")) |>
+  left_join(population_2022, by = c("ltla24_code" = "ltla19_code")) |>
   mutate(
     cardiovascular_discharge_number = as.numeric(cardiovascular_discharge_number),
     population_2022 = as.numeric(population_2022),
     av_percentage_discharged = ((cardiovascular_discharge_number / population_2022)) * 1000) |>
   rename(cardiovascular_discharges_per_1k = 6) |>
-  select(`ltla19_code`, `cardiovascular_discharges_per_1k`, `year`)
+  select(`ltla24_code`, `cardiovascular_discharges_per_1k`, `year`)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_cardiovascular_conditions, overwrite = TRUE)
