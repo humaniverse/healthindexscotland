@@ -7,7 +7,7 @@
 \format{
 A data frame with 32 variables and 3 variables:
 \describe{
-\item{ltla19_code}{Local Authority Code}
+\item{ltla24_code}{Local Authority Code}
 \item{cardiovascular_discharges_per_1k}{Percentage of total cardiovascular discharges per 1k population.
 Cardiovascular conditions includes angina, coronary heart disease, heart
 attack, and heart failure. Scottish 2022 mid year population estimates were used}

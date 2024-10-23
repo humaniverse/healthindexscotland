@@ -14,7 +14,7 @@ lives_pupil_absence <- full_data_raw |>
   filter(area_type == "Council area" &
     indicator == "School exclusion rate") |>
   select(
-    ltla19_code = `area_code`,
+    ltla24_code = `area_code`,
     pupil_absence_per_1k = `measure`,
     year
   )
@@ -23,7 +23,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_pupil_absence$ltla19_code %in% ltla19_code
+lives_pupil_absence$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_pupil_absence, overwrite = TRUE)

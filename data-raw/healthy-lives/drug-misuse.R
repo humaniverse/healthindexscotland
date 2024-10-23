@@ -36,7 +36,10 @@ lives_drug_misuse <- drug |>
   mutate(drug_related_stays_per_100k = (((as.double(drug_related_stays)) /
     as.double(population_2022)) * 100000)) |>
   slice(-1) |>
-  select(ltla19_code, drug_related_stays_per_100k, year)
+  select(
+    ltla24_code = ltla19_code,
+    drug_related_stays_per_100k,
+    year)
 
 # Council codes were revised in 2018 and 2019
 # Check 2011 code is same as 2019
@@ -44,7 +47,7 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_drug_misuse$ltla19_code %in% ltla19_code
+lives_drug_misuse$ltla24_code %in% ltla19_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_drug_misuse, overwrite = TRUE)

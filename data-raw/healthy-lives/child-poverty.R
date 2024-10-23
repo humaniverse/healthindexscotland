@@ -17,7 +17,7 @@ child_poverty_raw <-
 lives_child_poverty <- child_poverty_raw |>
   filter(str_starts(`Area Code`, "S")) |>
   select(`Area Code`, `Percentage of children \nFYE 2023\n(%)\n[p] [note 3]`) |>
-  rename(ltla19_code = 1,
+  rename(ltla24_code = 1,
          child_poverty_percentage = 2) |>
   mutate(child_poverty_percentage = (child_poverty_percentage * 100),
     year = "2022-2023")

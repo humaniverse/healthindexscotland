@@ -18,7 +18,7 @@ lives_healthy_eating <-
     FeatureType == "Council Area"
   ) |>
   select(
-    ltla19_code = FeatureCode,
+    ltla24_code = FeatureCode,
     healthy_eating_percent = Value,
     year = DateCode
   )
@@ -28,8 +28,8 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_healthy_eating$ltla19_code %in% ltla19_code
-ltla19_code %in% lives_healthy_eating$ltla19_code
+lives_healthy_eating$ltla24_code %in% ltla19_code
+ltla19_code %in% lives_healthy_eating$ltla24_code
 
 # ---- Save output to data/ folder ----
 usethis::use_data(lives_healthy_eating, overwrite = TRUE)
