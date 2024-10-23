@@ -378,14 +378,15 @@
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
 
-#' Average Measurement of Life Worthwhileness Out of 10 (2020-21)
+#' Average Measurement of Life Worthwhileness Out of 10 (2022-23 / Orkney Islands
+#' (2020-21))
 #'
 #' A dataset containing statistics of personal ratings on feelings of life
-#' worthwhileness out of 10, by Council (2020-21).
+#' worthwhileness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla19_code}{Local Authority Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{worthwhile_score_out_of_10}{Average personal ratings on feelings
 #' of life worthwhileness out of 10, 10 - most worthwhile, 1 - least worthwhile}
 #' \item{year}{Time period}
