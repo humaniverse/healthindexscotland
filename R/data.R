@@ -154,7 +154,7 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla24_code}{Local Authroity Code}
+#' \item{ltla24_code}{Local Authority Code}
 #' \item{infant_mortality_rate_per_1k}{Rate of infants per 1k that have died
 #' under the age of 1}
 #' \item{year}{Time period - five year aggregate}
