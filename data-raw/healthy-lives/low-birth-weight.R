@@ -1,41 +1,33 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Healthy birth weight
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_1f998bbe/session/24180ffd708f74879b57a09212462e75/download/download_table_csv?w=1f998bbe",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
-
-low_birth_weight_raw <-
-  read_csv(tf)
-
-unlink(tf)
-rm(tf)
-
-low_birth_weight <-
-  low_birth_weight_raw %>%
-  filter(area_type == "Council area") %>%
-  select(
-    lad_code = area_code,
-    healthy_birth_weight_percent = measure
-  ) %>% 
+# ---- Clean data ----
+lives_low_birth_weight <- full_data_raw |>
+  filter(area_type == "Council area" &
+    indicator == "Healthy birth weight") |>
   mutate(
-    unhealthy_birth_weight_percent = (100 - healthy_birth_weight_percent)/100
-  ) %>% 
-  select(-healthy_birth_weight_percent)
+    not_healthy_birth_rate_percentage = 100 - measure,
+    year = "2020-2022"
+  ) |>
+  select(
+    ltla24_code = area_code,
+    not_healthy_birth_rate_percentage,
+    year
+  )
 
-write_rds(low_birth_weight, "data/vulnerability/health-inequalities/scotland/healthy-lives/low-birth-weight.rds")
+ltla24_code <- lookup_ltla_ltla |>
+  filter(str_detect(ltla19_code, "^S")) |>
+  pull(ltla19_code)
+
+lives_low_birth_weight$ltla24_code %in% ltla19_code
+
+# ---- Save output to data/ folder ----
+usethis::use_data(lives_low_birth_weight, overwrite = TRUE)
