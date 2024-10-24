@@ -397,6 +397,24 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Average Healthy Life Expectancy for Men (2019-2021)
+#'
+#' A dataset containing statistics on average healthy life expectancy for men,
+#' by Council (2019-2021).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{healthy_life_expectancy_male}{Average healthy life expectancy for men.
+#' England's Health Index uses a weighted population average. Available Scottish
+#' data only has the average mean healthy life expectancy for men.}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_healthy_life_expectancy_men"
+
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
 #'

@@ -3,7 +3,8 @@
 \docType{data}
 \name{people_life_satisfaction}
 \alias{people_life_satisfaction}
-\title{Average Measurement of Life Satisfaction Out of 10 (2020-21)}
+\title{Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
+(2020-21))}
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
@@ -23,6 +24,6 @@ people_life_satisfaction
 }
 \description{
 A dataset containing statistics of personal ratings on feelings of life
-satisfaction out of 10, by Council (2020-21).
+satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 }
 \keyword{datasets}
