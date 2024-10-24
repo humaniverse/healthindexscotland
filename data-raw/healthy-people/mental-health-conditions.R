@@ -10,24 +10,15 @@ library(geographr)
 full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
 # ---- Clean data ----
-lives_low_birth_weight <- full_data_raw |>
+people_mental_health_conditions <- full_data_raw |>
   filter(area_type == "Council area" &
-    indicator == "Healthy birth weight") |>
-  mutate(
-    not_healthy_birth_rate_percentage = 100 - measure,
-    year = "2020-2022"
-  ) |>
+    indicator == "Population prescribed drugs for anxiety/depression/psychosis") |>
+  mutate(year = 2021) |>
   select(
     ltla24_code = area_code,
-    not_healthy_birth_rate_percentage,
+    mental_health_conditions_percentage = measure,
     year
   )
 
-ltla19_code <- lookup_ltla_ltla |>
-  filter(str_detect(ltla19_code, "^S")) |>
-  pull(ltla19_code)
-
-lives_low_birth_weight$ltla24_code %in% ltla19_code
-
 # ---- Save output to data/ folder ----
-usethis::use_data(lives_low_birth_weight, overwrite = TRUE)
+usethis::use_data(people_mental_health_conditions, overwrite = TRUE)
