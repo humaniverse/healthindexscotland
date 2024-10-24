@@ -397,6 +397,22 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Rate of Avoidable Deaths per 100k (2019-2021)
+#'
+#' A dataset containing statistics on age-standardised death rates per 100k, by
+#' Council (2019-2021).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{avoidable_mortality_rate_per_100k}{Age-standardised death rates per
+#' 100k}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/avoidable-mortality}
+"people_avoidable_deaths"
 
 #' Child Mental Wellbeing Score (2013)
 #'
