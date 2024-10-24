@@ -415,6 +415,22 @@
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
 
+#' Deaths from Suicide (2018-2022)
+#'
+#' A dataset containing statistics from deaths by suicide, by Council.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{suicides_per_100k}{Deaths from suicide (16+).
+#' Age standardised rate per 100,000.}
+#' \item{year}{Time period - 5 year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_suicides"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
