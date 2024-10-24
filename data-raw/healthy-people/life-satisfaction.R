@@ -25,7 +25,7 @@ life_satisfaction_2022 <- life_satisfaction_raw |>
   ) |>
   select(
     ltla24_code = `administrative-geography`,
-    anxiety_score_out_of_10 = `v4_3`,
+    life_satisfaction_score_out_of_10 = `v4_3`,
     year = `Time`
   )
 
@@ -39,7 +39,7 @@ life_satisfaction_orkney <- life_satisfaction_raw |>
   ) |>
   select(
     ltla24_code = `administrative-geography`,
-    anxiety_score_out_of_10 = `v4_3`,
+    life_satisfaction_score_out_of_10 = `v4_3`,
     year = `Time`
   )
 
