@@ -1,35 +1,24 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Population prescribed drugs for anxiety/depression/psychosis
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_dfb86157/_w_25ad8111/session/452a71856bf5874dfd9c3c42658c4acf/download/download_table_csv?w=25ad8111",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
-
-depression_raw <-
-  read_csv(tf)
-
-depression <-
-  depression_raw %>%
-  filter(area_type == "Council area") %>%
+# ---- Clean data ----
+people_mental_health_conditions <- full_data_raw |>
+  filter(area_type == "Council area" &
+    indicator == "Population prescribed drugs for anxiety/depression/psychosis") |>
+  mutate(year = 2021) |>
   select(
-    lad_code = area_code,
-    depression_percent = measure
-  ) %>%
-  mutate(depression_percent = depression_percent / 100)
+    ltla24_code = area_code,
+    mental_health_conditions_percentage = measure,
+    year
+  )
 
-write_rds(depression, "data/vulnerability/health-inequalities/scotland/healthy-people/depression.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(people_mental_health_conditions, overwrite = TRUE)

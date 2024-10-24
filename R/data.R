@@ -414,6 +414,23 @@
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
 
+#' Population Prescribed Drugs for Mental Health Conditions (2021-22)
+#'
+#' A dataset containing statistics of population prescribed drugs for mental health
+#' conditions, by Council (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{mental_health_conditions_percentage}{Percentage of population prescribed
+#' drugs for anxiety, depression or psychosis}
+#' \item{year}{Time period - financial year}
+#'
+#' ...
+#' }
+##' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_mental_health_conditions"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
