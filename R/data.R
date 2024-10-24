@@ -397,6 +397,7 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+
 #' Child Mental Wellbeing Score (2013)
 #'
 #' A dataset containing secondary school pupils' mental wellbeing scores (2013).
@@ -415,10 +416,11 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_child_mental_health"
 
-#' Average Measurement of Life Satisfaction Out of 10 (2020-21)
+#' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
+#' (2020-21))
 #'
 #' A dataset containing statistics of personal ratings on feelings of life
-#' satisfaction out of 10, by Council (2020-21).
+#' satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
@@ -436,8 +438,13 @@
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
 #' Scottish Council Area. Uses the anthropogenic component.
-#'   \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
-#'   \item{year}{Year}
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
+#' \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
