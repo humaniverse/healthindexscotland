@@ -1,42 +1,53 @@
-library(httr)
-library(readxl)
-library(readr)
-library(dplyr)
-library(stringr)
+# The 'Average (mean)' estimate provides the score out of 0-10. The other
+# estimates are thresholds (percentages) described in the QMI:
+# https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing/methodologies/personalwellbeingintheukqmi.
+# Orkney Islands missing data in 2022-23; 2020-21 most recent data for Orkney.
 
-# Source: https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/1
-GET(
-  "https://download.ons.gov.uk/downloads/datasets/wellbeing-local-authority/editions/time-series/versions/1.xlsx",
-  write_disk(tf <- tempfile(fileext = ".xlsx"))
-)
+# ---- Load packages ----
+library(tidyverse)
+library(rio)
 
+# ---- Get data ----
+# Source: https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4
 anxiety_raw <-
-  read_excel(tf, sheet = "Dataset", skip = 2)
+  import("https://download.ons.gov.uk/downloads/datasets/wellbeing-local-authority/editions/time-series/versions/4.csv")
 
-# The 'Average (mean)' estimate provides the score out of 0-10. The other estimates are
-# thresholds (percentages) described in the QMI: https://www.ons.gov.uk/peoplepopulationandcommunity/wellbeing/methodologies/personalwellbeingintheukqmi
-anxiety <-
-  anxiety_raw %>%
-  filter(Estimate == "Average (mean)") %>%
-  filter(MeasureOfWellbeing == "Anxiety") %>%
-  filter(str_detect(`Geography code`, "^S")) %>%
+# ---- Clean data ----
+# Anxiety scores for 2022-23. Data missing for Orkney Islands.
+anxiety_2022 <- anxiety_raw |>
+  filter(
+    str_starts(`administrative-geography`, "S"),
+    MeasureOfWellbeing == "Anxiety",
+    Estimate == "Average (mean)",
+    Time == "2022-23"
+  ) |>
   select(
-    lad_code = `Geography code`,
-    anxiety_score_out_of_10 = `2019-20`
+    ltla24_code = `administrative-geography`,
+    anxiety_score_out_of_10 = `v4_3`,
+    year = `Time`
   )
 
-# Replace old LAD codes with updates 2019 codes, and remove Scotland aggregate (S92000003)
-# Lookup: https://github.com/drkane/geo-lookups/blob/master/la_all_codes.csv
-lookup <-
-  read_csv("https://raw.githubusercontent.com/drkane/geo-lookups/master/la_all_codes.csv") %>%
-  select(lad_code_old = LADCD, lad_code = LAD20CD) %>%
-  filter(str_detect(lad_code_old, "^S"))
+# Anxiety scores for 2020-21, with latest Orkney Islands data.
+anxiety_orkney <- anxiety_raw |>
+  filter(
+    `administrative-geography` == "S12000023",
+    MeasureOfWellbeing == "Anxiety",
+    Estimate == "Average (mean)",
+    Time == "2020-21"
+  ) |>
+  select(
+    ltla24_code = `administrative-geography`,
+         anxiety_score_out_of_10 = `v4_3`,
+         year = `Time`
+    )
 
-anxiety <-
-  anxiety %>%
-  filter(lad_code != "S92000003") %>%
-  rename(lad_code_old = lad_code) %>%
-  left_join(lookup, by = "lad_code_old") %>%
-  select(lad_code, anxiety_score_out_of_10)
+# Combine data
+anxiety_2022_filtered <- anxiety_2022 |>
+  filter(!(ltla24_code == "S12000023" & year == "2022-23"))
 
-write_rds(anxiety, "data/vulnerability/health-inequalities/scotland/healthy-people/anxiety.rds")
+people_anxiety <-
+  bind_rows(anxiety_2022_filtered, anxiety_orkney) |>
+  slice(-15) # Remove Scotland
+
+# ---- Save output to data/ folder ----
+usethis::use_data(people_anxiety, overwrite = TRUE)
