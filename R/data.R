@@ -397,6 +397,22 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Cancer Registrations per 100k (2019-2021)
+#'
+#' A dataset containing statistics on cancer registration per 100k, standardised
+#' by age-sex (2019-2021).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{cancer_registration_rate_per_100k}{Cancer registration per 100k,
+#' standardised by age-sex}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_cancer"
 
 #' Child Mental Wellbeing Score (2013)
 #'
