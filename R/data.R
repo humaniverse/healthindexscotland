@@ -405,7 +405,6 @@
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
-
 #' \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
 #' anxiety out of 10 - 10 is most anxious, 1 is least anxious}
 #' \item{year}{Time period}
@@ -431,22 +430,6 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_child_mental_health"
 
-#' Average Measurement of Happiness Out of 10 (2022-23 / Orkney Islands (2020-21))
-#'
-#' A dataset containing statistics of personal ratings on feelings of
-#' happiness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
-#' happiness out of 10; 10 - most happy, 1 - least happy}
-#' \item{year}{Time period}
-#'
-#' ...
-#' }
-"people_happiness"
-
 #' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
 #' that Limits Daily Activities
 #'
@@ -463,6 +446,40 @@
 
 #' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
 "people_disability"
+
+#' Average Measurement of Happiness Out of 10 (2022-23 / Orkney Islands (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of
+#' happiness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
+#' happiness out of 10; 10 - most happy, 1 - least happy}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+"people_happiness"
+
+#' Average Healthy Life Expectancy for Men (2019-2021)
+#'
+#' A dataset containing statistics on average healthy life expectancy for men,
+#' by Council (2019-2021).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{healthy_life_expectancy_male}{Average healthy life expectancy for men.
+#' England's Health Index uses a weighted population average. Available Scottish
+#' data only has the average mean healthy life expectancy for men.}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_healthy_life_expectancy_men"
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
