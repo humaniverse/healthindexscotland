@@ -13,7 +13,6 @@ A data frame with 32 rows and 3 variables:
 with long-term health problem/disability that limits daily activities by a
 lot or by a little.}
 \item{year}{Time period}
-
 ...
 }
 }

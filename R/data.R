@@ -441,6 +441,7 @@
 #' \item{disability_activities_limited_percentage}{percentage of people aged 16-64
 #' with long-term health problem/disability that limits daily activities by a
 #' lot or by a little.}
+#' \item{year}{Time period}
 #' ...
 #' }
 #' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
@@ -514,6 +515,24 @@
 #' }
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
+
+#' Average Measurement of Life Worthwhileness Out of 10 (2022-23 / Orkney Islands
+#' (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of life
+#' worthwhileness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{worthwhile_score_out_of_10}{Average personal ratings on feelings
+#' of life worthwhileness out of 10, 10 - most worthwhile, 1 - least worthwhile}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
+"people_life_worthwhileness"
 
 #' Population Prescribed Drugs for Mental Health Conditions (2021-22)
 #'
@@ -602,39 +621,6 @@
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
 "places_personal_crime"
 
-#' Road traffic volume (2023)
-#'
-#' A dataset containing volume of road traffic (millions of vehicle miles per
-#' square kilometre) in Scottish Local Authorities.
-#'
-#' The raw local authority traffic figures give the total volume (vehicle miles)
-#' of traffic across each local authority for the whole year.
-#' @format A data frame with 32 rows and 2 variables:
-#' \describe{
-#'   \item{ltla24_code}{Local Authority Code}
-#'   \item{traffic_volume}{}
-#'   \item{year}{Year}
-#' @source \url{https://roadtraffic.dft.gov.uk/}
-"places_traffic_volume"
-
-#' Average Measurement of Life Worthwhileness Out of 10 (2022-23 / Orkney Islands
-#' (2020-21))
-#'
-#' A dataset containing statistics of personal ratings on feelings of life
-#' worthwhileness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{worthwhile_score_out_of_10}{Average personal ratings on feelings
-#' of life worthwhileness out of 10, 10 - most worthwhile, 1 - least worthwhile}
-#' \item{year}{Time period}
-#'
-#' ...
-#' }
-#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
-"people_life_worthwhileness"
-
 #' Road safety (2022)
 #'
 #' A dataset containing number of people killed or seriously injured in each
@@ -670,3 +656,19 @@
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 "places_rough_sleeping"
+
+#' Road traffic volume (2023)
+#'
+#' A dataset containing volume of road traffic (millions of vehicle miles per
+#' square kilometre) in Scottish Local Authorities.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
+#' of traffic across each local authority for the whole year.}
+#' \item{year}{Year}
+#' ...
+#' }
+#' @source \url{https://roadtraffic.dft.gov.uk/}
+"places_traffic_volume"

@@ -15,9 +15,6 @@ happiness out of 10; 10 - most happy, 1 - least happy}
 ...
 }
 }
-\source{
-\url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
-}
 \usage{
 people_happiness
 }
