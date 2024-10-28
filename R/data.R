@@ -59,7 +59,6 @@
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
-
 "lives_cardiovascular_conditions"
 
 #' Percentage of Absolute Child Poverty (2022-2023)
@@ -79,7 +78,6 @@
 #' ...
 #' }
 #' @source \url{ https://www.gov.uk/government/statistics/children-in-low-income-families-local-area-statistics-2014-to-2023}
-#'
 "lives_child_poverty"
 
 #' Percentage of Childhood Vaccine Coverage (2023)
@@ -397,6 +395,91 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "lives_young_people_training"
 
+#' Average Measurement of Anxiety Out of 10 (2022-23 / Orkney Islands (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of
+#' anxiety out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
+#' anxiety out of 10 - 10 is most anxious, 1 is least anxious}
+#' \item{year}{Time period}
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
+"people_anxiety"
+
+#' Child Mental Wellbeing Score (2013)
+#'
+#' A dataset containing secondary school pupils' mental wellbeing scores (2013).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{child_mental_wellbeing_score}{Mean mental wellbeing score for S4 pupils.
+#' The Warwick–Edinburgh Mental Wellbeing Scale (WEMWBS) used
+#' here: scoring is between 14-70 with a higher score indicative of greater
+#' positive mental wellbeing}
+#' \item{year}{Time period}
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_child_mental_health"
+
+#' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
+#' that Limits Daily Activities
+#'
+#' A dataset containing statistics on the percentage of people aged 16-64 with
+#' long-term health problem/disability that limits daily activities, by Council
+#' (2022).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{disability_activities_limited_percentage}{percentage of people aged 16-64
+#' with long-term health problem/disability that limits daily activities by a
+#' lot or by a little.}
+#' ...
+#' }
+#' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
+"people_disability"
+
+#' Average Measurement of Happiness Out of 10 (2022-23 / Orkney Islands (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of
+#' happiness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
+#' happiness out of 10; 10 - most happy, 1 - least happy}
+#' \item{year}{Time period}
+#'
+#' ...
+#' }
+"people_happiness"
+
+#' Average Healthy Life Expectancy for Men (2019-2021)
+#'
+#' A dataset containing statistics on average healthy life expectancy for men,
+#' by Council (2019-2021).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{healthy_life_expectancy_male}{Average healthy life expectancy for men.
+#' England's Health Index uses a weighted population average. Available Scottish
+#' data only has the average mean healthy life expectancy for men.}
+#' \item{year}{Time period - three year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_healthy_life_expectancy_men"
+
 #' Average Healthy Life Expectancy for Women (2019-2021)
 #'
 #' A dataset containing statistics on average healthy life expectancy for women,
@@ -417,7 +500,6 @@
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
-#'
 #' A dataset containing statistics of personal ratings on feelings of life
 #' satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
@@ -433,6 +515,39 @@
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
 
+#' Population Prescribed Drugs for Mental Health Conditions (2021-22)
+#'
+#' A dataset containing statistics of population prescribed drugs for mental health
+#' conditions, by Council (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{mental_health_conditions_percentage}{Percentage of population prescribed
+#' drugs for anxiety, depression or psychosis}
+#' \item{year}{Time period - financial year}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_mental_health_conditions"
+
+#' Deaths from Suicide (2018-2022)
+#'
+#' A dataset containing statistics from deaths by suicide, by Council.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{suicides_per_100k}{Deaths from suicide (16+).
+#' Age standardised rate per 100,000.}
+#' \item{year}{Time period - 5 year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_suicides"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
@@ -447,7 +562,6 @@
 #' ...
 #' }
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
-#'
 "places_air_pollution"
 
 #' Low-level crime (2023-4)
@@ -463,10 +577,10 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
 #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
-#'
 "places_low_level_crime"
 
 #' Personal crime (2023-24)
@@ -482,10 +596,10 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
 #'   \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
-#'
 "places_personal_crime"
 
 #' Road traffic volume (2023)
@@ -495,15 +609,31 @@
 #'
 #' The raw local authority traffic figures give the total volume (vehicle miles)
 #' of traffic across each local authority for the whole year.
+#' @format A data frame with 32 rows and 2 variables:
 #' \describe{
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{traffic_volume}{}
 #'   \item{year}{Year}
+#' @source \url{https://roadtraffic.dft.gov.uk/}
+"places_traffic_volume"
+
+#' Average Measurement of Life Worthwhileness Out of 10 (2022-23 / Orkney Islands
+#' (2020-21))
+#'
+#' A dataset containing statistics of personal ratings on feelings of life
+#' worthwhileness out of 10, by Council (2022-23) except Orkney Islands (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{worthwhile_score_out_of_10}{Average personal ratings on feelings
+#' of life worthwhileness out of 10, 10 - most worthwhile, 1 - least worthwhile}
+#' \item{year}{Time period}
+#'
 #' ...
 #' }
-#' @source \url{https://roadtraffic.dft.gov.uk/}
-#'
-"places_traffic_volume"
+#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
+"people_life_worthwhileness"
 
 #' Road safety (2022)
 #'
@@ -516,10 +646,10 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
 #' \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://statistics.gov.scot/data/road-safety}
-#'
 "places_road_safety"
 
 #' Rough sleeping (2023-24)
@@ -530,14 +660,13 @@
 #'
 #' @format A data frame with 32 rows and 2 variables:
 #' \describe{
-#'   \item{ltla24_code}{Local Authority Code}
-#'   \item{rough_sleeping_per_10k}{number of homelessness applications where
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{rough_sleeping_per_10k}{number of homelessness applications where
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.}
-#' #'   \item{year}{Year}
+#' \item{year}{Year}
+#'
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
-#'
 "places_rough_sleeping"
-

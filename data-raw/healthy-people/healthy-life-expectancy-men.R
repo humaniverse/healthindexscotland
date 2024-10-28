@@ -1,3 +1,7 @@
+# England's Health Index uses a weighted population average. Available Scottish
+# data only has the average mean healthy life expectancy for men
+
+
 # ---- Load packages ----
 library(tidyverse)
 library(geographr)
@@ -10,15 +14,15 @@ library(geographr)
 full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
 # ---- Clean data ----
-people_suicides <- full_data_raw |>
-  filter(area_type == "Council area" &
-    indicator == "Deaths from suicide (16+ years)") |>
-  mutate(year = "2018-2022") |>
+people_healthy_life_expectancy_men <- full_data_raw |>
+  filter(area_type == "Council area",
+         indicator == "Healthy life expectancy, males") |>
+  mutate(year = "2019-2021") |>
   select(
     ltla24_code = area_code,
-    suicides_per_100k = measure,
+    healthy_life_expectancy_male = measure,
     year
   )
 
 # ---- Save output to data/ folder ----
-usethis::use_data(people_suicides, overwrite = TRUE)
+usethis::use_data(people_healthy_life_expectancy_men, overwrite = TRUE)
