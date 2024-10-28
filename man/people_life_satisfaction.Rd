@@ -4,9 +4,7 @@
 \name{people_life_satisfaction}
 \alias{people_life_satisfaction}
 \title{Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
-(2020-21))
-A dataset containing statistics of personal ratings on feelings of life
-satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).}
+(2020-21))}
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
@@ -25,8 +23,6 @@ of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
 people_life_satisfaction
 }
 \description{
-Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
-(2020-21))
 A dataset containing statistics of personal ratings on feelings of life
 satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 }
