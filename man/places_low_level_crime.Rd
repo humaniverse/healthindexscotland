@@ -10,6 +10,7 @@ A data frame with 32 rows and 2 variables:
 \item{ltla24_code}{Local Authority Code}
 \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
 \item{year}{Year}
+
 ...
 }
 }

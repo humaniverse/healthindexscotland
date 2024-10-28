@@ -13,7 +13,6 @@ The Warwick–Edinburgh Mental Wellbeing Scale (WEMWBS) used
 here: scoring is between 14-70 with a higher score indicative of greater
 positive mental wellbeing}
 \item{year}{Time period}
-
 ...
 }
 }
