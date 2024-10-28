@@ -23,7 +23,7 @@ lives_low_birth_weight <- full_data_raw |>
     year
   )
 
-ltla24_code <- lookup_ltla_ltla |>
+ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
