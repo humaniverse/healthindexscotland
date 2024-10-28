@@ -10,7 +10,6 @@ disability_raw <- import("https://s3-eu-west-1.amazonaws.com/statistics.digitalr
 
 # LTLA code and name lookup
 ltla_lookup <- population22_ltla19_scotland |>
-  filter(sex == "Persons") |>
   select(
     ltla19_name,
     ltla19_code
