@@ -4,8 +4,6 @@
 # Orkney Islands missing data in 2022-23; 2020-21 most recent data for Orkney.
 
 # ---- Load packages ----
-library(httr)
-library(readxl)
 library(tidyverse)
 library(rio)
 
@@ -49,7 +47,7 @@ happiness_2022_filtered <- happiness_2022 |>
 
 people_happiness <-
   bind_rows(happiness_2022_filtered,happiness_orkney) |>
-  slice(-15)
+  slice(-15) # Remove Scotland
 
 # ---- Save output to data/ folder ----
 usethis::use_data(people_happiness, overwrite = TRUE)

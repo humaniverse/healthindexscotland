@@ -406,7 +406,7 @@
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
-#' happiness out of 10}
+#' happiness out of 10; 10 - most happy, 1 - least happy}
 #' \item{year}{Time period}
 #'
 #' ...
