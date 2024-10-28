@@ -9,7 +9,7 @@ A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
-anxiety out of 10}
+anxiety out of 10 - 10 is most anxious, 1 is least anxious}
 \item{year}{Time period}
 
 ...
