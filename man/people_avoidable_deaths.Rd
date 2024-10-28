@@ -8,7 +8,7 @@
 A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
-\item{avoidable_mortality_rate_per_100k}{Age-standardised death rates per
+\item{avoidable_mortality_rate_per_100k}{Age-standardised avoidable mortality rates per
 100k}
 \item{year}{Time period}
 

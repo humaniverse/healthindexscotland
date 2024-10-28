@@ -535,6 +535,7 @@
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
+#'
 #' A dataset containing statistics of personal ratings on feelings of life
 #' satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
