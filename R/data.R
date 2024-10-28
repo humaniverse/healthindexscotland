@@ -405,6 +405,7 @@
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
+
 #' \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
 #' anxiety out of 10 - 10 is most anxious, 1 is least anxious}
 #' \item{year}{Time period}
@@ -444,12 +445,27 @@
 #'
 #' ...
 #' }
-#' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_happiness"
+
+#' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
+#' that Limits Daily Activities
+#'
+#' A dataset containing statistics on the percentage of people aged 16-64 with
+#' long-term health problem/disability that limits daily activities, by Council
+#' (2022).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{disability_activities_limited_percentage}{percentage of people aged 16-64
+#' with long-term health problem/disability that limits daily activities by a
+#' lot or by a little.}
+
+#' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
+"people_disability"
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
-#'
 #' A dataset containing statistics of personal ratings on feelings of life
 #' satisfaction out of 10, by Council (2022-23) except Orkney Islands (2020-21).
 #'
@@ -464,6 +480,23 @@
 #' }
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
 "people_life_satisfaction"
+
+#' Population Prescribed Drugs for Mental Health Conditions (2021-22)
+#'
+#' A dataset containing statistics of population prescribed drugs for mental health
+#' conditions, by Council (2020-21).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{mental_health_conditions_percentage}{Percentage of population prescribed
+#' drugs for anxiety, depression or psychosis}
+#' \item{year}{Time period - financial year}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
+"people_mental_health_conditions"
 
 #' Deaths from Suicide (2018-2022)
 #'
@@ -480,23 +513,6 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_suicides"
-
-#' Population Prescribed Drugs for Mental Health Conditions (2021-22)
-#'
-#' A dataset containing statistics of population prescribed drugs for mental health
-#' conditions, by Council (2020-21).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{mental_health_conditions_percentage}{Percentage of population prescribed
-#' drugs for anxiety, depression or psychosis}
-#' \item{year}{Time period - financial year}
-#'
-#' ...
-#' }
-##' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_mental_health_conditions"
 
 #' Air pollution (2023)
 #'
@@ -602,7 +618,6 @@
 #' @source \url{https://statistics.gov.scot/data/road-safety}
 "places_road_safety"
 
-
 #' Rough sleeping (2023-24)
 #'
 #' A dataset containing statistics on number of homelessness applications where
@@ -621,4 +636,3 @@
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 "places_rough_sleeping"
-
