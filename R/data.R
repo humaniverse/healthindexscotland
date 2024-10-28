@@ -59,7 +59,6 @@
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
-
 "lives_cardiovascular_conditions"
 
 #' Percentage of Absolute Child Poverty (2022-2023)
@@ -79,7 +78,6 @@
 #' ...
 #' }
 #' @source \url{ https://www.gov.uk/government/statistics/children-in-low-income-families-local-area-statistics-2014-to-2023}
-#'
 "lives_child_poverty"
 
 #' Percentage of Childhood Vaccine Coverage (2023)
@@ -443,7 +441,8 @@
 #' \item{disability_activities_limited_percentage}{percentage of people aged 16-64
 #' with long-term health problem/disability that limits daily activities by a
 #' lot or by a little.}
-
+#' ...
+#' }
 #' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
 "people_disability"
 
