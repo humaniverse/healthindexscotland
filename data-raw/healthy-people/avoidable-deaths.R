@@ -2,18 +2,15 @@
 library(tidyverse)
 library(readxl)
 library(httr)
-library(geographr)
 library(demographr)
 
 # ---- Get data ----
-# LA ID
-population_2022 <- population22_ltla19_scotland |>
-  filter(sex == "Persons") |>
+# LA code lookup
+ltla_lookup <- population22_ltla19_scotland |>
   select(
     ltla19_name,
-    ltla19_code,
-    population_2022 = all_ages
-  )
+    ltla19_code
+    )
 
 # Avoidable Deaths
 # Source: https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/avoidable-mortality
@@ -41,7 +38,7 @@ avoidable_deaths <- avoidable_deaths_raw |>
 
 # Combine datasets
 people_avoidable_deaths <- avoidable_deaths |>
-  left_join(population_2022, by = c("ltla19_name")) |>
+  left_join(ltla_lookup, by = c("ltla19_name")) |>
   select(
     ltla24_code = ltla19_code,
     avoidable_mortality_rate_per_100k,
