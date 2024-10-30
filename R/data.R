@@ -586,6 +586,26 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_mental_health_conditions"
 
+#' Percentage of Adults with Musculoskeletal Conditions (Rheumatoid Arthritis)
+#' (2016)
+#'
+#' A dataset containing statistics on percentage of adults aged 18+ with
+#' Rheumatoid Arthritis, by Council (2016).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{rheumatoid_arthritis_percentage}{Percentage of adults aged 18+ with
+#' Rheumatoid Arthritis. England's Health Index musculoskeletal conditions
+#' gathers data on Weighted number of people answering yes to 'Arthritis or
+#' ongoing problem with back or joints'.}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
+"people_musculoskeletal_conditions"
+
 #' Deaths from Suicide (2018-2022)
 #'
 #' A dataset containing statistics from deaths by suicide, by Council.
