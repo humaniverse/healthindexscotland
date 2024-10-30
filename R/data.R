@@ -656,6 +656,23 @@
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
 "places_personal_crime"
 
+#' Percentage of Addresses with Access to Private Outdoor Space (2020)
+#'
+#' A dataset containing statistics on the percentage of addresses with access
+#' to private outdoor space, by Council (2020).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{private_outdoor_space_percentage}{Percentage of addresses with access
+#' to private outdoor space}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/economy/environmentalaccounts/datasets/accesstogardensandpublicgreenspaceingreatbritain}
+"places_private_outdoor_space"
+
 #' Road safety (2022)
 #'
 #' A dataset containing number of people killed or seriously injured in each
