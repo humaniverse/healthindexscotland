@@ -164,6 +164,22 @@
 #'
 "lives_healthy_eating"
 
+#' Percentage of Adults Diagnosed with High Blood Pressure (2018-2022)
+#'
+#' A dataset containing statistics on percentage of adults (excluding pregnant
+#' women) diagnosed with high blood pressure, by Council (2018-2022).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{ high_blood_pressure_percentage}{Percentage of adults (excluding pregnant
+#' women) diagnosed with high blood pressure}
+#' \item{year}{Time period - four year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
+"lives_high_blood_pressure"
 
 #' Percentage of Job Related Training (2023-24)
 #'
