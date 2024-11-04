@@ -1,52 +1,24 @@
+# ---- Load packages ----
+library(tidyverse)
 library(httr)
 library(readxl)
-library(readr)
-library(dplyr)
-library(stringr)
-library(geographr)
 
-source("R/utils.R")
-
-# Lookup
-lookup <-
-  lookup_hb_lad %>%
-  select(lad_name, lad_code)
-
-# Source: https://www.gov.scot/publications/scottish-index-of-multiple-deprivation-2020v2-indicator-data/
+# ---- Get data ----
+# Source: https://www.scotlandscensus.gov.uk/documents/scotland-s-census-2022-housing-chart-data/
 GET(
-  "https://www.gov.scot/binaries/content/documents/govscot/publications/statistics/2020/01/scottish-index-of-multiple-deprivation-2020-indicator-data/documents/simd_2020_indicators/simd_2020_indicators/govscot%3Adocument/SIMD%2B2020v2%2B-%2Bindicators.xlsx",
+  "https://www.scotlandscensus.gov.uk/media/ylnofgux/scotland-s-census-2022-chart-data-for-publication-housing.xlsx",
   write_disk(tf <- tempfile(fileext = ".xlsx"))
 )
 
-overcrowding_raw <-
-  read_excel(tf, sheet = "Data")
+household_overcrowding_raw <- read_excel(tf, sheet = 7, skip = 4)
 
-# Data is at the Data Zone level (DZ)
-overcrowding_dz <-
-  overcrowding_raw %>%
+places_household_overcrowding <- household_overcrowding_raw |>
+  mutate(year = "2022") |>
   select(
-    lad_name = Council_area,
-    household_overcrowding_percent = overcrowded_rate,
-    pop_count = Total_population
-  ) %>%
-  mutate(
-    lad_name = if_else(
-      lad_name == "Na h-Eileanan an Iar",
-      "Na h-Eileanan Siar",
-      lad_name
-    )
-  ) %>%
-  left_join(lookup, by = "lad_name") %>%
-  relocate(lad_code) %>%
-  select(-lad_name)
+    ltla24_code = `Area code`,
+    household_overcrowding_percentage = `Percentage`,
+    year
+  )
 
-overcrowding <-
-  overcrowding_dz %>%
-  calculate_extent_depreciated(
-    var = household_overcrowding_percent,
-    higher_level_geography = lad_code,
-    population = pop_count
-  ) %>%
-  rename(household_overcrowding_extent = extent)
-
-write_rds(overcrowding, "data/vulnerability/health-inequalities/scotland/healthy-places/household-overcrowding.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(places_household_overcrowding, overwrite = TRUE)
