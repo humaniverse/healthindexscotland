@@ -618,6 +618,24 @@
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
 "places_air_pollution"
 
+#' Percentage of Households with Home Internet Access (2022)
+#'
+#' A dataset containing statistics on percentage of households with home internet
+#' access, by Council (2022).
+#' To Note: Data for Moray and South Ayrshire is missing.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{internet_access_percentage}{percentage of households with home internet
+#' access. Data is missing for Moray and South Ayrshire}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/scottish-household-survey-2022-key-findings/documents/}
+"places_internet_access"
+
 #' Low-level crime (2023-4)
 #'
 #' A dataset containing statistics on 'low-level crime' per 10,000 people in Scottish
