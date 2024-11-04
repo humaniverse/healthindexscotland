@@ -659,6 +659,25 @@
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
 "places_air_pollution"
 
+#' Percentage Household Overcrowding (2022)
+#'
+#' A dataset containing statistics on the percentage of households experiencing
+#' household overcrowding, per Council (2022).
+#' Household overcrowding is defined as households with an occupancy rating of
+#' -1 or lower.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{household_overcrowding_percentage}{Percentage of households
+#' experiencing household overcrowding}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.scotlandscensus.gov.uk/documents/scotland-s-census-2022-housing-chart-data/}
+"places_household_overcrowding"
+
 #' Low-level crime (2023-4)
 #'
 #' A dataset containing statistics on 'low-level crime' per 10,000 people in Scottish
