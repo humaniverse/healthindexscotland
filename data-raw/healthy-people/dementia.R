@@ -1,55 +1,29 @@
-library(httr)
-library(readxl)
-library(dplyr)
-library(readr)
-library(stringr)
-library(geographr)
+# England's Health Index dementia indicator collects data on the weighted number
+# of people answering yes to Alzheimer's disease or other cause of dementia in the
+# national GP Patient Survey. The only available dementia data at Local Authority
+# level in Scotland focuses on nursing care residents across all sectors.
 
-# Lookup HSCP to LAD (contains 2011 and 2019 LAD codes):
-# Source: # https://www.opendata.nhs.scot/km/dataset/geography-codes-and-labels/resource/967937c4-8d67-4f39-974f-fd58c4acfda5
-lookup <- read_csv("https://www.opendata.nhs.scot/km/datastore/dump/967937c4-8d67-4f39-974f-fd58c4acfda5?bom=True")
+# --- Load packages ----
+library(tidyverse)
+library(rio)
 
-# Keep only 2019 LAD codes
-lookup <-
-  lookup %>%
+# ---- Get data ----
+# Source: https://www.opendata.nhs.scot/dataset/care-home-census/resource/9bf418aa-c54d-45d3-8306-023e81f49f60
+dementia_raw <- import("https://www.opendata.nhs.scot/dataset/75cca0a9-780d-40e0-9e1f-5f4796950794/resource/9bf418aa-c54d-45d3-8306-023e81f49f60/download/file8a_percentage_of_long_stay_residents_by_health_characteristics.csv")
+
+people_dementia <- dementia_raw |>
+  filter(
+    KeyStatistic == "Percentage of Long Stay Residents with Dementia Medically Diagnosed",
+    MainClientGroup == "All Adults",
+    Date == "20240331"
+  ) |>
+  mutate(Date = "2023-2024") |>
   select(
-    lad_code = CA,
-    hscp_name = HSCPName
-  ) %>%
-  filter(lad_code %in% boundaries_lad$lad_code) %>%
-  distinct(lad_code, hscp_name, .keep_all = TRUE)
+    ltla24_code = CA,
+    dementia_percentage = Value,
+    year = Date
+  ) |>
+  slice(-33)
 
-# Dementia
-GET(
-  "https://beta.isdscotland.org/media/3764/disease-prevalence.xlsx",
-  write_disk(tf <- tempfile(fileext = ".xlsx"))
-)
-
-dementia_raw <- read_excel(tf, sheet = "Data")
-
-dementia <-
-  dementia_raw %>%
-  filter(Year == "2018-19 Financial Year") %>%
-  filter(`Area Type` == "HSCP") %>%
-  select(
-    hscp_name = `GPPractice / Area`,
-    dementia_percent = `Dementia Rate`
-  ) %>%
-  mutate(dementia_percent = dementia_percent / 100)
-
-# Clean up HSCP names to match lookup table
-dementia <-
-  dementia %>%
-  mutate(hscp_name = str_remove_all(hscp_name, "HSCP")) %>%
-  mutate(hscp_name = str_squish(hscp_name)) %>%
-  mutate(hscp_name = str_replace_all(hscp_name, "&", "and")) %>%
-  mutate(hscp_name = if_else(hscp_name == "City of Edinburgh", "Edinburgh", hscp_name)) %>%
-  mutate(hscp_name = if_else(hscp_name == "Comhairle nan Eilean Siar", "Western Isles", hscp_name))
-
-# Join to lookup
-dementia <-
-  dementia %>%
-  left_join(lookup, by = "hscp_name") %>%
-  select(lad_code, dementia_percent)
-
-write_rds(dementia, "data/vulnerability/health-inequalities/scotland/healthy-people/dementia.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(people_dementia, overwrite = TRUE)
