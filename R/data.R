@@ -462,6 +462,27 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_child_mental_health"
 
+#' Percentage of Long-Stay Nursing Care Residents with Dementia
+#'
+#' A dataset containing statistics on the percentage of long-stay nursing care
+#' residents medically diagnosed with dementia, by Council (2023-24).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{dementia_percentage}{Percentage of long-stay nursing care residents
+#' medically diagnosed with dementia, by Council. England's Health Index
+#' dementia indicator collects data on the weighted number of people answering
+#' yes to Alzheimer's disease or other cause of dementia in the national GP
+#' Patient Survey. The only available dementia data at Local Authority level in
+#' Scotland focuses on nursing care residents across all sectors.}
+#' \item{year}{Time period - census data in the year up to 31/03/2024}
+#'
+#' ...
+#' }
+#' @source \url{https://www.opendata.nhs.scot/dataset/care-home-census/resource/9bf418aa-c54d-45d3-8306-023e81f49f60}
+"people_dementia"
+
 #' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
 #' that Limits Daily Activities
 #'
@@ -585,6 +606,26 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_mental_health_conditions"
+
+#' Percentage of Adults with Musculoskeletal Conditions (Rheumatoid Arthritis)
+#' (2016)
+#'
+#' A dataset containing statistics on percentage of adults aged 18+ with
+#' Rheumatoid Arthritis, by Council (2016).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{rheumatoid_arthritis_percentage}{Percentage of adults aged 18+ with
+#' Rheumatoid Arthritis. England's Health Index musculoskeletal conditions
+#' gathers data on Weighted number of people answering yes to 'Arthritis or
+#' ongoing problem with back or joints'.}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
+"people_musculoskeletal_conditions"
 
 #' Deaths from Suicide (2018-2022)
 #'
