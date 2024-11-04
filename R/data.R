@@ -607,6 +607,23 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_mental_health_conditions"
 
+#' Mortality all causes rate per 100k (2023)
+#'
+#' A dataset containing statistics from an age-sex standardised rate for all
+#' causes of mortality per 100k, by Council (2023).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{death_rate_per_100k}{age-sex standardised rate for all causes of
+#' mortality per 100k}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/deaths-time-series-data}
+"people_all_mortality"
+
 #' Percentage of Adults with Musculoskeletal Conditions (Rheumatoid Arthritis)
 #' (2016)
 #'
