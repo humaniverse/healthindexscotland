@@ -1,7 +1,5 @@
 # ---- Load packages ----
-library(httr)
 library(tidyverse)
-library(geographr)
 
 # ---- Scrape URL ----
 # Source: https://scotland.shinyapps.io/sg-scottish-health-survey/
