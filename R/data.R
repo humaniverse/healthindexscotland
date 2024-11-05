@@ -320,6 +320,24 @@
 #'
 "lives_pupil_absence"
 
+#' Percentage of People Exhibiting Sedentary Behaviour (Very Low Activity Levels)
+#' (2018-2022)
+#'
+#' A dataset containing statistics on very low activity levels in
+#' each Council, 2018-22.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{sedentary_behaviour_percentage}{Percentage of people with very low
+#' activity levels, defined as less than 30 minutes activity a week}
+#' \item{year}{Time period - four year period}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
+"lives_sedentary_behaviour"
+
 #' Percentage of Current Smokers (2018-22)
 #'
 #' A dataset containing statistics on smoking status in
