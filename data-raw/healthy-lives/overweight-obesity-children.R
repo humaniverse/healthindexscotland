@@ -14,13 +14,13 @@ child_bmi_raw <- read_csv(tf)
 unlink(tf)
 
 # ---- Clean data ----
-hl_overweight_obesity_children <- child_bmi_raw |>
+lives_overweight_obesity_children <- child_bmi_raw |>
   filter(SchoolYear == "2022/23") |>
   select(`CA`, `ClinOverweightObeseAndSeverelyObese`, `SchoolYear`) |>
   mutate(ClinOverweightObeseAndSeverelyObese = ClinOverweightObeseAndSeverelyObese * 100) |>
-  rename(ltla19_code = 1,
+  rename(ltla24_code = 1,
          overweight_obese_percentage = 2,
          year = 3)
 
 # ---- Save output to data/ folder ----
-usethis::use_data(hl_overweight_obesity_children, overwrite = TRUE)
+usethis::use_data(lives_overweight_obesity_children, overwrite = TRUE)

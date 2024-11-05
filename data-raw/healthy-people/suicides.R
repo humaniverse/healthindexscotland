@@ -1,34 +1,24 @@
-library(readr)
-library(httr)
-library(dplyr)
+# ---- Load packages ----
+library(tidyverse)
+library(geographr)
 
-# Source:https://scotland.shinyapps.io/ScotPHO_profiles_tool/
-# Indicator: Deaths from suicide
+# ---- Scrape URL ----
+# Source: https://scotland.shinyapps.io/ScotPHO_profiles_tool/
+# Uses the full ScotPHO dataset saved in data-raw/healthy-lives/data/
+# See teenage-pregnancy.R to download the full dataset
 
-# Interactively generate the data by:
-#   1. Navigating the the source (above)
-#   2. Clicking the 'Data' box
-#   3. Selecting the relevant indicator (above)
-#   4. Ticking 'All available geographies'
-#   5. Moving the time period slider until the latest data shows
-#   6. Right-clicking on 'Download data' and clicking 'Copy Link Location'
-#   7. Pasting the link into the GET request below
-#   8. Running the code below
+full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
-GET(
-  "https://scotland.shinyapps.io/ScotPHO_profiles_tool/_w_2988fba7/session/d739c71562733de533b30f3512c6133e/download/download_table_csv?w=2988fba7",
-  write_disk(tf <- tempfile(fileext = ".csv"))
-)
-
-suicides_raw <-
-  read_csv(tf)
-
-suicides <-
-  suicides_raw %>%
-  filter(area_type == "Council area") %>%
+# ---- Clean data ----
+people_suicides <- full_data_raw |>
+  filter(area_type == "Council area" &
+    indicator == "Deaths from suicide (16+ years)") |>
+  mutate(year = "2018-2022") |>
   select(
-    lad_code = area_code,
-    suicides_per_100000 = measure
+    ltla24_code = area_code,
+    suicides_per_100k = measure,
+    year
   )
 
-write_rds(suicides, "data/vulnerability/health-inequalities/scotland/healthy-people/suicides.rds")
+# ---- Save output to data/ folder ----
+usethis::use_data(people_suicides, overwrite = TRUE)
