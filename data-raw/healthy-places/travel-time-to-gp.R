@@ -242,7 +242,7 @@ for (i in 4:nrow(sco_lad)) {
 # since it takes quite a while to calculate
 write_csv(GP_travel_time, "data-raw/healthy-places/GP_travel_time.csv")
 
-# GP_travel_time <- read_csv("data-raw/healthy-places/GP_travel_time.csv")
+GP_travel_time <- read_csv("data-raw/healthy-places/GP_travel_time.csv")
 
 # Look up Local Authorities for each Intermediate Zone and GP
 lookup_iz_lad <-
