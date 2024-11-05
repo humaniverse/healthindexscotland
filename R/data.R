@@ -267,8 +267,8 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
-#'   \item{median_travel_time}{Median travel time (in minutes) to the nearest
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{sports_centre_median_travel_time}{Median travel time (in minutes) to the nearest
 #'   sports centre among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
 #'   ...
@@ -289,8 +289,8 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
-#'   \item{median_travel_time}{Median travel time (in minutes) to the nearest
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{pharmacy_median_travel_time}{Median travel time (in minutes) to the nearest
 #'   pharmacy among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
 #'   ...
@@ -311,12 +311,12 @@
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#'   \item{ltla21_code}{Local Authority Code}
-#'   \item{median_travel_time}{Median travel time (in minutes) to the nearest
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{gp_median_travel_time}{Median travel time (in minutes) to the nearest
 #'   GP among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
 #'   ...
 #' }
 #' @source \url{https://openstreetmap.org/}
 #'
-"places_GP_travel_time"
+"places_gp_travel_time"

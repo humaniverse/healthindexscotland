@@ -231,6 +231,8 @@ for (i in 4:nrow(sco_lad)) {
 # since it takes quite a while to calculate
 write_csv(pharmacy_travel_time, "data-raw/healthy-places/pharmacy_travel_time.csv")
 
+# pharmacy_travel_time <- read_csv("data-raw/healthy-places/pharmacy_travel_time.csv")
+
 # Look up Local Authorities for each Intermediate Zone and pharmacy
 lookup_iz_lad <-
   lookup_dz11_iz11_ltla20 |>
@@ -263,7 +265,9 @@ places_pharmacy_travel_time <-
   group_by(ltla21_code) |>
   summarise(median_travel_time = median(travel_time_mins, na.rm = TRUE)) |>
   ungroup() |>
-  mutate(year = year(now()))
+  mutate(year = year(now())) |>
+  rename(ltla24_code = ltla21_code,
+         pharmacy_median_travel_time = median_travel_time)
 
 # ---- Save output to data/ folder ----
 usethis::use_data(places_pharmacy_travel_time, overwrite = TRUE)

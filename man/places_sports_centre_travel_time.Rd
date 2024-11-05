@@ -7,8 +7,8 @@
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{
-\item{ltla21_code}{Local Authority Code}
-\item{median_travel_time}{Median travel time (in minutes) to the nearest
+\item{ltla24_code}{Local Authority Code}
+\item{sports_centre_median_travel_time}{Median travel time (in minutes) to the nearest
 sports centre among all the Intermediate Zones within a Local Authority}
 \item{year}{Year the data was last updated}
 ...

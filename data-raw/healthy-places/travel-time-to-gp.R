@@ -242,6 +242,8 @@ for (i in 4:nrow(sco_lad)) {
 # since it takes quite a while to calculate
 write_csv(GP_travel_time, "data-raw/healthy-places/GP_travel_time.csv")
 
+# GP_travel_time <- read_csv("data-raw/healthy-places/GP_travel_time.csv")
+
 # Look up Local Authorities for each Intermediate Zone and GP
 lookup_iz_lad <-
   lookup_dz11_iz11_ltla20 |>
@@ -269,12 +271,14 @@ GP_travel_time_fastest |>
 # Calculate average travel time for each Local Authority
 # Several of the distributions of travel times within Local Authorities are skewed
 # so we'll take the median travel time
-places_GP_travel_time <-
+places_gp_travel_time <-
   GP_travel_time_fastest |>
   group_by(ltla21_code) |>
   summarise(median_travel_time = median(travel_time_mins, na.rm = TRUE)) |>
   ungroup() |>
-  mutate(year = year(now()))
+  mutate(year = year(now())) |>
+  rename(ltla24_code = ltla21_code,
+         gp_median_travel_time = median_travel_time)
 
 # ---- Save output to data/ folder ----
-usethis::use_data(places_GP_travel_time, overwrite = TRUE)
+usethis::use_data(places_gp_travel_time, overwrite = TRUE)
