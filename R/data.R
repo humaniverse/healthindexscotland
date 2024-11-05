@@ -164,6 +164,22 @@
 #'
 "lives_healthy_eating"
 
+#' Percentage of Adults Diagnosed with High Blood Pressure (2018-2022)
+#'
+#' A dataset containing statistics on percentage of adults (excluding pregnant
+#' women) diagnosed with high blood pressure, by Council (2018-2022).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{ high_blood_pressure_percentage}{Percentage of adults (excluding pregnant
+#' women) diagnosed with high blood pressure}
+#' \item{year}{Time period - four year aggregate}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
+"lives_high_blood_pressure"
 
 #' Percentage of Job Related Training (2023-24)
 #'
@@ -303,6 +319,24 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 #'
 "lives_pupil_absence"
+
+#' Percentage of People Exhibiting Sedentary Behaviour (Very Low Activity Levels)
+#' (2018-2022)
+#'
+#' A dataset containing statistics on very low activity levels in
+#' each Council, 2018-22.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{sedentary_behaviour_percentage}{Percentage of people with very low
+#' activity levels, defined as less than 30 minutes activity a week}
+#' \item{year}{Time period - four year period}
+#'
+#' ...
+#' }
+#' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
+"lives_sedentary_behaviour"
 
 #' Percentage of Current Smokers (2018-22)
 #'
@@ -607,6 +641,23 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_mental_health_conditions"
 
+#' Mortality all causes rate per 100k (2023)
+#'
+#' A dataset containing statistics from an age-sex standardised rate for all
+#' causes of mortality per 100k, by Council (2023).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{death_rate_per_100k}{age-sex standardised rate for all causes of
+#' mortality per 100k}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/deaths-time-series-data}
+"people_all_mortality"
+
 #' Percentage of Adults with Musculoskeletal Conditions (Rheumatoid Arthritis)
 #' (2016)
 #'
@@ -733,6 +784,23 @@
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
 "places_personal_crime"
+
+#' Percentage of Addresses with Access to Private Outdoor Space (2020)
+#'
+#' A dataset containing statistics on the percentage of addresses with access
+#' to private outdoor space, by Council (2020).
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{private_outdoor_space_percentage}{Percentage of addresses with access
+#' to private outdoor space}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.ons.gov.uk/economy/environmentalaccounts/datasets/accesstogardensandpublicgreenspaceingreatbritain}
+"places_private_outdoor_space"
 
 #' Road safety (2022)
 #'
