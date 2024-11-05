@@ -710,23 +710,27 @@
 #' @source \url{https://uk-air.defra.gov.uk/data/pcm-data}
 "places_air_pollution"
 
-#' Percentage of Households with Home Internet Access (2022)
+#' Travel time to GPs
 #'
-#' A dataset containing statistics on percentage of households with home internet
-#' access, by Council (2022).
-#' To Note: Data for Moray and South Ayrshire is missing.
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' GP in each Council Area. This is based on the travel time to the
+#' nearest GP in each Intermediate Zone within a Council Area. This may
+#' include GPs located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{internet_access_percentage}{Percentage of households with home internet
-#' access. Data is missing for Moray and South Ayrshire}
-#' \item{year}{Year}
-#'
-#' ...
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{gp_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   GP among all the Intermediate Zones within a Local Authority}
+#'   \item{year}{Year the data was last updated}
+#'   ...
 #' }
-#' @source \url{https://www.gov.scot/publications/scottish-household-survey-2022-key-findings/documents/}
-"places_internet_access"
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_gp_travel_time"
 
 #' Percentage Household Overcrowding (2022)
 #'
@@ -746,6 +750,24 @@
 #' }
 #' @source \url{https://www.scotlandscensus.gov.uk/documents/scotland-s-census-2022-housing-chart-data/}
 "places_household_overcrowding"
+
+#' Percentage of Households with Home Internet Access (2022)
+#'
+#' A dataset containing statistics on percentage of households with home internet
+#' access, by Council (2022).
+#' To Note: Data for Moray and South Ayrshire is missing.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{internet_access_percentage}{Percentage of households with home internet
+#' access. Data is missing for Moray and South Ayrshire}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/scottish-household-survey-2022-key-findings/documents/}
+"places_internet_access"
 
 #' Low-level crime (2023-4)
 #'
@@ -784,6 +806,28 @@
 #' }
 #' @source \url{https://www.gov.scot/publications/recorded-crime-scotland-2023-24/}
 "places_personal_crime"
+
+#' Travel time to pharmacies
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' pharmacy in each Council Area. This is based on the travel time to the
+#' nearest pharmacy in each Intermediate Zone within a Council Area. This may
+#' include pharmacies located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{pharmacy_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   pharmacy among all the Intermediate Zones within a Local Authority}
+#'   \item{year}{Year the data was last updated}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_pharmacy_travel_time"
 
 #' Percentage of Addresses with Access to Private Outdoor Space (2020)
 #'
@@ -837,6 +881,28 @@
 #' }
 #' @source \url{https://www.gov.scot/publications/homelessness-in-scotland-2023-24/}
 "places_rough_sleeping"
+
+#' Travel time to sports facilities
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' sports centre in each Council Area. This is based on the travel time to the
+#' nearest sports centre in each Intermediate Zone within a Council Area. This may
+#' include sports centres located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#'   \item{ltla24_code}{Local Authority Code}
+#'   \item{sports_centre_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   sports centre among all the Intermediate Zones within a Local Authority}
+#'   \item{year}{Year the data was last updated}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_sports_centre_travel_time"
 
 #' Road traffic volume (2023)
 #'
