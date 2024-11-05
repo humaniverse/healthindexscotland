@@ -4,7 +4,6 @@
 library(tidyverse)
 library(geographr)
 library(readODS)
-library(httr)
 
 # ---- Get data ----
 # LA Codes
@@ -22,13 +21,14 @@ internet_access_raw <- read_ods(tf, sheet = 4, skip = 2)
 
 # ---- Clean data ----
 internet_access <- internet_access_raw |>
-  filter(Answser == "Yes") |>
+  filter(Answser == "Yes") |> # Answered yes in survey to internet access
   mutate(
     year = "2022",
     council = str_replace_all(`council`, "&", "and"),
     council =
       if_else(`council` == "Edinburgh, City of", "City of Edinburgh", `council`),
-    council = str_replace_all(council, "\n", " ")
+    council = str_replace_all(council, "\n", " "),
+    All = na_if(All, "[u]")
   ) |>
   select(
     ltla19_name = council,

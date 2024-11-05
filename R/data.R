@@ -668,7 +668,7 @@
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
-#' \item{internet_access_percentage}{percentage of households with home internet
+#' \item{internet_access_percentage}{Percentage of households with home internet
 #' access. Data is missing for Moray and South Ayrshire}
 #' \item{year}{Year}
 #'
