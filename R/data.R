@@ -710,6 +710,21 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_suicides"
 
+#' Acceptable GP appointments
+#'
+#' A dataset containing the percentage of people who rated their GP practice as
+#' positive for the care provided.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{acceptable_gp_appointments}{The percentage of people who rated their GP
+#' practice as positive for the care provided}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/health-and-care-experience-survey-results-by-geography/}
+"places_gp_appointments"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
