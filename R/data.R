@@ -338,6 +338,19 @@
 #' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
 "lives_sedentary_behaviour"
 
+#' Sexual health rates
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{sexual_health_rate_100k}{Rate of chlamydia per 100,000}
+#'
+#' ...
+#' }
+#' @source \url{https://hpspubsrepo.blob.core.windows.net/hps-website/nss/3073/documents/3_genital-chlamydia-gonorrhoea-scotland-2010-2019-tables.xlsx}
+#'
+"lives_sexual_health"
+
 #' Percentage of Current Smokers (2018-22)
 #'
 #' A dataset containing statistics on smoking status in
