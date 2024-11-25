@@ -11,21 +11,22 @@
 # toy dataset
 # dat <- read.csv("example_data.csv")
 #
-# recreating correlations
+# recreating correlations (page 64)
 # cor(dat[-1])
 #
-# recreating pca
+# recreating pca (page 65)
 # pca <- prcomp(dat[-1], center = TRUE, scale. = TRUE)
 #
 # percent variance explained
 # pca$sdev^2 / sum(pca$sdev^2)
 #
-# factors
+# factors (page 90)
 # fa <- principal(cor(dat[-1]), 4)
 # l <- apply(unclass(fa$loadings)^2, 2, function(x) x/sum(x))
 # l[l < 0.2] <- 0
 # l <- apply(l, 2, function(x) x/sum(x))
 # w <- fa$Vaccounted[1,] / sum(fa$Vaccounted[1,])
+# l * w[col(l)]
 #
 # colSums(t(l) %*% t(apply(data.matrix(dat[-1]), 2, scale)) * w)
 #
