@@ -338,6 +338,19 @@
 #' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
 "lives_sedentary_behaviour"
 
+#' Sexual health rates
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{sexual_health_rate_100k}{Rate of chlamydia per 100,000}
+#'
+#' ...
+#' }
+#' @source \url{https://hpspubsrepo.blob.core.windows.net/hps-website/nss/3073/documents/3_genital-chlamydia-gonorrhoea-scotland-2010-2019-tables.xlsx}
+#'
+"lives_sexual_health"
+
 #' Percentage of Current Smokers (2018-22)
 #'
 #' A dataset containing statistics on smoking status in
@@ -517,6 +530,17 @@
 #' @source \url{https://www.opendata.nhs.scot/dataset/care-home-census/resource/9bf418aa-c54d-45d3-8306-023e81f49f60}
 "people_dementia"
 
+#' Crude prevalence of diabetes
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{diabetes_percent}{Crude prevalence of diabetes (all types)}
+#' ...
+#' }
+#' @source \url{https://www.diabetesinscotland.org.uk/wp-content/uploads/2023/10/Scottish-Diabetes-Survey-2022.pdf}
+"people_diabetes"
+
 #' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
 #' that Limits Daily Activities
 #'
@@ -552,41 +576,22 @@
 #' }
 "people_happiness"
 
-#' Average Healthy Life Expectancy for Men (2019-2021)
+#' Average Healthy Life Expectancy for Men and Women (2019-2021)
 #'
-#' A dataset containing statistics on average healthy life expectancy for men,
-#' by Council (2019-2021).
+#' A dataset containing statistics on average healthy life expectancy for men
+#' and women by Council (2019-2021).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
-#' \item{healthy_life_expectancy_male}{Average healthy life expectancy for men.
-#' England's Health Index uses a weighted population average. Available Scottish
-#' data only has the average mean healthy life expectancy for men.}
+#' \item{healthy_life_expectancy}{Population weighted average healthy life
+#' expectancy for men and women}
 #' \item{year}{Time period - three year aggregate}
 #'
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_healthy_life_expectancy_men"
-
-#' Average Healthy Life Expectancy for Women (2019-2021)
-#'
-#' A dataset containing statistics on average healthy life expectancy for women,
-#' by Council (2019-2021).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{healthy_life_expectancy_female}{Average healthy life expectancy for women.
-#' England's Health Index uses a weighted population average. Available Scottish
-#' data only has the average mean healthy life expectancy for women.}
-#' \item{year}{Time period - three year aggregate}
-#'
-#' ...
-#' }
-#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_healthy_life_expectancy_women"
+"people_healthy_life_expectancy"
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))
@@ -678,6 +683,17 @@
 #' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
 "people_musculoskeletal_conditions"
 
+#' Rheumatoid Arthritis prevelance
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{rheumatoid_arthritis_prevelenace}{Prelenave of Rheumatoid Arthritis}
+#' ...
+#' }
+#' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
+"people_rheumatoid_arthritis"
+
 #' Deaths from Suicide (2018-2022)
 #'
 #' A dataset containing statistics from deaths by suicide, by Council.
@@ -693,6 +709,21 @@
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_suicides"
+
+#' Acceptable GP appointments
+#'
+#' A dataset containing the percentage of people who rated their GP practice as
+#' positive for the care provided.
+#'
+#' @format A data frame with 32 rows and 2 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{acceptable_gp_appointments}{The percentage of people who rated their GP
+#' practice as positive for the care provided}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/health-and-care-experience-survey-results-by-geography/}
+"places_gp_appointments"
 
 #' Air pollution (2023)
 #'
