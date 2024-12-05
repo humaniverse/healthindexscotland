@@ -338,12 +338,19 @@
 #' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
 "lives_sedentary_behaviour"
 
-#' Sexual health rates
+#' Sexual health Rates per 100k (2019)
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' A dataset containing statistics on rates of chlamydia per 100k in each council,
+#' 2019.
+#' To note: only chlamydia has been included here as data is missing for
+#' gonorrhoea. England's Health Index examines total number of people tested
+#' for one or more sexually transmitted infections.
+#'
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{sexual_health_rate_100k}{Rate of chlamydia per 100,000}
+#' \item{year}{Year}
 #'
 #' ...
 #' }
