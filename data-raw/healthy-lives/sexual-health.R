@@ -1,15 +1,18 @@
+# ---- Load packages ----
 library(httr)
 library(readxl)
 library(dplyr)
 library(geographr)
 library(ggplot2)
 
+# ---- Fetch Health Board and LA boundaries and codes ----
 hb_ltla_lookup <- lookup_dz11_ltla19_hb19 |>
   distinct(ltla19_code, hb19_code)
 
 hb_lookup <- boundaries_hb19 |>
   sf::st_drop_geometry()
 
+# ---- Get data ----
 GET(
   "https://hpspubsrepo.blob.core.windows.net/hps-website/nss/3073/documents/3_genital-chlamydia-gonorrhoea-scotland-2010-2019-tables.xlsx",
   write_disk(tf <- tempfile(fileext = ".xlsx"))
@@ -56,10 +59,13 @@ sexual_health_hb |>
   geom_point(size = 3) +
   theme_minimal()
 
+# Join datasets
 lives_sexual_health <- sexual_health_hb |>
   select(-gonorrhoea_rate_100k) |>
   left_join(hb_ltla_lookup) |>
   select(ltla24_code = ltla19_code, sexual_health_rate_100k = chlamydia_rate_100k) |>
-  arrange(ltla24_code)
+  arrange(ltla24_code) |>
+  mutate(year = "2019")
 
+# ---- Save output to data/ folder ----
 usethis::use_data(lives_sexual_health, overwrite = TRUE)
