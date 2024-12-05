@@ -5,7 +5,7 @@
 \alias{places_traffic_volume}
 \title{Road traffic volume (2023)}
 \format{
-A data frame with 32 rows and 2 variables:
+A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
