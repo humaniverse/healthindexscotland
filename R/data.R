@@ -808,7 +808,7 @@
 #' are other crimes listed that could potentially count as 'low-level crimes'
 #' but we will avoid making a potentially arbitrary judgement here.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
@@ -827,7 +827,7 @@
 #' - Sexual crimes
 #' - Damage and reckless behaviour
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
@@ -883,7 +883,7 @@
 #' Scottish Council Area in 2022 (latest available data), normalised by the area
 #' in each Council Area (in square km).
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
@@ -900,7 +900,7 @@
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{rough_sleeping_per_10k}{number of homelessness applications where
@@ -940,7 +940,7 @@
 #' A dataset containing volume of road traffic (millions of vehicle miles per
 #' square kilometre) in Scottish Local Authorities.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
