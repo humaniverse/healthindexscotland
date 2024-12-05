@@ -666,17 +666,6 @@
 #' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
 "people_musculoskeletal_conditions"
 
-#' Rheumatoid Arthritis prevelance
-#'
-#' @format A data frame with 32 rows and 2 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{rheumatoid_arthritis_prevelenace}{Prelenave of Rheumatoid Arthritis}
-#' ...
-#' }
-#' @source \url{https://www.versusarthritis.org/policy/resources-for-policy-makers/musculoskeletal-calculator/download-full-msk-calculator-datasets/}
-"people_rheumatoid_arthritis"
-
 #' Deaths from Suicide (2018-2022)
 #'
 #' A dataset containing statistics from deaths by suicide, by Council.
