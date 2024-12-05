@@ -5,11 +5,12 @@
 \alias{places_gp_appointments}
 \title{Acceptable GP appointments}
 \format{
-A data frame with 32 rows and 2 variables:
+A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{acceptable_gp_appointments}{The percentage of people who rated their GP
 practice as positive for the care provided}
+\item{year}{Time period}
 ...
 }
 }
@@ -21,6 +22,6 @@ places_gp_appointments
 }
 \description{
 A dataset containing the percentage of people who rated their GP practice as
-positive for the care provided.
+positive for the care provided, by Council (2023/24)
 }
 \keyword{datasets}

@@ -692,13 +692,14 @@
 #' Acceptable GP appointments
 #'
 #' A dataset containing the percentage of people who rated their GP practice as
-#' positive for the care provided.
+#' positive for the care provided, by Council (2023/24)
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{acceptable_gp_appointments}{The percentage of people who rated their GP
 #' practice as positive for the care provided}
+#' \item{year}{Time period}
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/health-and-care-experience-survey-results-by-geography/}

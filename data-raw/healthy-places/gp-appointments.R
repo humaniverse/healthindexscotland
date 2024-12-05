@@ -1,11 +1,15 @@
+# ---- Load packages ----
 library(httr)
 library(readxl)
 library(dplyr)
 library(geographr)
 
+# ---- Get data ----
+# Health Board
 hb_ltla_lookup <- lookup_dz11_ltla19_hb19 |>
   distinct(ltla19_code, hb19_code)
 
+# GP Appointment Acceptability
 GET(
   "https://www.gov.scot/binaries/content/documents/govscot/publications/statistics/2024/05/health-and-care-experience-survey-2023-to-2024-results-by-geography/documents/health-and-care-experience-survey-2023-to-2024-geographical-data/health-and-care-experience-survey-2023-to-2024-geographical-data/govscot%3Adocument/Health%2Band%2BCare%2BExperience%2BSurvey%2B2023%2Bto%2B2024%2B-tables%2Bof%2Bresults%2Bby%2Bgeography.xlsx",
   write_disk(tf <- tempfile(fileext = ".xlsx"))
@@ -19,9 +23,12 @@ gp_appointments_hb <- raw |>
   filter(`Question Text` == "Overall, how would you rate the care provided by your General Practice?") |>
   select(hb19_code = Area, acceptable_gp_appointments = `Percentage Positive`)
 
+# Join datasets
 places_gp_appointments <-
   gp_appointments_hb |>
   left_join(hb_ltla_lookup) |>
-  select(ltla24_code = ltla19_code, acceptable_gp_appointments)
+  select(ltla24_code = ltla19_code, acceptable_gp_appointments) |>
+  mutate(year = "2023/24")
 
+# ---- Save output to data/ folder ----
 usethis::use_data(places_gp_appointments, overwrite = TRUE)

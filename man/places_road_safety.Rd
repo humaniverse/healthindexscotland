@@ -5,7 +5,7 @@
 \alias{places_road_safety}
 \title{Road safety (2022)}
 \format{
-A data frame with 32 rows and 2 variables:
+A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
