@@ -492,23 +492,6 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_cancer"
 
-#' Child Mental Wellbeing Score (2013)
-#'
-#' A dataset containing secondary school pupils' mental wellbeing scores (2013).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{child_mental_wellbeing_score}{Mean mental wellbeing score for S4 pupils.
-#' The Warwick–Edinburgh Mental Wellbeing Scale (WEMWBS) used
-#' here: scoring is between 14-70 with a higher score indicative of greater
-#' positive mental wellbeing}
-#' \item{year}{Time period}
-#' ...
-#' }
-#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_child_mental_health"
-
 #' Percentage of Long-Stay Nursing Care Residents with Dementia
 #'
 #' A dataset containing statistics on the percentage of long-stay nursing care
