@@ -59,7 +59,7 @@
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/scottish-heart-disease-statistics/resource/5379a655-d677-46cf-814d-bc0574ac59e4}
 #' @source \url{https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2022#:~:text=Of%20the%2032%20council%20areas,and%20Orkney%20Islands%20with%2022%2C020}
-"lives_cardiovascular_conditions"
+"people_cardiovascular_conditions"
 
 #' Percentage of Absolute Child Poverty (2022-2023)
 #'
@@ -78,7 +78,7 @@
 #' ...
 #' }
 #' @source \url{ https://www.gov.uk/government/statistics/children-in-low-income-families-local-area-statistics-2014-to-2023}
-"lives_child_poverty"
+"places_child_poverty"
 
 #' Percentage of Childhood Vaccine Coverage (2023)
 #'
@@ -195,7 +195,7 @@
 #' ...
 #' }
 #' @source \url{https://www.nomisweb.co.uk/datasets/apsnew}
-"lives_job_training"
+"places_job_training"
 
 #' Rate of infant mortality (2017-2021)
 #'
@@ -212,7 +212,7 @@
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"lives_infant_mortality"
+"people_infant_mortality"
 
 #' Percentage of Babies Born Not at a Healthy Birth Weight (2020-2022)
 #'
@@ -392,7 +392,7 @@
 #' }
 #' @source \url{ https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/datasets/modelledunemploymentforlocalandunitaryauthoritiesm01}
 #'
-"lives_unemployment"
+"places_unemployment"
 
 #' Rate of Non-Fatal Workplace Injuries (2022-23)
 #'
@@ -410,7 +410,7 @@
 #' }
 #' @source \url{https://www.hse.gov.uk/statistics/tables/index.htm#riddor}
 #'
-"lives_workplace_safety"
+"places_workplace_safety"
 
 #' Percentage participation of Young People in Education, Training or Employment (2023)
 #'
@@ -552,41 +552,22 @@
 #' }
 "people_happiness"
 
-#' Average Healthy Life Expectancy for Men (2019-2021)
+#' Average Healthy Life Expectancy (2019-2021)
 #'
-#' A dataset containing statistics on average healthy life expectancy for men,
-#' by Council (2019-2021).
+#' A dataset containing statistics on average healthy life expectancy for men
+#' and women, by Council (2019-2021).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
-#' \item{healthy_life_expectancy_male}{Average healthy life expectancy for men.
-#' England's Health Index uses a weighted population average. Available Scottish
-#' data only has the average mean healthy life expectancy for men.}
+#' \item{healthy_life_expectancy_male}{Weighted population average healthy life
+#' expectancy for men and women}
 #' \item{year}{Time period - three year aggregate}
 #'
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_healthy_life_expectancy_men"
-
-#' Average Healthy Life Expectancy for Women (2019-2021)
-#'
-#' A dataset containing statistics on average healthy life expectancy for women,
-#' by Council (2019-2021).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{healthy_life_expectancy_female}{Average healthy life expectancy for women.
-#' England's Health Index uses a weighted population average. Available Scottish
-#' data only has the average mean healthy life expectancy for women.}
-#' \item{year}{Time period - three year aggregate}
-#'
-#' ...
-#' }
-#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_healthy_life_expectancy_women"
+"people_healthy_life_expectancy"
 
 #' Average Measurement of Life Satisfaction Out of 10 (2022-23 / Orkney Islands
 #' (2020-21))

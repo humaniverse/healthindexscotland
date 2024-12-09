@@ -14,7 +14,7 @@ child_poverty_raw <-
   read_ods(tf, sheet = 8, skip = 9)
 
 # ---- Clean data ----
-lives_child_poverty <- child_poverty_raw |>
+places_child_poverty <- child_poverty_raw |>
   filter(str_starts(`Area Code`, "S")) |>
   select(`Area Code`, `Percentage of children \nFYE 2023\n(%)\n[p] [note 3]`) |>
   rename(ltla24_code = 1,
@@ -23,5 +23,4 @@ lives_child_poverty <- child_poverty_raw |>
     year = "2022-2023")
 
 # ---- Save output to data/ folder ----
-usethis::use_data(lives_child_poverty, overwrite = TRUE)
-
+usethis::use_data(places_child_poverty, overwrite = TRUE)

@@ -15,7 +15,7 @@ unemployment_raw <-
   read_excel(tf, sheet = 4, skip = 2)
 
 # ---- Clean data ----
-lives_unemployment <- unemployment_raw |>
+places_unemployment <- unemployment_raw |>
   select(2, 235) |>
   rename(ltla24_code = 1,
          unemployment_percentage = 2) |>
@@ -27,13 +27,13 @@ ltla19_code <- lookup_ltla_ltla |>
   filter(str_detect(ltla19_code, "^S")) |>
   pull(ltla19_code)
 
-lives_unemployment$ltla24_code %in% ltla19_code
+places_unemployment$ltla24_code %in% ltla19_code
 
 # Match 2019 LAD codes
 # https://www.opendata.nhs.scot/dataset/geography-codes-and-labels/resource/967937c4-8d67-4f39-974f-fd58c4acfda5
 # Look at the 'CADateArchived' column to view changes
-lives_unemployment <-
-  lives_unemployment |>
+places_unemployment <-
+  places_unemployment |>
   mutate(
     ltla24_code = case_when(
       ltla24_code == "S12000015" ~ "S12000047",
@@ -45,4 +45,4 @@ lives_unemployment <-
   )
 
 # ---- Save output to data/ folder ----
-usethis::use_data(lives_unemployment, overwrite = TRUE)
+usethis::use_data(places_unemployment, overwrite = TRUE)

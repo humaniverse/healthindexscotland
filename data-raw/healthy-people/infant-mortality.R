@@ -10,7 +10,7 @@ library(geographr)
 full_data_raw <- read_csv("data-raw/healthy-lives/data/scotpho_data.csv")
 
 # ---- Clean data ----
-lives_infant_mortality <- full_data_raw |>
+people_infant_mortality <- full_data_raw |>
   filter(area_type == "Council area" &
            indicator == "Infant deaths, aged 0-1 years") |>
   mutate(year = "2017-2021") |>
@@ -19,5 +19,4 @@ lives_infant_mortality <- full_data_raw |>
          year)
 
 # ---- Save output to data/ folder ----
-usethis::use_data(lives_infant_mortality, overwrite = TRUE)
-
+usethis::use_data(people_infant_mortality, overwrite = TRUE)
