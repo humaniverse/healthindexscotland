@@ -51,9 +51,10 @@ indicators <- reduce(indicators, left_join, by = "ltla24_code")
 indicators[,-1] <- map(indicators[,-1], as.numeric)
 names(indicators)[-1] <- sub(".rda$", "", basename(files))
 
-# all the indicators that are represented as higher = better
-toflip <- c("lives_alcohol_misuse",
-            "lives_drug_misuse", "lives_high_blood_pressure", "lives_low_birth_weight",
+# all the indicators that should be represented as higher = better
+# but are currently higher = worse
+toflip <- c("lives_alcohol_misuse", "lives_drug_misuse", "lives_early_years_development",
+            "lives_high_blood_pressure", "lives_low_birth_weight",
             "lives_overweight_obesity_adults", "lives_overweight_obesity_children",
             "lives_pupil_absence", "lives_sedentary_behaviour", "lives_smoking",
             "lives_teenage_pregnancy",
@@ -73,7 +74,7 @@ toflip <- c("lives_alcohol_misuse",
 # check if all present
 stopifnot(all(toflip %in% colnames(indicators)))
 
-# align the indicators so that higher = worse
+# align the indicators so that higher = better
 indicators[toflip] <- - indicators[toflip]
 
 # scale to z-scores
@@ -134,7 +135,7 @@ subdomains$people_personal_wellbeing         <- indicators[c("people_life_worthw
 subdomains$people_physical_health_conditions <- indicators[c("people_cancer", "people_cardiovascular_conditions", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: diabetes, kidney, and respiratory are missing
 
 subdomains$lives_behavioural_risk_factors   <- indicators[c("lives_alcohol_misuse", "lives_drug_misuse", "lives_healthy_eating", "lives_physical_activity", "lives_sedentary_behaviour", "lives_smoking")]  # NOTE: sexual health is missing
-subdomains$lives_children_and_young_people  <- indicators[c("lives_pupil_absence", "lives_national_five_attainment", "lives_teenage_pregnancy", "lives_young_people_training")]  # NOTE: missing pupil attainment
+subdomains$lives_children_and_young_people  <- indicators[c("lives_early_years_development", "lives_pupil_absence", "lives_national_five_attainment", "lives_teenage_pregnancy", "lives_young_people_training")]
 subdomains$lives_physiological_risk_factors <- indicators[c("lives_high_blood_pressure", "lives_low_birth_weight", "lives_overweight_obesity_adults", "lives_overweight_obesity_children")]
 subdomains$lives_protective_measures        <- indicators[c("lives_cancer_screening", "lives_child_vaccine_coverage")]
 
