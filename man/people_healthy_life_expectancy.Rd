@@ -3,7 +3,7 @@
 \docType{data}
 \name{people_healthy_life_expectancy}
 \alias{people_healthy_life_expectancy}
-\title{Average Healthy Life Expectancy (2019-2021)}
+\title{Average Healthy Life Expectancy for Men and Women (2019-2021)}
 \format{
 A data frame with 32 rows and 3 variables:
 \describe{

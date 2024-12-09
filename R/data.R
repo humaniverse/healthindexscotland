@@ -552,7 +552,7 @@
 #' }
 "people_happiness"
 
-#' Average Healthy Life Expectancy (2019-2021)
+#' Average Healthy Life Expectancy for Men and Women (2019-2021)
 #'
 #' A dataset containing statistics on average healthy life expectancy for men
 #' and women, by Council (2019-2021).
