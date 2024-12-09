@@ -58,17 +58,16 @@ toflip <- c("lives_alcohol_misuse",
             "lives_pupil_absence", "lives_sedentary_behaviour", "lives_smoking",
             "lives_teenage_pregnancy",
             # "lives_sexual_health"  # NOTE: missing from data
-            "people_anxiety", "people_avoidable_deaths", "people_cancer",
-            "people_cardiovascular_conditions", "people_child_mental_health",
-            "people_disability", "people_dementia", "people_infant_mortality",
-            "people_mental_health_conditions", "people_all_mortality",
+            "people_all_mortality", "people_anxiety", "people_avoidable_deaths",
+            "people_cancer", "people_cardiovascular_conditions", "people_dementia",
+            "people_disability", "people_infant_mortality", "people_mental_health_conditions",
             "people_musculoskeletal_conditions", "people_suicides",
             # "people_diabetes", "people_kidney_and_liver_disease"  # NOTE: missing
-            "places_child_poverty", "places_gp_travel_time", "places_air_pollution",
-            "places_household_overcrowding", "places_internet_access", "places_low_level_crime",
-            "places_personal_crime", "places_road_safety", "places_rough_sleeping",
-            "places_pharmacy_travel_time", "places_sports_centre_travel_time",
-            "places_unemployment", "places_workplace_safety"
+            "places_air_pollution", "places_child_poverty", "places_gp_travel_time",
+            "places_household_overcrowding", "places_low_level_crime",
+            "places_personal_crime", "places_pharmacy_travel_time",
+            "places_road_safety", "places_rough_sleeping", "places_sports_centre_travel_time",
+            "places_traffic_volume", "places_unemployment", "places_workplace_safety"
             )
 
 # check if all present
@@ -129,14 +128,14 @@ quantise <- function(x) {
 # subdomains
 subdomains <- list()
 subdomains$people_difficulties_in_daily_life <- indicators[c("people_disability")]  # NOTE: missing frailty
-subdomains$people_mental_health              <- indicators[c("people_suicides")]    # NOTE: missing self-harm
+subdomains$people_mental_health              <- indicators[c("people_child_mental_health", "people_mental_health_conditions", "people_suicides")]    # NOTE: missing self-harm
 subdomains$people_mortality                  <- indicators[c("people_avoidable_deaths", "people_infant_mortality", "people_healthy_life_expectancy", "people_all_mortality")]
 subdomains$people_personal_wellbeing         <- indicators[c("people_life_worthwhileness", "people_anxiety", "people_happiness", "people_life_satisfaction")]
-subdomains$people_physical_health_conditions <- indicators[c("people_life_worthwhileness", "people_cardiovascular_conditions", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: diabetes, kidney, and respiratory are missing
+subdomains$people_physical_health_conditions <- indicators[c("people_cancer", "people_cardiovascular_conditions", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: diabetes, kidney, and respiratory are missing
 
 subdomains$lives_behavioural_risk_factors   <- indicators[c("lives_alcohol_misuse", "lives_drug_misuse", "lives_healthy_eating", "lives_physical_activity", "lives_sedentary_behaviour", "lives_smoking")]  # NOTE: sexual health is missing
-subdomains$lives_children_and_younr_people  <- indicators[c("lives_pupil_absence", "lives_national_five_attainment", "lives_teenage_pregnancy", "lives_young_people_training")]
-subdomains$lives_psychological_risk_factors <- indicators[c("lives_high_blood_pressure", "lives_low_birth_weight", "lives_overweight_obesity_adults", "lives_overweight_obesity_children")]
+subdomains$lives_children_and_young_people  <- indicators[c("lives_pupil_absence", "lives_national_five_attainment", "lives_teenage_pregnancy", "lives_young_people_training")]  # NOTE: missing pupil attainment
+subdomains$lives_physiological_risk_factors <- indicators[c("lives_high_blood_pressure", "lives_low_birth_weight", "lives_overweight_obesity_adults", "lives_overweight_obesity_children")]
 subdomains$lives_protective_measures        <- indicators[c("lives_cancer_screening", "lives_child_vaccine_coverage")]
 
 subdomains$places_access_to_green_space           <- indicators[c("places_private_outdoor_space")]
