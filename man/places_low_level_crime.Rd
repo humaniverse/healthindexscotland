@@ -5,7 +5,7 @@
 \alias{places_low_level_crime}
 \title{Low-level crime (2023-4)}
 \format{
-A data frame with 32 rows and 2 variables:
+A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
 \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}

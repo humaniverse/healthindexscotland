@@ -338,6 +338,26 @@
 #' @source \url{https://scotland.shinyapps.io/sg-scottish-health-survey/}
 "lives_sedentary_behaviour"
 
+#' Sexual health Rates per 100k (2019)
+#'
+#' A dataset containing statistics on rates of chlamydia per 100k in each council,
+#' 2019.
+#' To note: only chlamydia has been included here as data is missing for
+#' gonorrhoea. England's Health Index examines total number of people tested
+#' for one or more sexually transmitted infections.
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{sexual_health_rate_100k}{Rate of chlamydia per 100,000}
+#' \item{year}{Year}
+#'
+#' ...
+#' }
+#' @source \url{https://hpspubsrepo.blob.core.windows.net/hps-website/nss/3073/documents/3_genital-chlamydia-gonorrhoea-scotland-2010-2019-tables.xlsx}
+#'
+"lives_sexual_health"
+
 #' Percentage of Current Smokers (2018-22)
 #'
 #' A dataset containing statistics on smoking status in
@@ -479,23 +499,6 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_cancer"
 
-#' Child Mental Wellbeing Score (2013)
-#'
-#' A dataset containing secondary school pupils' mental wellbeing scores (2013).
-#'
-#' @format A data frame with 32 rows and 3 variables:
-#' \describe{
-#' \item{ltla24_code}{Local Authority Code}
-#' \item{child_mental_wellbeing_score}{Mean mental wellbeing score for S4 pupils.
-#' The Warwick–Edinburgh Mental Wellbeing Scale (WEMWBS) used
-#' here: scoring is between 14-70 with a higher score indicative of greater
-#' positive mental wellbeing}
-#' \item{year}{Time period}
-#' ...
-#' }
-#' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
-"people_child_mental_health"
-
 #' Percentage of Long-Stay Nursing Care Residents with Dementia
 #'
 #' A dataset containing statistics on the percentage of long-stay nursing care
@@ -516,6 +519,17 @@
 #' }
 #' @source \url{https://www.opendata.nhs.scot/dataset/care-home-census/resource/9bf418aa-c54d-45d3-8306-023e81f49f60}
 "people_dementia"
+
+#' Crude prevalence of diabetes
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{diabetes_percent}{Crude prevalence of diabetes (all types)}
+#' ...
+#' }
+#' @source \url{https://www.diabetesinscotland.org.uk/wp-content/uploads/2023/10/Scottish-Diabetes-Survey-2022.pdf}
+"people_diabetes"
 
 #' Percentage of People Aged 16-64 with Long-Term Health Problem/Disability
 #' that Limits Daily Activities
@@ -675,6 +689,22 @@
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
 "people_suicides"
 
+#' Acceptable GP appointments
+#'
+#' A dataset containing the percentage of people who rated their GP practice as
+#' positive for the care provided, by Council (2023/24)
+#'
+#' @format A data frame with 32 rows and 3 variables:
+#' \describe{
+#' \item{ltla24_code}{Local Authority Code}
+#' \item{acceptable_gp_appointments}{The percentage of people who rated their GP
+#' practice as positive for the care provided}
+#' \item{year}{Time period}
+#' ...
+#' }
+#' @source \url{https://www.gov.scot/publications/health-and-care-experience-survey-results-by-geography/}
+"places_gp_appointments"
+
 #' Air pollution (2023)
 #'
 #' A dataset containing population-weighted annual mean PM2.5 data for 2023, by
@@ -758,7 +788,7 @@
 #' are other crimes listed that could potentially count as 'low-level crimes'
 #' but we will avoid making a potentially arbitrary judgement here.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
@@ -777,7 +807,7 @@
 #' - Sexual crimes
 #' - Damage and reckless behaviour
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
@@ -833,7 +863,7 @@
 #' Scottish Council Area in 2022 (latest available data), normalised by the area
 #' in each Council Area (in square km).
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
@@ -850,7 +880,7 @@
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{rough_sleeping_per_10k}{number of homelessness applications where
@@ -890,7 +920,7 @@
 #' A dataset containing volume of road traffic (millions of vehicle miles per
 #' square kilometre) in Scottish Local Authorities.
 #'
-#' @format A data frame with 32 rows and 2 variables:
+#' @format A data frame with 32 rows and 3 variables:
 #' \describe{
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
