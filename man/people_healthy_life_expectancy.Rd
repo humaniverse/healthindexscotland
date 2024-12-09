@@ -8,7 +8,7 @@
 A data frame with 32 rows and 3 variables:
 \describe{
 \item{ltla24_code}{Local Authority Code}
-\item{healthy_life_expectancy}{Population weighted average healthy life
+\item{healthy_life_expectancy_male}{Weighted population average healthy life
 expectancy for men and women}
 \item{year}{Time period - three year aggregate}
 
@@ -23,6 +23,6 @@ people_healthy_life_expectancy
 }
 \description{
 A dataset containing statistics on average healthy life expectancy for men
-and women by Council (2019-2021).
+and women, by Council (2019-2021).
 }
 \keyword{datasets}
