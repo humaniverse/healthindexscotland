@@ -129,7 +129,7 @@ quantise <- function(x) {
 # subdomains
 subdomains <- list()
 subdomains$people_difficulties_in_daily_life <- indicators[c("people_disability")]  # NOTE: missing frailty
-subdomains$people_mental_health              <- indicators[c("people_child_mental_health", "people_mental_health_conditions", "people_suicides")]    # NOTE: missing self-harm
+subdomains$people_mental_health              <- indicators[c("people_mental_health_conditions", "people_suicides")]    # NOTE: missing self-harm
 subdomains$people_mortality                  <- indicators[c("people_avoidable_deaths", "people_infant_mortality", "people_healthy_life_expectancy", "people_all_mortality")]
 subdomains$people_personal_wellbeing         <- indicators[c("people_life_worthwhileness", "people_anxiety", "people_happiness", "people_life_satisfaction")]
 subdomains$people_physical_health_conditions <- indicators[c("people_cancer", "people_cardiovascular_conditions", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: diabetes, kidney, and respiratory are missing
@@ -172,5 +172,10 @@ scores$health_inequalities_quantile <- quantise(scores$health_inequalities_rank)
 
 
 #--- save ----------------------------------------------------------------------
+scotland_health_index_subdomains <- as_tibble(subdomains)
+usethis::use_data(scotland_health_index_subdomains, overwrite = TRUE)
 
-write_csv(scores, "data/index-varimax.csv")
+scotland_health_index <- as_tibble(scores)
+usethis::use_data(scotland_health_index, overwrite = TRUE)
+
+# write_csv(scores, "data/index-varimax.csv")
