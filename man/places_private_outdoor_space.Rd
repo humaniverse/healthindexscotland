@@ -22,7 +22,7 @@ to private outdoor space}
 places_private_outdoor_space
 }
 \description{
-A dataset containing statistics on the percentage of addresses with access
-to private outdoor space, by Council (2020).
+A dataset containing statistics on the percentage of addresses (houses and flats)
+with access to private outdoor space, by Council (2020).
 }
 \keyword{datasets}

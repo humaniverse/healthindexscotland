@@ -842,8 +842,8 @@
 
 #' Percentage of Addresses with Access to Private Outdoor Space (2020)
 #'
-#' A dataset containing statistics on the percentage of addresses with access
-#' to private outdoor space, by Council (2020).
+#' A dataset containing statistics on the percentage of addresses (houses and flats)
+#' with access to private outdoor space, by Council (2020).
 #'
 #' @format A data frame with 32 rows and 3 variables:
 #' \describe{

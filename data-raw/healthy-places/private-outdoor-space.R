@@ -16,12 +16,13 @@ places_private_outdoor_space <- pos_raw |>
   filter(str_detect(...3, "^S")) |>
   mutate(
     year = "2020",
-    `Percentage of adresses with private outdoor space...10` =
-      (`Percentage of adresses with private outdoor space...10` * 100)
+    # Addresses includes houses and flats
+    `Percentage of adresses with private outdoor space...23` =
+      (`Percentage of adresses with private outdoor space...23` * 100)
   ) |>
   select(
     ltla24_code = `...5`,
-    private_outdoor_space_percentage = `Percentage of adresses with private outdoor space...10`,
+    private_outdoor_space_percentage = `Percentage of adresses with private outdoor space...23`,
     year
   )
 
