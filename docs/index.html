@@ -110,24 +110,24 @@
         }
         /* Quintile-based coloring */
         .quintile-1 {
-            background-color: #ffd7d7;
-            color: #842029;
+            background-color: #d7191c;
+            color: #fff;
         }
         .quintile-2 {
-            background-color: #ffe5d0;
-            color: #853d0c;
+            background-color: #fdae61;
+            color: #fff;
         }
         .quintile-3 {
-            background-color: #fff3cd;
-            color: #664d03;
+            background-color: #ffffbf;
+            color: #000;
         }
         .quintile-4 {
-            background-color: #e0f3d7;
-            color: #0f5132;
+            background-color: #abd9e9;
+            color: #fff;
         }
         .quintile-5 {
-            background-color: #d1e7dd;
-            color: #0a3622;
+            background-color: #2c7bb6;
+            color: #fff;
         }
         .legend {
             margin-top: 20px;
@@ -1917,18 +1917,18 @@ Stirling,S12000030,Healthy Places,Economic and working conditions,Workplace safe
                     <button onclick="selectAllRegions()">Select All</button>
                     <button onclick="deselectAllRegions()">Deselect All</button>
                 </div>
-                <div id="scorecard"></div>
                 <div class="legend">
                     <h4>Performance Quintiles</h4>
                     <div class="legend-items">
-                        <div class="legend-item quintile-1">Quintile 1 (Lowest)</div>
+                        <div class="legend-item quintile-1">Quintile 1 (Worst performance)</div>
                         <div class="legend-item quintile-2">Quintile 2</div>
                         <div class="legend-item quintile-3">Quintile 3</div>
                         <div class="legend-item quintile-4">Quintile 4</div>
-                        <div class="legend-item quintile-5">Quintile 5 (Highest)</div>
+                        <div class="legend-item quintile-5">Quintile 5 (Best performance)</div>
                     </div>
                     <p style="margin-top: 10px;">Values are highlighted when regions are selected for comparison</p>
                 </div>
+                <div id="scorecard"></div>
             `;
 
             const regions = [...new Set(healthData.map(row => row.ltla24_name))];
