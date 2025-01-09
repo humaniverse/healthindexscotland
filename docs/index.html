@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scotland Health Index Scorecard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .region-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .domain-section {
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .domain-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+        .subdomain-section {
+            margin: 15px;
+        }
+        .subdomain-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        .indicator-row {
+            display: flex;
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .indicator-name {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .indicator-values {
+            flex: 2;
+            display: flex;
+            gap: 10px;
+        }
+        .value-cell {
+            border-radius: 3px;
+            transition: all 0.3s;
+            width: 20px;
+            height: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* Custom tooltip */
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9em;
+            /*white-space: nowrap;*/
+            white-space: pre;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .value-cell:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .value-cell.highlighted {
+            outline: 2px solid #007bff;
+            font-weight: bold;
+        }
+        /* Quintile-based coloring */
+        .quintile-1 {
+            background-color: #ffd7d7;
+            color: #842029;
+        }
+        .quintile-2 {
+            background-color: #ffe5d0;
+            color: #853d0c;
+        }
+        .quintile-3 {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+        .quintile-4 {
+            background-color: #e0f3d7;
+            color: #0f5132;
+        }
+        .quintile-5 {
+            background-color: #d1e7dd;
+            color: #0a3622;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .legend-items {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .legend-item {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Scotland Health Index Scorecard</h1>
+        <div id="content">
+            <div class="loading">Loading data...</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store data
+        let healthData = [];
+        let selectedRegions = new Set();
+
+        const indicatorUnits = {
+            'Alcohol misuse': 'unique patient admissions per 100k population for alcohol-related conditions',
+            'Cancer screening': 'percent bowel cancer screening uptake',
+            'Child vaccine coverage': 'percent vaccine coverage in children 6 and under',
+            'Drug misuse': 'drug related hospital stays per 100k population',
+            'Early years development': 'percent early childhood reviews with a concern in one or more developmental domains',
+            'Healthy eating': 'percent of people who consume 5 or more fruit and vegetable portions per day',
+            'High blood pressure': 'percent adults with high blood pressure',
+            'Low birth weigh': 'percent babies born not at a healthy birth weight',
+            'National five attainment': 'percent A-C grade for Maths and English',
+            'Overweight obesity adults': 'percent adults clinically classed as overweight and obese.',
+            'Overweight obesity children': 'percent children clinically classed as overweight, obese, and severely obese',
+            'Physical activity': 'percent of people that meet the recommended activity levels',
+            'Pupil absence': 'pupils absent per 1,000 students',
+            'Sedentary behaviour': 'percent people with very low activity levels (<30 mins a week)',
+            'Sexual health': 'sexually transmitted infections (specifically chlamydia) per 100k people',
+            'Smoking': 'percent of people who are current smokers',
+            'Teenage pregnancy': 'teenage pregnancies per 1,000 females aged 15-19',
+            'Young people training': 'percent of 16-19 year olds in education, training or employment',
+            'All mortality': 'deaths per 100,000 people (age and sex standardised)',
+            'Anxiety': '(Average personal ratings on feelings of anxiety out of 10)',
+            'Avoidable deaths': 'avoidable deaths per 100,000 people (age and sex standardised)',
+            'Cancer': 'cancer registrations per 100k people',
+            'Cardiovascular conditions': 'discharges for cardiovascular conditions per 1,000 people',
+            'Dementia': 'percent long-stay nursing care residents with dementia medically diagnosed',
+            'Diabetes': '',
+            'Disability': 'percentage people aged 16-64 with long-Term health problem/disability that limits daily activities by a lot or by a little',
+            'Happiness': '(Average personal measurement of happiness out of 10)',
+            'Healthy life expectancy': 'years of average healthy life expectancy for men and women combined',
+            'Infant mortality': 'infant deaths per 1,000 population',
+            'Life satisfaction': '(Average personal measurements of life satisfaction out of 10)',
+            'Life worthwhileness': '(Average personal measurements of life worthwhileness out of 10)',
+            'Mental health conditions': 'percent people prescribed drugs for depression/anxiety/psychosis',
+            'Musculoskeletal conditions': 'percent people with musculoskeletal conditions (specifically rheumatoid arthritis)',
+            'Suicides': 'deaths by suicide per 100,000 people aged 16+',
+            'Air pollution': 'population-weighted annual mean PM2.5',
+            'Child poverty': 'percent children living in absolute low income families',
+            'Gp appointments': 'percent people who rated their GP practice as positive for the care provided',
+            'Gp travel time': 'minutes travel time to nearest GP service (median)',
+            'Household overcrowding': 'percent households experiencing overcrowding',
+            'Internet access': 'percent households with home internet access',
+            'Job training': 'percent people receiving job-related training',
+            'Low level crime': 'low level crime incidents per 10,000 people',
+            'Personal crime': 'personal crime incidents per 10,000 people',
+            'Pharmacy travel time': 'minutes travel time to nearest pharmacy (median)',
+            'Private outdoor space': 'percent addresses with access to private outdoor space',
+            'Road safety': 'people seriously injured or killed per km^2',
+            'Rough sleeping': 'rough sleepers per 100k people',
+            'Sports centre travel time': 'minutes travel time to nearest sports centre (median)',
+            'Traffic volume': 'total traffic volume per year',
+            'Unemployment': 'estimated percentage of unemployed people',
+            'Workplace safety': 'non-fatal workplace injuries per 100k employees',
+        };
+
+        const csvData = `ltla24_name,ltla24_code,domain,subdomain,indicator,value,quantile
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Alcohol misuse,172.88906730897898,4
+Aberdeen City,S12000033,Healthy Lives,Protective measures,Cancer screening,67.8,3
+Aberdeen City,S12000033,Healthy Lives,Protective measures,Child vaccine coverage,91.85208333333333,1
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Drug misuse,71.84091845329498,4
+Aberdeen City,S12000033,Healthy Lives,Children and young people,Early years development,10.177935943060499,5
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Healthy eating,21,3
+Aberdeen City,S12000033,Healthy Lives,Physiological risk factors,High blood pressure,17,5
+Aberdeen City,S12000033,Healthy Lives,Physiological risk factors,Low birth weight,14.700000000000003,4
+Aberdeen City,S12000033,Healthy Lives,Children and young people,National five attainment,74.7,4
+Aberdeen City,S12000033,Healthy Lives,Physiological risk factors,Overweight obesity adults,59,5
+Aberdeen City,S12000033,Healthy Lives,Physiological risk factors,Overweight obesity children,14.924538848518726,4
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Physical activity,72,5
+Aberdeen City,S12000033,Healthy Lives,Children and young people,Pupil absence,25.7,1
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Sedentary behaviour,17,5
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Sexual health,582,4
+Aberdeen City,S12000033,Healthy Lives,Behavioural risk factors,Smoking,14,3
+Aberdeen City,S12000033,Healthy Lives,Children and young people,Teenage pregnancy,25.4,2
+Aberdeen City,S12000033,Healthy Lives,Children and young people,Young people training,92.8,1
+Aberdeen City,S12000033,Healthy People,Mortality,All mortality,1140,3
+Aberdeen City,S12000033,Healthy People,Personal wellbeing,Anxiety,3.42,1
+Aberdeen City,S12000033,Healthy People,Mortality,Avoidable deaths,314,3
+Aberdeen City,S12000033,Healthy People,Physical health conditions,Cancer,656.5,1
+Aberdeen City,S12000033,Healthy People,Physical health conditions,Cardiovascular conditions,9.777420937597572,5
+Aberdeen City,S12000033,Healthy People,Physical health conditions,Dementia,45,5
+Aberdeen City,S12000033,Healthy People,Physical health conditions,Diabetes,5.6,1
+Aberdeen City,S12000033,Healthy People,Difficulties in daily life,Disability,16.44156706507304,5
+Aberdeen City,S12000033,Healthy People,Personal wellbeing,Happiness,7.49,3
+Aberdeen City,S12000033,Healthy People,Mortality,Healthy life expectancy,60.802780635800026,2
+Aberdeen City,S12000033,Healthy People,Mortality,Infant mortality,3.1,2
+Aberdeen City,S12000033,Healthy People,Personal wellbeing,Life satisfaction,7.35,1
+Aberdeen City,S12000033,Healthy People,Personal wellbeing,Life worthwhileness,7.65,1
+Aberdeen City,S12000033,Healthy People,Mental health,Mental health conditions,17.2,5
+Aberdeen City,S12000033,Healthy People,Physical health conditions,Musculoskeletal conditions,0.6852927148112132,5
+Aberdeen City,S12000033,Healthy People,Mental health,Suicides,14.4,5
+Aberdeen City,S12000033,Healthy Places,Living conditions,Air pollution,3.4991,3
+Aberdeen City,S12000033,Healthy Places,Economic and working conditions,Child poverty,14.2,4
+Aberdeen City,S12000033,Healthy Places,Access to services,Gp appointments,0.6241,1
+Aberdeen City,S12000033,Healthy Places,Access to services,Gp travel time,12.416666666666666,2
+Aberdeen City,S12000033,Healthy Places,Living conditions,Household overcrowding,2.4,2
+Aberdeen City,S12000033,Healthy Places,Access to services,Internet access,0.972,5
+Aberdeen City,S12000033,Healthy Places,Economic and working conditions,Job training,17,5
+Aberdeen City,S12000033,Healthy Places,Crime,Low level crime,93.893572416,1
+Aberdeen City,S12000033,Healthy Places,Crime,Personal crime,283.331103086,1
+Aberdeen City,S12000033,Healthy Places,Access to services,Pharmacy travel time,6.666666666666667,5
+Aberdeen City,S12000033,Healthy Places,Access to green space,Private outdoor space,96.8,3
+Aberdeen City,S12000033,Healthy Places,Living conditions,Road safety,0.15625552626394484,1
+Aberdeen City,S12000033,Healthy Places,Living conditions,Rough sleeping,41.712403951701425,3
+Aberdeen City,S12000033,Healthy Places,Access to services,Sports centre travel time,8.583333333333334,5
+Aberdeen City,S12000033,Healthy Places,Living conditions,Traffic volume,5.118715515543021,1
+Aberdeen City,S12000033,Healthy Places,Economic and working conditions,Unemployment,3.60649578,2
+Aberdeen City,S12000033,Healthy Places,Economic and working conditions,Workplace safety,163,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Alcohol misuse,77.4218009478673,5
+Aberdeenshire,S12000034,Healthy Lives,Protective measures,Cancer screening,73.6,5
+Aberdeenshire,S12000034,Healthy Lives,Protective measures,Child vaccine coverage,96.05416666666666,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Drug misuse,19.619685897157385,5
+Aberdeenshire,S12000034,Healthy Lives,Children and young people,Early years development,10.74074074074074,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Healthy eating,18,2
+Aberdeenshire,S12000034,Healthy Lives,Physiological risk factors,High blood pressure,22,4
+Aberdeenshire,S12000034,Healthy Lives,Physiological risk factors,Low birth weight,17.200000000000003,2
+Aberdeenshire,S12000034,Healthy Lives,Children and young people,National five attainment,74.4,4
+Aberdeenshire,S12000034,Healthy Lives,Physiological risk factors,Overweight obesity adults,70,2
+Aberdeenshire,S12000034,Healthy Lives,Physiological risk factors,Overweight obesity children,13.202042304886943,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Physical activity,68,4
+Aberdeenshire,S12000034,Healthy Lives,Children and young people,Pupil absence,30.6,1
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Sedentary behaviour,16,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Sexual health,582,5
+Aberdeenshire,S12000034,Healthy Lives,Behavioural risk factors,Smoking,14,4
+Aberdeenshire,S12000034,Healthy Lives,Children and young people,Teenage pregnancy,18,5
+Aberdeenshire,S12000034,Healthy Lives,Children and young people,Young people training,95.3,3
+Aberdeenshire,S12000034,Healthy People,Mortality,All mortality,1000,5
+Aberdeenshire,S12000034,Healthy People,Personal wellbeing,Anxiety,3.05,3
+Aberdeenshire,S12000034,Healthy People,Mortality,Avoidable deaths,244.9,5
+Aberdeenshire,S12000034,Healthy People,Physical health conditions,Cancer,593.6,4
+Aberdeenshire,S12000034,Healthy People,Physical health conditions,Cardiovascular conditions,9.493838862559242,5
+Aberdeenshire,S12000034,Healthy People,Physical health conditions,Dementia,48,5
+Aberdeenshire,S12000034,Healthy People,Physical health conditions,Diabetes,5.6,1
+Aberdeenshire,S12000034,Healthy People,Difficulties in daily life,Disability,15.673578377294154,5
+Aberdeenshire,S12000034,Healthy People,Personal wellbeing,Happiness,7.59,4
+Aberdeenshire,S12000034,Healthy People,Mortality,Healthy life expectancy,67.25032129125584,5
+Aberdeenshire,S12000034,Healthy People,Mortality,Infant mortality,2.3,4
+Aberdeenshire,S12000034,Healthy People,Personal wellbeing,Life satisfaction,7.77,5
+Aberdeenshire,S12000034,Healthy People,Personal wellbeing,Life worthwhileness,7.9,4
+Aberdeenshire,S12000034,Healthy People,Mental health,Mental health conditions,17.5,5
+Aberdeenshire,S12000034,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7807950492606285,4
+Aberdeenshire,S12000034,Healthy People,Mental health,Suicides,15.7,4
+Aberdeenshire,S12000034,Healthy Places,Living conditions,Air pollution,2.9259,4
+Aberdeenshire,S12000034,Healthy Places,Economic and working conditions,Child poverty,9.6,5
+Aberdeenshire,S12000034,Healthy Places,Access to services,Gp appointments,0.6241,1
+Aberdeenshire,S12000034,Healthy Places,Access to services,Gp travel time,23.608333333333334,1
+Aberdeenshire,S12000034,Healthy Places,Living conditions,Household overcrowding,1.1,5
+Aberdeenshire,S12000034,Healthy Places,Access to services,Internet access,0.956,5
+Aberdeenshire,S12000034,Healthy Places,Economic and working conditions,Job training,9.3,2
+Aberdeenshire,S12000034,Healthy Places,Crime,Low level crime,27.639810427,5
+Aberdeenshire,S12000034,Healthy Places,Crime,Personal crime,143.696682465,5
+Aberdeenshire,S12000034,Healthy Places,Access to services,Pharmacy travel time,8.6,4
+Aberdeenshire,S12000034,Healthy Places,Access to green space,Private outdoor space,94.1,2
+Aberdeenshire,S12000034,Healthy Places,Living conditions,Road safety,0.01851859560926065,4
+Aberdeenshire,S12000034,Healthy Places,Living conditions,Rough sleeping,35.94128329297821,4
+Aberdeenshire,S12000034,Healthy Places,Access to services,Sports centre travel time,12.400000000000002,2
+Aberdeenshire,S12000034,Healthy Places,Living conditions,Traffic volume,0.31252108573064236,4
+Aberdeenshire,S12000034,Healthy Places,Economic and working conditions,Unemployment,3.03144831,4
+Aberdeenshire,S12000034,Healthy Places,Economic and working conditions,Workplace safety,214,4
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Alcohol misuse,310.83202511773936,2
+Angus,S12000041,Healthy Lives,Protective measures,Cancer screening,70.6,4
+Angus,S12000041,Healthy Lives,Protective measures,Child vaccine coverage,94.35833333333333,3
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Drug misuse,144.01690975782313,2
+Angus,S12000041,Healthy Lives,Children and young people,Early years development,17.35159817351598,3
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+Angus,S12000041,Healthy Lives,Physiological risk factors,High blood pressure,26,2
+Angus,S12000041,Healthy Lives,Physiological risk factors,Low birth weight,16.5,2
+Angus,S12000041,Healthy Lives,Children and young people,National five attainment,65.75,1
+Angus,S12000041,Healthy Lives,Physiological risk factors,Overweight obesity adults,69,2
+Angus,S12000041,Healthy Lives,Physiological risk factors,Overweight obesity children,16.613756613756614,2
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Physical activity,65,3
+Angus,S12000041,Healthy Lives,Children and young people,Pupil absence,23.6,1
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Sedentary behaviour,24,1
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Sexual health,577,4
+Angus,S12000041,Healthy Lives,Behavioural risk factors,Smoking,17,1
+Angus,S12000041,Healthy Lives,Children and young people,Teenage pregnancy,30.3,1
+Angus,S12000041,Healthy Lives,Children and young people,Young people training,93.1,2
+Angus,S12000041,Healthy People,Mortality,All mortality,1070,3
+Angus,S12000041,Healthy People,Personal wellbeing,Anxiety,3.11,3
+Angus,S12000041,Healthy People,Mortality,Avoidable deaths,275.2,4
+Angus,S12000041,Healthy People,Physical health conditions,Cancer,572.1,5
+Angus,S12000041,Healthy People,Physical health conditions,Cardiovascular conditions,14.599686028257455,4
+Angus,S12000041,Healthy People,Physical health conditions,Dementia,52,4
+Angus,S12000041,Healthy People,Physical health conditions,Diabetes,6.1,3
+Angus,S12000041,Healthy People,Difficulties in daily life,Disability,19.730435815223846,3
+Angus,S12000041,Healthy People,Personal wellbeing,Happiness,7.52,3
+Angus,S12000041,Healthy People,Mortality,Healthy life expectancy,61.86877023768515,3
+Angus,S12000041,Healthy People,Mortality,Infant mortality,3.2,2
+Angus,S12000041,Healthy People,Personal wellbeing,Life satisfaction,7.4,2
+Angus,S12000041,Healthy People,Personal wellbeing,Life worthwhileness,7.72,2
+Angus,S12000041,Healthy People,Mental health,Mental health conditions,21.2,2
+Angus,S12000041,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8578122954738316,2
+Angus,S12000041,Healthy People,Mental health,Suicides,15.8,4
+Angus,S12000041,Healthy Places,Living conditions,Air pollution,3.2643,4
+Angus,S12000041,Healthy Places,Economic and working conditions,Child poverty,17.299999999999997,2
+Angus,S12000041,Healthy Places,Access to services,Gp appointments,0.7025,2
+Angus,S12000041,Healthy Places,Access to services,Gp travel time,10.083333333333334,4
+Angus,S12000041,Healthy Places,Living conditions,Household overcrowding,1.5,4
+Angus,S12000041,Healthy Places,Access to services,Internet access,0.8369999999999999,1
+Angus,S12000041,Healthy Places,Economic and working conditions,Job training,17.5,5
+Angus,S12000041,Healthy Places,Crime,Low level crime,48.665620094,4
+Angus,S12000041,Healthy Places,Crime,Personal crime,183.237397524,4
+Angus,S12000041,Healthy Places,Access to services,Pharmacy travel time,8.566666666666666,4
+Angus,S12000041,Healthy Places,Access to green space,Private outdoor space,94.39999999999999,2
+Angus,S12000041,Healthy Places,Living conditions,Road safety,0.021052506487853572,4
+Angus,S12000041,Healthy Places,Living conditions,Rough sleeping,30.48249433896534,4
+Angus,S12000041,Healthy Places,Access to services,Sports centre travel time,14.816666666666666,1
+Angus,S12000041,Healthy Places,Living conditions,Traffic volume,0.3185793427433668,4
+Angus,S12000041,Healthy Places,Economic and working conditions,Unemployment,3.1229932,3
+Angus,S12000041,Healthy Places,Economic and working conditions,Workplace safety,302,2
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Alcohol misuse,524.909008189263,1
+Argyll and Bute,S12000035,Healthy Lives,Protective measures,Cancer screening,67.5,3
+Argyll and Bute,S12000035,Healthy Lives,Protective measures,Child vaccine coverage,91.40541666666667,1
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Drug misuse,162.69256897392063,2
+Argyll and Bute,S12000035,Healthy Lives,Children and young people,Early years development,14.678899082568808,4
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Healthy eating,16,1
+Argyll and Bute,S12000035,Healthy Lives,Physiological risk factors,High blood pressure,32,1
+Argyll and Bute,S12000035,Healthy Lives,Physiological risk factors,Low birth weight,14.700000000000003,4
+Argyll and Bute,S12000035,Healthy Lives,Children and young people,National five attainment,72.05,3
+Argyll and Bute,S12000035,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,2
+Argyll and Bute,S12000035,Healthy Lives,Physiological risk factors,Overweight obesity children,18.421052631578945,1
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Physical activity,66,3
+Argyll and Bute,S12000035,Healthy Lives,Children and young people,Pupil absence,10,4
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Sedentary behaviour,20,3
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Sexual health,374,2
+Argyll and Bute,S12000035,Healthy Lives,Behavioural risk factors,Smoking,16,2
+Argyll and Bute,S12000035,Healthy Lives,Children and young people,Teenage pregnancy,15.7,5
+Argyll and Bute,S12000035,Healthy Lives,Children and young people,Young people training,95.6,4
+Argyll and Bute,S12000035,Healthy People,Mortality,All mortality,1060,4
+Argyll and Bute,S12000035,Healthy People,Personal wellbeing,Anxiety,2.62,5
+Argyll and Bute,S12000035,Healthy People,Mortality,Avoidable deaths,279.2,4
+Argyll and Bute,S12000035,Healthy People,Physical health conditions,Cancer,608,3
+Argyll and Bute,S12000035,Healthy People,Physical health conditions,Cardiovascular conditions,18.767060964513192,3
+Argyll and Bute,S12000035,Healthy People,Physical health conditions,Dementia,54,3
+Argyll and Bute,S12000035,Healthy People,Physical health conditions,Diabetes,6.4,3
+Argyll and Bute,S12000035,Healthy People,Difficulties in daily life,Disability,19.67606478704259,3
+Argyll and Bute,S12000035,Healthy People,Personal wellbeing,Happiness,7.73,5
+Argyll and Bute,S12000035,Healthy People,Mortality,Healthy life expectancy,64.14989329621898,4
+Argyll and Bute,S12000035,Healthy People,Mortality,Infant mortality,1.3,5
+Argyll and Bute,S12000035,Healthy People,Personal wellbeing,Life satisfaction,7.75,5
+Argyll and Bute,S12000035,Healthy People,Personal wellbeing,Life worthwhileness,7.99,5
+Argyll and Bute,S12000035,Healthy People,Mental health,Mental health conditions,19.5,3
+Argyll and Bute,S12000035,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8996357916768231,1
+Argyll and Bute,S12000035,Healthy People,Mental health,Suicides,17.3,3
+Argyll and Bute,S12000035,Healthy Places,Living conditions,Air pollution,2.6818,5
+Argyll and Bute,S12000035,Healthy Places,Economic and working conditions,Child poverty,15.5,3
+Argyll and Bute,S12000035,Healthy Places,Access to services,Gp appointments,0.813,5
+Argyll and Bute,S12000035,Healthy Places,Access to services,Gp travel time,24.866666666666667,1
+Argyll and Bute,S12000035,Healthy Places,Living conditions,Household overcrowding,1.3,4
+Argyll and Bute,S12000035,Healthy Places,Access to services,Internet access,0.903,2
+Argyll and Bute,S12000035,Healthy Places,Economic and working conditions,Job training,10,3
+Argyll and Bute,S12000035,Healthy Places,Crime,Low level crime,22.634212921,5
+Argyll and Bute,S12000035,Healthy Places,Crime,Personal crime,184.372156506,4
+Argyll and Bute,S12000035,Healthy Places,Access to services,Pharmacy travel time,17.633333333333333,1
+Argyll and Bute,S12000035,Healthy Places,Access to green space,Private outdoor space,87.8,1
+Argyll and Bute,S12000035,Healthy Places,Living conditions,Road safety,0.008280152791304975,5
+Argyll and Bute,S12000035,Healthy Places,Living conditions,Rough sleeping,62.63523516683749,2
+Argyll and Bute,S12000035,Healthy Places,Access to services,Sports centre travel time,13.55,2
+Argyll and Bute,S12000035,Healthy Places,Living conditions,Traffic volume,0.08505715574240524,5
+Argyll and Bute,S12000035,Healthy Places,Economic and working conditions,Unemployment,2.91296074,4
+Argyll and Bute,S12000035,Healthy Places,Economic and working conditions,Workplace safety,390,1
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Alcohol misuse,347.28798072929646,2
+East Ayrshire,S12000008,Healthy Lives,Protective measures,Cancer screening,64.8,2
+East Ayrshire,S12000008,Healthy Lives,Protective measures,Child vaccine coverage,93.72,2
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Drug misuse,216.87271891781958,2
+East Ayrshire,S12000008,Healthy Lives,Children and young people,Early years development,19.158878504672895,2
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+East Ayrshire,S12000008,Healthy Lives,Physiological risk factors,High blood pressure,28,1
+East Ayrshire,S12000008,Healthy Lives,Physiological risk factors,Low birth weight,16,3
+East Ayrshire,S12000008,Healthy Lives,Children and young people,National five attainment,71.85000000000001,2
+East Ayrshire,S12000008,Healthy Lives,Physiological risk factors,Overweight obesity adults,75,1
+East Ayrshire,S12000008,Healthy Lives,Physiological risk factors,Overweight obesity children,15.5188246097337,3
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Physical activity,60,1
+East Ayrshire,S12000008,Healthy Lives,Children and young people,Pupil absence,17.3,3
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Sedentary behaviour,24,1
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Sexual health,394.5,2
+East Ayrshire,S12000008,Healthy Lives,Behavioural risk factors,Smoking,13,4
+East Ayrshire,S12000008,Healthy Lives,Children and young people,Teenage pregnancy,25.9,2
+East Ayrshire,S12000008,Healthy Lives,Children and young people,Young people training,94,2
+East Ayrshire,S12000008,Healthy People,Mortality,All mortality,1300,1
+East Ayrshire,S12000008,Healthy People,Personal wellbeing,Anxiety,3.39,2
+East Ayrshire,S12000008,Healthy People,Mortality,Avoidable deaths,394.8,1
+East Ayrshire,S12000008,Healthy People,Physical health conditions,Cancer,598.9,4
+East Ayrshire,S12000008,Healthy People,Physical health conditions,Cardiovascular conditions,20.39205914112468,2
+East Ayrshire,S12000008,Healthy People,Physical health conditions,Dementia,50,4
+East Ayrshire,S12000008,Healthy People,Physical health conditions,Diabetes,7.3,5
+East Ayrshire,S12000008,Healthy People,Difficulties in daily life,Disability,22.7688740918465,1
+East Ayrshire,S12000008,Healthy People,Personal wellbeing,Happiness,7.37,2
+East Ayrshire,S12000008,Healthy People,Mortality,Healthy life expectancy,58.39677184068185,1
+East Ayrshire,S12000008,Healthy People,Mortality,Infant mortality,2.4,4
+East Ayrshire,S12000008,Healthy People,Personal wellbeing,Life satisfaction,7.3,1
+East Ayrshire,S12000008,Healthy People,Personal wellbeing,Life worthwhileness,7.56,1
+East Ayrshire,S12000008,Healthy People,Mental health,Mental health conditions,21.8,2
+East Ayrshire,S12000008,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8491717098010626,2
+East Ayrshire,S12000008,Healthy People,Mental health,Suicides,23.5,1
+East Ayrshire,S12000008,Healthy Places,Living conditions,Air pollution,3.6089,3
+East Ayrshire,S12000008,Healthy Places,Economic and working conditions,Child poverty,21.2,1
+East Ayrshire,S12000008,Healthy Places,Access to services,Gp appointments,0.6468,1
+East Ayrshire,S12000008,Healthy Places,Access to services,Gp travel time,9.633333333333333,4
+East Ayrshire,S12000008,Healthy Places,Living conditions,Household overcrowding,1.7,3
+East Ayrshire,S12000008,Healthy Places,Access to services,Internet access,0.962,5
+East Ayrshire,S12000008,Healthy Places,Economic and working conditions,Job training,9.7,3
+East Ayrshire,S12000008,Healthy Places,Crime,Low level crime,69.191793338,2
+East Ayrshire,S12000008,Healthy Places,Crime,Personal crime,248.691751808,2
+East Ayrshire,S12000008,Healthy Places,Access to services,Pharmacy travel time,11.524999999999999,2
+East Ayrshire,S12000008,Healthy Places,Access to green space,Private outdoor space,96.89999999999999,3
+East Ayrshire,S12000008,Healthy Places,Living conditions,Road safety,0.041719822720024495,3
+East Ayrshire,S12000008,Healthy Places,Living conditions,Rough sleeping,37.267080745341616,4
+East Ayrshire,S12000008,Healthy Places,Access to services,Sports centre travel time,11.649999999999999,2
+East Ayrshire,S12000008,Healthy Places,Living conditions,Traffic volume,0.5613284072009334,3
+East Ayrshire,S12000008,Healthy Places,Economic and working conditions,Unemployment,3.81027272,1
+East Ayrshire,S12000008,Healthy Places,Economic and working conditions,Workplace safety,224,4
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Alcohol misuse,368.64184583114843,2
+North Ayrshire,S12000021,Healthy Lives,Protective measures,Cancer screening,64,1
+North Ayrshire,S12000021,Healthy Lives,Protective measures,Child vaccine coverage,94.37125,3
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Drug misuse,204.4319867049539,2
+North Ayrshire,S12000021,Healthy Lives,Children and young people,Early years development,20.47244094488189,1
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+North Ayrshire,S12000021,Healthy Lives,Physiological risk factors,High blood pressure,27,1
+North Ayrshire,S12000021,Healthy Lives,Physiological risk factors,Low birth weight,18.700000000000003,1
+North Ayrshire,S12000021,Healthy Lives,Children and young people,National five attainment,73.25,3
+North Ayrshire,S12000021,Healthy Lives,Physiological risk factors,Overweight obesity adults,70,2
+North Ayrshire,S12000021,Healthy Lives,Physiological risk factors,Overweight obesity children,15.66265060240964,3
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Physical activity,59,1
+North Ayrshire,S12000021,Healthy Lives,Children and young people,Pupil absence,21.7,1
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Sedentary behaviour,26,1
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Sexual health,394.5,2
+North Ayrshire,S12000021,Healthy Lives,Behavioural risk factors,Smoking,20,1
+North Ayrshire,S12000021,Healthy Lives,Children and young people,Teenage pregnancy,27.7,2
+North Ayrshire,S12000021,Healthy Lives,Children and young people,Young people training,93.9,2
+North Ayrshire,S12000021,Healthy People,Mortality,All mortality,1270,1
+North Ayrshire,S12000021,Healthy People,Personal wellbeing,Anxiety,3.54,1
+North Ayrshire,S12000021,Healthy People,Mortality,Avoidable deaths,392.2,1
+North Ayrshire,S12000021,Healthy People,Physical health conditions,Cancer,658.7,1
+North Ayrshire,S12000021,Healthy People,Physical health conditions,Cardiovascular conditions,18.900292156715857,2
+North Ayrshire,S12000021,Healthy People,Physical health conditions,Dementia,53,3
+North Ayrshire,S12000021,Healthy People,Physical health conditions,Diabetes,7.3,5
+North Ayrshire,S12000021,Healthy People,Difficulties in daily life,Disability,23.992348681513867,1
+North Ayrshire,S12000021,Healthy People,Personal wellbeing,Happiness,7.42,3
+North Ayrshire,S12000021,Healthy People,Mortality,Healthy life expectancy,54.18975413500224,1
+North Ayrshire,S12000021,Healthy People,Mortality,Infant mortality,2.8,4
+North Ayrshire,S12000021,Healthy People,Personal wellbeing,Life satisfaction,7.34,1
+North Ayrshire,S12000021,Healthy People,Personal wellbeing,Life worthwhileness,7.64,1
+North Ayrshire,S12000021,Healthy People,Mental health,Mental health conditions,23,1
+North Ayrshire,S12000021,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8762021474262942,1
+North Ayrshire,S12000021,Healthy People,Mental health,Suicides,20.1,2
+North Ayrshire,S12000021,Healthy Places,Living conditions,Air pollution,3.3219,4
+North Ayrshire,S12000021,Healthy Places,Economic and working conditions,Child poverty,23,1
+North Ayrshire,S12000021,Healthy Places,Access to services,Gp appointments,0.6468,1
+North Ayrshire,S12000021,Healthy Places,Access to services,Gp travel time,8.966666666666667,5
+North Ayrshire,S12000021,Healthy Places,Living conditions,Household overcrowding,1.9,2
+North Ayrshire,S12000021,Healthy Places,Access to services,Internet access,0.921,3
+North Ayrshire,S12000021,Healthy Places,Economic and working conditions,Job training,10.1,3
+North Ayrshire,S12000021,Healthy Places,Crime,Low level crime,81.953704397,2
+North Ayrshire,S12000021,Healthy Places,Crime,Personal crime,255.374934452,1
+North Ayrshire,S12000021,Healthy Places,Access to services,Pharmacy travel time,9.075,3
+North Ayrshire,S12000021,Healthy Places,Access to green space,Private outdoor space,95.8,2
+North Ayrshire,S12000021,Healthy Places,Living conditions,Road safety,0.05534259157345591,3
+North Ayrshire,S12000021,Healthy Places,Living conditions,Rough sleeping,14.973422175638241,5
+North Ayrshire,S12000021,Healthy Places,Access to services,Sports centre travel time,9.424999999999999,4
+North Ayrshire,S12000021,Healthy Places,Living conditions,Traffic volume,0.5597507833429541,3
+North Ayrshire,S12000021,Healthy Places,Economic and working conditions,Unemployment,4.00287333,1
+North Ayrshire,S12000021,Healthy Places,Economic and working conditions,Workplace safety,266,3
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Alcohol misuse,437.79132305485837,2
+South Ayrshire,S12000028,Healthy Lives,Protective measures,Cancer screening,68.4,3
+South Ayrshire,S12000028,Healthy Lives,Protective measures,Child vaccine coverage,95.08333333333333,4
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Drug misuse,305.43319349997404,1
+South Ayrshire,S12000028,Healthy Lives,Children and young people,Early years development,14.987405541561714,4
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+South Ayrshire,S12000028,Healthy Lives,Physiological risk factors,High blood pressure,32,1
+South Ayrshire,S12000028,Healthy Lives,Physiological risk factors,Low birth weight,16.400000000000006,2
+South Ayrshire,S12000028,Healthy Lives,Children and young people,National five attainment,73.85,4
+South Ayrshire,S12000028,Healthy Lives,Physiological risk factors,Overweight obesity adults,64,4
+South Ayrshire,S12000028,Healthy Lives,Physiological risk factors,Overweight obesity children,13.934426229508196,4
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Physical activity,63,2
+South Ayrshire,S12000028,Healthy Lives,Children and young people,Pupil absence,15.7,3
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Sedentary behaviour,24,1
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Sexual health,394.5,2
+South Ayrshire,S12000028,Healthy Lives,Behavioural risk factors,Smoking,15,3
+South Ayrshire,S12000028,Healthy Lives,Children and young people,Teenage pregnancy,23.1,3
+South Ayrshire,S12000028,Healthy Lives,Children and young people,Young people training,96.6,5
+South Ayrshire,S12000028,Healthy People,Mortality,All mortality,1170,2
+South Ayrshire,S12000028,Healthy People,Personal wellbeing,Anxiety,3.22,3
+South Ayrshire,S12000028,Healthy People,Mortality,Avoidable deaths,318.8,2
+South Ayrshire,S12000028,Healthy People,Physical health conditions,Cancer,617.1,3
+South Ayrshire,S12000028,Healthy People,Physical health conditions,Cardiovascular conditions,26.228038723556832,1
+South Ayrshire,S12000028,Healthy People,Physical health conditions,Dementia,47,5
+South Ayrshire,S12000028,Healthy People,Physical health conditions,Diabetes,7.3,5
+South Ayrshire,S12000028,Healthy People,Difficulties in daily life,Disability,21.046475838719605,2
+South Ayrshire,S12000028,Healthy People,Personal wellbeing,Happiness,7.54,4
+South Ayrshire,S12000028,Healthy People,Mortality,Healthy life expectancy,61.03152512227657,3
+South Ayrshire,S12000028,Healthy People,Mortality,Infant mortality,2.6,4
+South Ayrshire,S12000028,Healthy People,Personal wellbeing,Life satisfaction,7.58,3
+South Ayrshire,S12000028,Healthy People,Personal wellbeing,Life worthwhileness,7.98,5
+South Ayrshire,S12000028,Healthy People,Mental health,Mental health conditions,23,1
+South Ayrshire,S12000028,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8992374445924997,1
+South Ayrshire,S12000028,Healthy People,Mental health,Suicides,16,3
+South Ayrshire,S12000028,Healthy Places,Living conditions,Air pollution,3.459,3
+South Ayrshire,S12000028,Healthy Places,Economic and working conditions,Child poverty,17.4,2
+South Ayrshire,S12000028,Healthy Places,Access to services,Gp appointments,0.6468,2
+South Ayrshire,S12000028,Healthy Places,Access to services,Gp travel time,13.583333333333334,2
+South Ayrshire,S12000028,Healthy Places,Living conditions,Household overcrowding,1.7,3
+South Ayrshire,S12000028,Healthy Places,Access to services,Internet access,NA,3
+South Ayrshire,S12000028,Healthy Places,Economic and working conditions,Job training,8.4,1
+South Ayrshire,S12000028,Healthy Places,Crime,Low level crime,102.45607745,1
+South Ayrshire,S12000028,Healthy Places,Crime,Personal crime,206.615274293,4
+South Ayrshire,S12000028,Healthy Places,Access to services,Pharmacy travel time,11.516666666666667,2
+South Ayrshire,S12000028,Healthy Places,Access to green space,Private outdoor space,96.1,3
+South Ayrshire,S12000028,Healthy Places,Living conditions,Road safety,0.035120979406847594,3
+South Ayrshire,S12000028,Healthy Places,Living conditions,Rough sleeping,102.83465975140838,1
+South Ayrshire,S12000028,Healthy Places,Access to services,Sports centre travel time,10.066666666666666,4
+South Ayrshire,S12000028,Healthy Places,Living conditions,Traffic volume,0.5346556539470334,3
+South Ayrshire,S12000028,Healthy Places,Economic and working conditions,Unemployment,3.77312541,1
+South Ayrshire,S12000028,Healthy Places,Economic and working conditions,Workplace safety,349,1
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Alcohol misuse,203.47543228899158,4
+Scottish Borders,S12000026,Healthy Lives,Protective measures,Cancer screening,71.7,5
+Scottish Borders,S12000026,Healthy Lives,Protective measures,Child vaccine coverage,94.10125,3
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Drug misuse,69.91328812263004,4
+Scottish Borders,S12000026,Healthy Lives,Children and young people,Early years development,11.453201970443349,5
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Healthy eating,23,4
+Scottish Borders,S12000026,Healthy Lives,Physiological risk factors,High blood pressure,24,3
+Scottish Borders,S12000026,Healthy Lives,Physiological risk factors,Low birth weight,16.099999999999994,2
+Scottish Borders,S12000026,Healthy Lives,Children and young people,National five attainment,73.75,4
+Scottish Borders,S12000026,Healthy Lives,Physiological risk factors,Overweight obesity adults,65,4
+Scottish Borders,S12000026,Healthy Lives,Physiological risk factors,Overweight obesity children,13.05732484076433,5
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Physical activity,67,4
+Scottish Borders,S12000026,Healthy Lives,Children and young people,Pupil absence,9,5
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Sedentary behaviour,20,4
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Sexual health,307.5,1
+Scottish Borders,S12000026,Healthy Lives,Behavioural risk factors,Smoking,16,2
+Scottish Borders,S12000026,Healthy Lives,Children and young people,Teenage pregnancy,20.2,4
+Scottish Borders,S12000026,Healthy Lives,Children and young people,Young people training,95.6,4
+Scottish Borders,S12000026,Healthy People,Mortality,All mortality,1000,5
+Scottish Borders,S12000026,Healthy People,Personal wellbeing,Anxiety,2.86,4
+Scottish Borders,S12000026,Healthy People,Mortality,Avoidable deaths,248.8,4
+Scottish Borders,S12000026,Healthy People,Physical health conditions,Cancer,560.1,5
+Scottish Borders,S12000026,Healthy People,Physical health conditions,Cardiovascular conditions,19.268960794384522,2
+Scottish Borders,S12000026,Healthy People,Physical health conditions,Dementia,60,1
+Scottish Borders,S12000026,Healthy People,Physical health conditions,Diabetes,6.4,3
+Scottish Borders,S12000026,Healthy People,Difficulties in daily life,Disability,18.558569176598848,4
+Scottish Borders,S12000026,Healthy People,Personal wellbeing,Happiness,7.34,2
+Scottish Borders,S12000026,Healthy People,Mortality,Healthy life expectancy,64.0661541113601,4
+Scottish Borders,S12000026,Healthy People,Mortality,Infant mortality,2.4,4
+Scottish Borders,S12000026,Healthy People,Personal wellbeing,Life satisfaction,7.58,4
+Scottish Borders,S12000026,Healthy People,Personal wellbeing,Life worthwhileness,7.91,4
+Scottish Borders,S12000026,Healthy People,Mental health,Mental health conditions,20.6,3
+Scottish Borders,S12000026,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8798573057343402,1
+Scottish Borders,S12000026,Healthy People,Mental health,Suicides,18,2
+Scottish Borders,S12000026,Healthy Places,Living conditions,Air pollution,3.6663,2
+Scottish Borders,S12000026,Healthy Places,Economic and working conditions,Child poverty,15.4,3
+Scottish Borders,S12000026,Healthy Places,Access to services,Gp appointments,0.7365,4
+Scottish Borders,S12000026,Healthy Places,Access to services,Gp travel time,10.308333333333334,4
+Scottish Borders,S12000026,Healthy Places,Living conditions,Household overcrowding,1.3,4
+Scottish Borders,S12000026,Healthy Places,Access to services,Internet access,0.94,4
+Scottish Borders,S12000026,Healthy Places,Economic and working conditions,Job training,9.6,2
+Scottish Borders,S12000026,Healthy Places,Crime,Low level crime,32.699880158,4
+Scottish Borders,S12000026,Healthy Places,Crime,Personal crime,208.86834446199998,3
+Scottish Borders,S12000026,Healthy Places,Access to services,Pharmacy travel time,7.841666666666667,5
+Scottish Borders,S12000026,Healthy Places,Access to green space,Private outdoor space,93.30000000000001,1
+Scottish Borders,S12000026,Healthy Places,Living conditions,Road safety,0.013082285007909243,4
+Scottish Borders,S12000026,Healthy Places,Living conditions,Rough sleeping,42.87061647946498,3
+Scottish Borders,S12000026,Healthy Places,Access to services,Sports centre travel time,13.533333333333333,2
+Scottish Borders,S12000026,Healthy Places,Living conditions,Traffic volume,0.1644569828252333,5
+Scottish Borders,S12000026,Healthy Places,Economic and working conditions,Unemployment,3.3137601400000003,2
+Scottish Borders,S12000026,Healthy Places,Economic and working conditions,Workplace safety,325,1
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Alcohol misuse,926.1835748792271,1
+Clackmannanshire,S12000005,Healthy Lives,Protective measures,Cancer screening,65.7,2
+Clackmannanshire,S12000005,Healthy Lives,Protective measures,Child vaccine coverage,93.58791666666667,2
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Drug misuse,624.4233822650125,1
+Clackmannanshire,S12000005,Healthy Lives,Children and young people,Early years development,17.5,3
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Healthy eating,19,2
+Clackmannanshire,S12000005,Healthy Lives,Physiological risk factors,High blood pressure,26,2
+Clackmannanshire,S12000005,Healthy Lives,Physiological risk factors,Low birth weight,15.200000000000003,4
+Clackmannanshire,S12000005,Healthy Lives,Children and young people,National five attainment,66.05000000000001,1
+Clackmannanshire,S12000005,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,3
+Clackmannanshire,S12000005,Healthy Lives,Physiological risk factors,Overweight obesity children,17.708333333333336,1
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Physical activity,59,1
+Clackmannanshire,S12000005,Healthy Lives,Children and young people,Pupil absence,0,5
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Sedentary behaviour,23,1
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Sexual health,477.5,3
+Clackmannanshire,S12000005,Healthy Lives,Behavioural risk factors,Smoking,18,1
+Clackmannanshire,S12000005,Healthy Lives,Children and young people,Teenage pregnancy,36.7,1
+Clackmannanshire,S12000005,Healthy Lives,Children and young people,Young people training,91.6,1
+Clackmannanshire,S12000005,Healthy People,Mortality,All mortality,1260,2
+Clackmannanshire,S12000005,Healthy People,Personal wellbeing,Anxiety,3.4,1
+Clackmannanshire,S12000005,Healthy People,Mortality,Avoidable deaths,391.1,2
+Clackmannanshire,S12000005,Healthy People,Physical health conditions,Cancer,667.2,1
+Clackmannanshire,S12000005,Healthy People,Physical health conditions,Cardiovascular conditions,25.681159420289852,1
+Clackmannanshire,S12000005,Healthy People,Physical health conditions,Dementia,50,4
+Clackmannanshire,S12000005,Healthy People,Physical health conditions,Diabetes,6.6,4
+Clackmannanshire,S12000005,Healthy People,Difficulties in daily life,Disability,22.663942039754783,1
+Clackmannanshire,S12000005,Healthy People,Personal wellbeing,Happiness,7.23,1
+Clackmannanshire,S12000005,Healthy People,Mortality,Healthy life expectancy,60.38218083042298,2
+Clackmannanshire,S12000005,Healthy People,Mortality,Infant mortality,3,2
+Clackmannanshire,S12000005,Healthy People,Personal wellbeing,Life satisfaction,7.42,2
+Clackmannanshire,S12000005,Healthy People,Personal wellbeing,Life worthwhileness,7.73,2
+Clackmannanshire,S12000005,Healthy People,Mental health,Mental health conditions,22,1
+Clackmannanshire,S12000005,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8390005023897692,2
+Clackmannanshire,S12000005,Healthy People,Mental health,Suicides,20.6,2
+Clackmannanshire,S12000005,Healthy Places,Living conditions,Air pollution,3.6821,2
+Clackmannanshire,S12000005,Healthy Places,Economic and working conditions,Child poverty,21.9,1
+Clackmannanshire,S12000005,Healthy Places,Access to services,Gp appointments,0.7078,3
+Clackmannanshire,S12000005,Healthy Places,Access to services,Gp travel time,23.6,1
+Clackmannanshire,S12000005,Healthy Places,Living conditions,Household overcrowding,1.9,3
+Clackmannanshire,S12000005,Healthy Places,Access to services,Internet access,0.909,3
+Clackmannanshire,S12000005,Healthy Places,Economic and working conditions,Job training,9,2
+Clackmannanshire,S12000005,Healthy Places,Crime,Low level crime,94.685990338,1
+Clackmannanshire,S12000005,Healthy Places,Crime,Personal crime,244.444444441,2
+Clackmannanshire,S12000005,Healthy Places,Access to services,Pharmacy travel time,17.291666666666664,1
+Clackmannanshire,S12000005,Healthy Places,Access to green space,Private outdoor space,97.8,4
+Clackmannanshire,S12000005,Healthy Places,Living conditions,Road safety,0.10678845272908359,2
+Clackmannanshire,S12000005,Healthy Places,Living conditions,Rough sleeping,86.63842895648826,1
+Clackmannanshire,S12000005,Healthy Places,Access to services,Sports centre travel time,14.558333333333334,1
+Clackmannanshire,S12000005,Healthy Places,Living conditions,Traffic volume,1.3241768138406367,2
+Clackmannanshire,S12000005,Healthy Places,Economic and working conditions,Unemployment,3.44639801,2
+Clackmannanshire,S12000005,Healthy Places,Economic and working conditions,Workplace safety,334,1
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Alcohol misuse,254.71633395074434,3
+Dumfries and Galloway,S12000006,Healthy Lives,Protective measures,Cancer screening,69.7,4
+Dumfries and Galloway,S12000006,Healthy Lives,Protective measures,Child vaccine coverage,95.58291666666666,5
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Drug misuse,142.51833709126157,3
+Dumfries and Galloway,S12000006,Healthy Lives,Children and young people,Early years development,20.932277924362356,1
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Healthy eating,20,2
+Dumfries and Galloway,S12000006,Healthy Lives,Physiological risk factors,High blood pressure,25,2
+Dumfries and Galloway,S12000006,Healthy Lives,Physiological risk factors,Low birth weight,17.799999999999997,1
+Dumfries and Galloway,S12000006,Healthy Lives,Children and young people,National five attainment,68.95,1
+Dumfries and Galloway,S12000006,Healthy Lives,Physiological risk factors,Overweight obesity adults,72,1
+Dumfries and Galloway,S12000006,Healthy Lives,Physiological risk factors,Overweight obesity children,18.54251012145749,1
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Physical activity,66,3
+Dumfries and Galloway,S12000006,Healthy Lives,Children and young people,Pupil absence,21.1,2
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Sedentary behaviour,22,2
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Sexual health,284.5,1
+Dumfries and Galloway,S12000006,Healthy Lives,Behavioural risk factors,Smoking,15,3
+Dumfries and Galloway,S12000006,Healthy Lives,Children and young people,Teenage pregnancy,24.1,3
+Dumfries and Galloway,S12000006,Healthy Lives,Children and young people,Young people training,94.9,3
+Dumfries and Galloway,S12000006,Healthy People,Mortality,All mortality,1110,3
+Dumfries and Galloway,S12000006,Healthy People,Personal wellbeing,Anxiety,3.68,1
+Dumfries and Galloway,S12000006,Healthy People,Mortality,Avoidable deaths,301.1,3
+Dumfries and Galloway,S12000006,Healthy People,Physical health conditions,Cancer,621.7,3
+Dumfries and Galloway,S12000006,Healthy People,Physical health conditions,Cardiovascular conditions,21.73286684502984,1
+Dumfries and Galloway,S12000006,Healthy People,Physical health conditions,Dementia,53,3
+Dumfries and Galloway,S12000006,Healthy People,Physical health conditions,Diabetes,7.2,5
+Dumfries and Galloway,S12000006,Healthy People,Difficulties in daily life,Disability,21.62162162162162,2
+Dumfries and Galloway,S12000006,Healthy People,Personal wellbeing,Happiness,7.63,4
+Dumfries and Galloway,S12000006,Healthy People,Mortality,Healthy life expectancy,60.70751797835876,2
+Dumfries and Galloway,S12000006,Healthy People,Mortality,Infant mortality,2.9,3
+Dumfries and Galloway,S12000006,Healthy People,Personal wellbeing,Life satisfaction,7.66,4
+Dumfries and Galloway,S12000006,Healthy People,Personal wellbeing,Life worthwhileness,7.81,3
+Dumfries and Galloway,S12000006,Healthy People,Mental health,Mental health conditions,21.1,2
+Dumfries and Galloway,S12000006,Healthy People,Physical health conditions,Musculoskeletal conditions,0.9193475898549944,1
+Dumfries and Galloway,S12000006,Healthy People,Mental health,Suicides,15.4,4
+Dumfries and Galloway,S12000006,Healthy Places,Living conditions,Air pollution,3.5525,3
+Dumfries and Galloway,S12000006,Healthy Places,Economic and working conditions,Child poverty,19.6,1
+Dumfries and Galloway,S12000006,Healthy Places,Access to services,Gp appointments,0.7696,5
+Dumfries and Galloway,S12000006,Healthy Places,Access to services,Gp travel time,13.641666666666666,2
+Dumfries and Galloway,S12000006,Healthy Places,Living conditions,Household overcrowding,1.3,5
+Dumfries and Galloway,S12000006,Healthy Places,Access to services,Internet access,0.857,1
+Dumfries and Galloway,S12000006,Healthy Places,Economic and working conditions,Job training,10.6,3
+Dumfries and Galloway,S12000006,Healthy Places,Crime,Low level crime,42.601358304,4
+Dumfries and Galloway,S12000006,Healthy Places,Crime,Personal crime,257.940591343,1
+Dumfries and Galloway,S12000006,Healthy Places,Access to services,Pharmacy travel time,14.358333333333334,1
+Dumfries and Galloway,S12000006,Healthy Places,Access to green space,Private outdoor space,93.89999999999999,1
+Dumfries and Galloway,S12000006,Healthy Places,Living conditions,Road safety,0.013672097335951913,4
+Dumfries and Galloway,S12000006,Healthy Places,Living conditions,Rough sleeping,102.97247202581175,1
+Dumfries and Galloway,S12000006,Healthy Places,Access to services,Sports centre travel time,14.683333333333334,1
+Dumfries and Galloway,S12000006,Healthy Places,Living conditions,Traffic volume,0.21758832180682564,4
+Dumfries and Galloway,S12000006,Healthy Places,Economic and working conditions,Unemployment,3.39843909,2
+Dumfries and Galloway,S12000006,Healthy Places,Economic and working conditions,Workplace safety,334,1
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Alcohol misuse,242.88860341347038,4
+East Dunbartonshire,S12000045,Healthy Lives,Protective measures,Cancer screening,71.9,5
+East Dunbartonshire,S12000045,Healthy Lives,Protective measures,Child vaccine coverage,96.04541666666667,5
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Drug misuse,76.67143850989025,4
+East Dunbartonshire,S12000045,Healthy Lives,Children and young people,Early years development,17.20647773279352,3
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Healthy eating,24,4
+East Dunbartonshire,S12000045,Healthy Lives,Physiological risk factors,High blood pressure,21,5
+East Dunbartonshire,S12000045,Healthy Lives,Physiological risk factors,Low birth weight,13.200000000000003,5
+East Dunbartonshire,S12000045,Healthy Lives,Children and young people,National five attainment,83.2,5
+East Dunbartonshire,S12000045,Healthy Lives,Physiological risk factors,Overweight obesity adults,60,5
+East Dunbartonshire,S12000045,Healthy Lives,Physiological risk factors,Overweight obesity children,11.769686706181202,5
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Physical activity,66,3
+East Dunbartonshire,S12000045,Healthy Lives,Children and young people,Pupil absence,7.9,5
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Sedentary behaviour,19,4
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Sexual health,465,2
+East Dunbartonshire,S12000045,Healthy Lives,Behavioural risk factors,Smoking,7,5
+East Dunbartonshire,S12000045,Healthy Lives,Children and young people,Teenage pregnancy,14,5
+East Dunbartonshire,S12000045,Healthy Lives,Children and young people,Young people training,97.5,5
+East Dunbartonshire,S12000045,Healthy People,Mortality,All mortality,930.0000000000001,5
+East Dunbartonshire,S12000045,Healthy People,Personal wellbeing,Anxiety,2.8,4
+East Dunbartonshire,S12000045,Healthy People,Mortality,Avoidable deaths,208.8,5
+East Dunbartonshire,S12000045,Healthy People,Physical health conditions,Cancer,576.5,5
+East Dunbartonshire,S12000045,Healthy People,Physical health conditions,Cardiovascular conditions,19.57239860524867,2
+East Dunbartonshire,S12000045,Healthy People,Physical health conditions,Dementia,51,4
+East Dunbartonshire,S12000045,Healthy People,Physical health conditions,Diabetes,6,2
+East Dunbartonshire,S12000045,Healthy People,Difficulties in daily life,Disability,16.09720733783017,5
+East Dunbartonshire,S12000045,Healthy People,Personal wellbeing,Happiness,7.63,4
+East Dunbartonshire,S12000045,Healthy People,Mortality,Healthy life expectancy,65.9874233241506,5
+East Dunbartonshire,S12000045,Healthy People,Mortality,Infant mortality,1.3,5
+East Dunbartonshire,S12000045,Healthy People,Personal wellbeing,Life satisfaction,7.68,4
+East Dunbartonshire,S12000045,Healthy People,Personal wellbeing,Life worthwhileness,8.02,5
+East Dunbartonshire,S12000045,Healthy People,Mental health,Mental health conditions,18.5,4
+East Dunbartonshire,S12000045,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8044860317762822,3
+East Dunbartonshire,S12000045,Healthy People,Mental health,Suicides,13.4,5
+East Dunbartonshire,S12000045,Healthy Places,Living conditions,Air pollution,3.9228,1
+East Dunbartonshire,S12000045,Healthy Places,Economic and working conditions,Child poverty,8.9,5
+East Dunbartonshire,S12000045,Healthy Places,Access to services,Gp appointments,0.7033,2
+East Dunbartonshire,S12000045,Healthy Places,Access to services,Gp travel time,10.475,4
+East Dunbartonshire,S12000045,Healthy Places,Living conditions,Household overcrowding,1.6,4
+East Dunbartonshire,S12000045,Healthy Places,Access to services,Internet access,0.921,3
+East Dunbartonshire,S12000045,Healthy Places,Economic and working conditions,Job training,5.6,1
+East Dunbartonshire,S12000045,Healthy Places,Crime,Low level crime,34.134703615,4
+East Dunbartonshire,S12000045,Healthy Places,Crime,Personal crime,95.155074325,5
+East Dunbartonshire,S12000045,Healthy Places,Access to services,Pharmacy travel time,10.283333333333333,2
+East Dunbartonshire,S12000045,Healthy Places,Access to green space,Private outdoor space,98.4,5
+East Dunbartonshire,S12000045,Healthy Places,Living conditions,Road safety,0.13755057870921056,2
+East Dunbartonshire,S12000045,Healthy Places,Living conditions,Rough sleeping,18.309988098507738,5
+East Dunbartonshire,S12000045,Healthy Places,Access to services,Sports centre travel time,9.391666666666666,4
+East Dunbartonshire,S12000045,Healthy Places,Living conditions,Traffic volume,1.9996415379851482,2
+East Dunbartonshire,S12000045,Healthy Places,Economic and working conditions,Unemployment,2.85243268,4
+East Dunbartonshire,S12000045,Healthy Places,Economic and working conditions,Workplace safety,202,5
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Alcohol misuse,721.762773309165,1
+West Dunbartonshire,S12000039,Healthy Lives,Protective measures,Cancer screening,62.9,1
+West Dunbartonshire,S12000039,Healthy Lives,Protective measures,Child vaccine coverage,94.38,4
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Drug misuse,328.93610957354485,1
+West Dunbartonshire,S12000039,Healthy Lives,Children and young people,Early years development,27.74798927613941,1
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Healthy eating,17,2
+West Dunbartonshire,S12000039,Healthy Lives,Physiological risk factors,High blood pressure,25,2
+West Dunbartonshire,S12000039,Healthy Lives,Physiological risk factors,Low birth weight,12.900000000000006,5
+West Dunbartonshire,S12000039,Healthy Lives,Children and young people,National five attainment,73.1,3
+West Dunbartonshire,S12000039,Healthy Lives,Physiological risk factors,Overweight obesity adults,71,1
+West Dunbartonshire,S12000039,Healthy Lives,Physiological risk factors,Overweight obesity children,18.53600944510035,1
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Physical activity,66,4
+West Dunbartonshire,S12000039,Healthy Lives,Children and young people,Pupil absence,20.5,2
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Sedentary behaviour,20,4
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Sexual health,465,2
+West Dunbartonshire,S12000039,Healthy Lives,Behavioural risk factors,Smoking,19,1
+West Dunbartonshire,S12000039,Healthy Lives,Children and young people,Teenage pregnancy,35.4,1
+West Dunbartonshire,S12000039,Healthy Lives,Children and young people,Young people training,93,1
+West Dunbartonshire,S12000039,Healthy People,Mortality,All mortality,1290,1
+West Dunbartonshire,S12000039,Healthy People,Personal wellbeing,Anxiety,2.89,4
+West Dunbartonshire,S12000039,Healthy People,Mortality,Avoidable deaths,428.3,1
+West Dunbartonshire,S12000039,Healthy People,Physical health conditions,Cancer,698.4,1
+West Dunbartonshire,S12000039,Healthy People,Physical health conditions,Cardiovascular conditions,26.985385748272346,1
+West Dunbartonshire,S12000039,Healthy People,Physical health conditions,Dementia,56,2
+West Dunbartonshire,S12000039,Healthy People,Physical health conditions,Diabetes,6,2
+West Dunbartonshire,S12000039,Healthy People,Difficulties in daily life,Disability,23.750067369706986,1
+West Dunbartonshire,S12000039,Healthy People,Personal wellbeing,Happiness,7.23,1
+West Dunbartonshire,S12000039,Healthy People,Mortality,Healthy life expectancy,56.556632873903645,1
+West Dunbartonshire,S12000039,Healthy People,Mortality,Infant mortality,3.6,1
+West Dunbartonshire,S12000039,Healthy People,Personal wellbeing,Life satisfaction,7.25,1
+West Dunbartonshire,S12000039,Healthy People,Personal wellbeing,Life worthwhileness,7.68,2
+West Dunbartonshire,S12000039,Healthy People,Mental health,Mental health conditions,24.1,1
+West Dunbartonshire,S12000039,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7783291715303741,4
+West Dunbartonshire,S12000039,Healthy People,Mental health,Suicides,19,2
+West Dunbartonshire,S12000039,Healthy Places,Living conditions,Air pollution,3.4264,3
+West Dunbartonshire,S12000039,Healthy Places,Economic and working conditions,Child poverty,19.6,1
+West Dunbartonshire,S12000039,Healthy Places,Access to services,Gp appointments,0.7033,2
+West Dunbartonshire,S12000039,Healthy Places,Access to services,Gp travel time,12.95,2
+West Dunbartonshire,S12000039,Healthy Places,Living conditions,Household overcrowding,2.6,1
+West Dunbartonshire,S12000039,Healthy Places,Access to services,Internet access,0.805,1
+West Dunbartonshire,S12000039,Healthy Places,Economic and working conditions,Job training,9.2,2
+West Dunbartonshire,S12000039,Healthy Places,Crime,Low level crime,83.267248216,2
+West Dunbartonshire,S12000039,Healthy Places,Crime,Personal crime,280.389713377,1
+West Dunbartonshire,S12000039,Healthy Places,Access to services,Pharmacy travel time,11.525000000000002,1
+West Dunbartonshire,S12000039,Healthy Places,Access to green space,Private outdoor space,98.2,5
+West Dunbartonshire,S12000039,Healthy Places,Living conditions,Road safety,0.09024766114233423,2
+West Dunbartonshire,S12000039,Healthy Places,Living conditions,Rough sleeping,67.6056338028169,2
+West Dunbartonshire,S12000039,Healthy Places,Access to services,Sports centre travel time,11.091666666666667,3
+West Dunbartonshire,S12000039,Healthy Places,Living conditions,Traffic volume,2.3560280036970633,2
+West Dunbartonshire,S12000039,Healthy Places,Economic and working conditions,Unemployment,3.56881341,2
+West Dunbartonshire,S12000039,Healthy Places,Economic and working conditions,Workplace safety,206,4
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Alcohol misuse,359.62251432423324,2
+Dundee City,S12000042,Healthy Lives,Protective measures,Cancer screening,62.6,1
+Dundee City,S12000042,Healthy Lives,Protective measures,Child vaccine coverage,89.93333333333334,1
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Drug misuse,301.50524318669903,1
+Dundee City,S12000042,Healthy Lives,Children and young people,Early years development,18.181818181818183,2
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Healthy eating,20,3
+Dundee City,S12000042,Healthy Lives,Physiological risk factors,High blood pressure,22,4
+Dundee City,S12000042,Healthy Lives,Physiological risk factors,Low birth weight,15.200000000000003,4
+Dundee City,S12000042,Healthy Lives,Children and young people,National five attainment,73.15,3
+Dundee City,S12000042,Healthy Lives,Physiological risk factors,Overweight obesity adults,63,5
+Dundee City,S12000042,Healthy Lives,Physiological risk factors,Overweight obesity children,17.08238851095994,2
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Physical activity,62,1
+Dundee City,S12000042,Healthy Lives,Children and young people,Pupil absence,20.2,2
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Sedentary behaviour,23,2
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Sexual health,577,4
+Dundee City,S12000042,Healthy Lives,Behavioural risk factors,Smoking,17,2
+Dundee City,S12000042,Healthy Lives,Children and young people,Teenage pregnancy,38.7,1
+Dundee City,S12000042,Healthy Lives,Children and young people,Young people training,91.2,1
+Dundee City,S12000042,Healthy People,Mortality,All mortality,1290,1
+Dundee City,S12000042,Healthy People,Personal wellbeing,Anxiety,3.63,1
+Dundee City,S12000042,Healthy People,Mortality,Avoidable deaths,442.1,1
+Dundee City,S12000042,Healthy People,Physical health conditions,Cancer,637.8,2
+Dundee City,S12000042,Healthy People,Physical health conditions,Cardiovascular conditions,13.151331311088642,4
+Dundee City,S12000042,Healthy People,Physical health conditions,Dementia,61,1
+Dundee City,S12000042,Healthy People,Physical health conditions,Diabetes,6.1,3
+Dundee City,S12000042,Healthy People,Difficulties in daily life,Disability,22.142218791891782,2
+Dundee City,S12000042,Healthy People,Personal wellbeing,Happiness,7.04,1
+Dundee City,S12000042,Healthy People,Mortality,Healthy life expectancy,57.76433793663688,1
+Dundee City,S12000042,Healthy People,Mortality,Infant mortality,6.6,1
+Dundee City,S12000042,Healthy People,Personal wellbeing,Life satisfaction,7.4,2
+Dundee City,S12000042,Healthy People,Personal wellbeing,Life worthwhileness,7.69,2
+Dundee City,S12000042,Healthy People,Mental health,Mental health conditions,23,1
+Dundee City,S12000042,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7774793239376102,4
+Dundee City,S12000042,Healthy People,Mental health,Suicides,26.2,1
+Dundee City,S12000042,Healthy Places,Living conditions,Air pollution,3.5646,3
+Dundee City,S12000042,Healthy Places,Economic and working conditions,Child poverty,20.4,1
+Dundee City,S12000042,Healthy Places,Access to services,Gp appointments,0.7025,2
+Dundee City,S12000042,Healthy Places,Access to services,Gp travel time,10.7,4
+Dundee City,S12000042,Healthy Places,Living conditions,Household overcrowding,3.2,1
+Dundee City,S12000042,Healthy Places,Access to services,Internet access,0.95,4
+Dundee City,S12000042,Healthy Places,Economic and working conditions,Job training,8.6,1
+Dundee City,S12000042,Healthy Places,Crime,Low level crime,147.08459724,1
+Dundee City,S12000042,Healthy Places,Crime,Personal crime,336.905965626,1
+Dundee City,S12000042,Healthy Places,Access to services,Pharmacy travel time,8.9,4
+Dundee City,S12000042,Healthy Places,Access to green space,Private outdoor space,97.2,3
+Dundee City,S12000042,Healthy Places,Living conditions,Road safety,0.6686496978025651,1
+Dundee City,S12000042,Healthy Places,Living conditions,Rough sleeping,56.519715406609485,3
+Dundee City,S12000042,Healthy Places,Access to services,Sports centre travel time,8.116666666666667,5
+Dundee City,S12000042,Healthy Places,Living conditions,Traffic volume,8.857936871639481,1
+Dundee City,S12000042,Healthy Places,Economic and working conditions,Unemployment,4.593352609999999,1
+Dundee City,S12000042,Healthy Places,Economic and working conditions,Workplace safety,203,4
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Alcohol misuse,69.55474863589585,5
+City of Edinburgh,S12000036,Healthy Lives,Protective measures,Cancer screening,66.5,2
+City of Edinburgh,S12000036,Healthy Lives,Protective measures,Child vaccine coverage,92.66041666666666,2
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Drug misuse,31.92145846983359,5
+City of Edinburgh,S12000036,Healthy Lives,Children and young people,Early years development,11.721887550200803,5
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Healthy eating,33,5
+City of Edinburgh,S12000036,Healthy Lives,Physiological risk factors,High blood pressure,15,5
+City of Edinburgh,S12000036,Healthy Lives,Physiological risk factors,Low birth weight,15.299999999999997,3
+City of Edinburgh,S12000036,Healthy Lives,Children and young people,National five attainment,75,4
+City of Edinburgh,S12000036,Healthy Lives,Physiological risk factors,Overweight obesity adults,53,5
+City of Edinburgh,S12000036,Healthy Lives,Physiological risk factors,Overweight obesity children,12.190706095353047,5
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Physical activity,76,5
+City of Edinburgh,S12000036,Healthy Lives,Children and young people,Pupil absence,13.7,4
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Sedentary behaviour,14,5
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Sexual health,659.5,5
+City of Edinburgh,S12000036,Healthy Lives,Behavioural risk factors,Smoking,14,4
+City of Edinburgh,S12000036,Healthy Lives,Children and young people,Teenage pregnancy,22.1,3
+City of Edinburgh,S12000036,Healthy Lives,Children and young people,Young people training,95,3
+City of Edinburgh,S12000036,Healthy People,Mortality,All mortality,1090,3
+City of Edinburgh,S12000036,Healthy People,Personal wellbeing,Anxiety,3.55,1
+City of Edinburgh,S12000036,Healthy People,Mortality,Avoidable deaths,284.9,4
+City of Edinburgh,S12000036,Healthy People,Physical health conditions,Cancer,631.3,2
+City of Edinburgh,S12000036,Healthy People,Physical health conditions,Cardiovascular conditions,8.431231674401445,5
+City of Edinburgh,S12000036,Healthy People,Physical health conditions,Dementia,58,2
+City of Edinburgh,S12000036,Healthy People,Physical health conditions,Diabetes,5.3,1
+City of Edinburgh,S12000036,Healthy People,Difficulties in daily life,Disability,16.22511277732875,5
+City of Edinburgh,S12000036,Healthy People,Personal wellbeing,Happiness,7.25,1
+City of Edinburgh,S12000036,Healthy People,Mortality,Healthy life expectancy,64.64046650331453,4
+City of Edinburgh,S12000036,Healthy People,Mortality,Infant mortality,3.5,2
+City of Edinburgh,S12000036,Healthy People,Personal wellbeing,Life satisfaction,7.69,4
+City of Edinburgh,S12000036,Healthy People,Personal wellbeing,Life worthwhileness,7.88,4
+City of Edinburgh,S12000036,Healthy People,Mental health,Mental health conditions,16.1,5
+City of Edinburgh,S12000036,Healthy People,Physical health conditions,Musculoskeletal conditions,0.6465052250723574,5
+City of Edinburgh,S12000036,Healthy People,Mental health,Suicides,14.8,4
+City of Edinburgh,S12000036,Healthy Places,Living conditions,Air pollution,4.072,1
+City of Edinburgh,S12000036,Healthy Places,Economic and working conditions,Child poverty,12.5,4
+City of Edinburgh,S12000036,Healthy Places,Access to services,Gp appointments,0.723,4
+City of Edinburgh,S12000036,Healthy Places,Access to services,Gp travel time,7.633333333333334,5
+City of Edinburgh,S12000036,Healthy Places,Living conditions,Household overcrowding,2.7,1
+City of Edinburgh,S12000036,Healthy Places,Access to services,Internet access,0.906,2
+City of Edinburgh,S12000036,Healthy Places,Economic and working conditions,Job training,12.5,4
+City of Edinburgh,S12000036,Healthy Places,Crime,Low level crime,111.59439989,1
+City of Edinburgh,S12000036,Healthy Places,Crime,Personal crime,244.315423602,2
+City of Edinburgh,S12000036,Healthy Places,Access to services,Pharmacy travel time,6.05,5
+City of Edinburgh,S12000036,Healthy Places,Access to green space,Private outdoor space,97.89999999999999,5
+City of Edinburgh,S12000036,Healthy Places,Living conditions,Road safety,0.656854647232379,1
+City of Edinburgh,S12000036,Healthy Places,Living conditions,Rough sleeping,79.31199235547061,1
+City of Edinburgh,S12000036,Healthy Places,Access to services,Sports centre travel time,9.2,4
+City of Edinburgh,S12000036,Healthy Places,Living conditions,Traffic volume,7.1711061978485215,1
+City of Edinburgh,S12000036,Healthy Places,Economic and working conditions,Unemployment,3.08804426,3
+City of Edinburgh,S12000036,Healthy Places,Economic and working conditions,Workplace safety,166,5
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Alcohol misuse,251.9406752918902,3
+Falkirk,S12000014,Healthy Lives,Protective measures,Cancer screening,66.2,2
+Falkirk,S12000014,Healthy Lives,Protective measures,Child vaccine coverage,93.96666666666667,3
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Drug misuse,133.07014050239948,3
+Falkirk,S12000014,Healthy Lives,Children and young people,Early years development,16.430817610062892,4
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Healthy eating,22,3
+Falkirk,S12000014,Healthy Lives,Physiological risk factors,High blood pressure,22,4
+Falkirk,S12000014,Healthy Lives,Physiological risk factors,Low birth weight,15.599999999999994,3
+Falkirk,S12000014,Healthy Lives,Children and young people,National five attainment,72.3,3
+Falkirk,S12000014,Healthy Lives,Physiological risk factors,Overweight obesity adults,64,4
+Falkirk,S12000014,Healthy Lives,Physiological risk factors,Overweight obesity children,14.996544574982723,4
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Physical activity,61,1
+Falkirk,S12000014,Healthy Lives,Children and young people,Pupil absence,10.2,4
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Sedentary behaviour,22,2
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Sexual health,477.5,4
+Falkirk,S12000014,Healthy Lives,Behavioural risk factors,Smoking,12,4
+Falkirk,S12000014,Healthy Lives,Children and young people,Teenage pregnancy,26.6,2
+Falkirk,S12000014,Healthy Lives,Children and young people,Young people training,93.1,2
+Falkirk,S12000014,Healthy People,Mortality,All mortality,1240,2
+Falkirk,S12000014,Healthy People,Personal wellbeing,Anxiety,3.28,2
+Falkirk,S12000014,Healthy People,Mortality,Avoidable deaths,340.6,2
+Falkirk,S12000014,Healthy People,Physical health conditions,Cancer,651.8,1
+Falkirk,S12000014,Healthy People,Physical health conditions,Cardiovascular conditions,22.953613127169454,1
+Falkirk,S12000014,Healthy People,Physical health conditions,Dementia,66,1
+Falkirk,S12000014,Healthy People,Physical health conditions,Diabetes,6.6,4
+Falkirk,S12000014,Healthy People,Difficulties in daily life,Disability,20.44378904576388,3
+Falkirk,S12000014,Healthy People,Personal wellbeing,Happiness,7.45,3
+Falkirk,S12000014,Healthy People,Mortality,Healthy life expectancy,59.248934038581204,2
+Falkirk,S12000014,Healthy People,Mortality,Infant mortality,3,3
+Falkirk,S12000014,Healthy People,Personal wellbeing,Life satisfaction,7.62,4
+Falkirk,S12000014,Healthy People,Personal wellbeing,Life worthwhileness,7.88,4
+Falkirk,S12000014,Healthy People,Mental health,Mental health conditions,21.1,3
+Falkirk,S12000014,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8020016587227348,3
+Falkirk,S12000014,Healthy People,Mental health,Suicides,18.3,2
+Falkirk,S12000014,Healthy Places,Living conditions,Air pollution,3.8179,2
+Falkirk,S12000014,Healthy Places,Economic and working conditions,Child poverty,18.3,2
+Falkirk,S12000014,Healthy Places,Access to services,Gp appointments,0.7078,3
+Falkirk,S12000014,Healthy Places,Access to services,Gp travel time,11.808333333333334,3
+Falkirk,S12000014,Healthy Places,Living conditions,Household overcrowding,1.7,3
+Falkirk,S12000014,Healthy Places,Access to services,Internet access,0.945,4
+Falkirk,S12000014,Healthy Places,Economic and working conditions,Job training,13.1,4
+Falkirk,S12000014,Healthy Places,Crime,Low level crime,65.067844746,2
+Falkirk,S12000014,Healthy Places,Crime,Personal crime,235.405490689,2
+Falkirk,S12000014,Healthy Places,Access to services,Pharmacy travel time,9.716666666666669,3
+Falkirk,S12000014,Healthy Places,Access to green space,Private outdoor space,97.6,4
+Falkirk,S12000014,Healthy Places,Living conditions,Road safety,0.14137903098309465,2
+Falkirk,S12000014,Healthy Places,Living conditions,Rough sleeping,22.06531332744925,4
+Falkirk,S12000014,Healthy Places,Access to services,Sports centre travel time,12.850000000000001,2
+Falkirk,S12000014,Healthy Places,Living conditions,Traffic volume,3.3426042325288803,1
+Falkirk,S12000014,Healthy Places,Economic and working conditions,Unemployment,3.1718144400000003,3
+Falkirk,S12000014,Healthy Places,Economic and working conditions,Workplace safety,251,3
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Alcohol misuse,116.71244681424032,5
+Fife,S12000047,Healthy Lives,Protective measures,Cancer screening,66.3,2
+Fife,S12000047,Healthy Lives,Protective measures,Child vaccine coverage,92.82208333333334,2
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Drug misuse,68.44012482175042,4
+Fife,S12000047,Healthy Lives,Children and young people,Early years development,18.89110225763612,2
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Healthy eating,21,3
+Fife,S12000047,Healthy Lives,Physiological risk factors,High blood pressure,23,3
+Fife,S12000047,Healthy Lives,Physiological risk factors,Low birth weight,16.700000000000003,2
+Fife,S12000047,Healthy Lives,Children and young people,National five attainment,68.8,1
+Fife,S12000047,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,3
+Fife,S12000047,Healthy Lives,Physiological risk factors,Overweight obesity children,15.508021390374333,3
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Physical activity,61,1
+Fife,S12000047,Healthy Lives,Children and young people,Pupil absence,18.4,2
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,2
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Sexual health,473,3
+Fife,S12000047,Healthy Lives,Behavioural risk factors,Smoking,17,2
+Fife,S12000047,Healthy Lives,Children and young people,Teenage pregnancy,29.6,1
+Fife,S12000047,Healthy Lives,Children and young people,Young people training,92.9,1
+Fife,S12000047,Healthy People,Mortality,All mortality,1160,3
+Fife,S12000047,Healthy People,Personal wellbeing,Anxiety,3.36,2
+Fife,S12000047,Healthy People,Mortality,Avoidable deaths,314.7,2
+Fife,S12000047,Healthy People,Physical health conditions,Cancer,602,4
+Fife,S12000047,Healthy People,Physical health conditions,Cardiovascular conditions,16.615500619378466,4
+Fife,S12000047,Healthy People,Physical health conditions,Dementia,56,2
+Fife,S12000047,Healthy People,Physical health conditions,Diabetes,6.6,4
+Fife,S12000047,Healthy People,Difficulties in daily life,Disability,21.658649455032577,2
+Fife,S12000047,Healthy People,Personal wellbeing,Happiness,7.17,1
+Fife,S12000047,Healthy People,Mortality,Healthy life expectancy,56.49208817014918,1
+Fife,S12000047,Healthy People,Mortality,Infant mortality,4.6,1
+Fife,S12000047,Healthy People,Personal wellbeing,Life satisfaction,7.31,1
+Fife,S12000047,Healthy People,Personal wellbeing,Life worthwhileness,7.72,2
+Fife,S12000047,Healthy People,Mental health,Mental health conditions,21.3,2
+Fife,S12000047,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8254639288387362,2
+Fife,S12000047,Healthy People,Mental health,Suicides,16.6,3
+Fife,S12000047,Healthy Places,Living conditions,Air pollution,3.6168,2
+Fife,S12000047,Healthy Places,Economic and working conditions,Child poverty,18.7,2
+Fife,S12000047,Healthy Places,Access to services,Gp appointments,0.6511,2
+Fife,S12000047,Healthy Places,Access to services,Gp travel time,8.866666666666667,5
+Fife,S12000047,Healthy Places,Living conditions,Household overcrowding,1.8,3
+Fife,S12000047,Healthy Places,Access to services,Internet access,0.898,2
+Fife,S12000047,Healthy Places,Economic and working conditions,Job training,14.6,5
+Fife,S12000047,Healthy Places,Crime,Low level crime,85.366510476,1
+Fife,S12000047,Healthy Places,Crime,Personal crime,240.965153232,2
+Fife,S12000047,Healthy Places,Access to services,Pharmacy travel time,7.008333333333333,5
+Fife,S12000047,Healthy Places,Access to green space,Private outdoor space,97.2,4
+Fife,S12000047,Healthy Places,Living conditions,Road safety,0.07771377133898857,3
+Fife,S12000047,Healthy Places,Living conditions,Rough sleeping,58.94804533640578,2
+Fife,S12000047,Healthy Places,Access to services,Sports centre travel time,11.266666666666666,3
+Fife,S12000047,Healthy Places,Living conditions,Traffic volume,1.4232183191915937,2
+Fife,S12000047,Healthy Places,Economic and working conditions,Unemployment,3.65645838,1
+Fife,S12000047,Healthy Places,Economic and working conditions,Workplace safety,278,2
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Alcohol misuse,109.27715872964903,5
+Glasgow City,S12000049,Healthy Lives,Protective measures,Cancer screening,56.6,1
+Glasgow City,S12000049,Healthy Lives,Protective measures,Child vaccine coverage,91.86875,1
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Drug misuse,56.74137793601458,5
+Glasgow City,S12000049,Healthy Lives,Children and young people,Early years development,25.622707086310097,1
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Healthy eating,25,5
+Glasgow City,S12000049,Healthy Lives,Physiological risk factors,High blood pressure,19,5
+Glasgow City,S12000049,Healthy Lives,Physiological risk factors,Low birth weight,12.900000000000006,5
+Glasgow City,S12000049,Healthy Lives,Children and young people,National five attainment,68.05,1
+Glasgow City,S12000049,Healthy Lives,Physiological risk factors,Overweight obesity adults,61,5
+Glasgow City,S12000049,Healthy Lives,Physiological risk factors,Overweight obesity children,17.14572192513369,2
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Physical activity,66,4
+Glasgow City,S12000049,Healthy Lives,Children and young people,Pupil absence,9,5
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,3
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Sexual health,465,3
+Glasgow City,S12000049,Healthy Lives,Behavioural risk factors,Smoking,18,1
+Glasgow City,S12000049,Healthy Lives,Children and young people,Teenage pregnancy,31.5,1
+Glasgow City,S12000049,Healthy Lives,Children and young people,Young people training,92.5,1
+Glasgow City,S12000049,Healthy People,Mortality,All mortality,1440,1
+Glasgow City,S12000049,Healthy People,Personal wellbeing,Anxiety,3.29,2
+Glasgow City,S12000049,Healthy People,Mortality,Avoidable deaths,494.9,1
+Glasgow City,S12000049,Healthy People,Physical health conditions,Cancer,732.6,1
+Glasgow City,S12000049,Healthy People,Physical health conditions,Cardiovascular conditions,18.40178542757137,3
+Glasgow City,S12000049,Healthy People,Physical health conditions,Dementia,47,5
+Glasgow City,S12000049,Healthy People,Physical health conditions,Diabetes,6,2
+Glasgow City,S12000049,Healthy People,Difficulties in daily life,Disability,22.85365436184173,1
+Glasgow City,S12000049,Healthy People,Personal wellbeing,Happiness,7.14,1
+Glasgow City,S12000049,Healthy People,Mortality,Healthy life expectancy,55.40980019838458,1
+Glasgow City,S12000049,Healthy People,Mortality,Infant mortality,4.2,1
+Glasgow City,S12000049,Healthy People,Personal wellbeing,Life satisfaction,7.24,1
+Glasgow City,S12000049,Healthy People,Personal wellbeing,Life worthwhileness,7.41,1
+Glasgow City,S12000049,Healthy People,Mental health,Mental health conditions,21.4,2
+Glasgow City,S12000049,Healthy People,Physical health conditions,Musculoskeletal conditions,0.6737502244585442,5
+Glasgow City,S12000049,Healthy People,Mental health,Suicides,19.5,2
+Glasgow City,S12000049,Healthy Places,Living conditions,Air pollution,4.3586,1
+Glasgow City,S12000049,Healthy Places,Economic and working conditions,Child poverty,27.400000000000002,1
+Glasgow City,S12000049,Healthy Places,Access to services,Gp appointments,0.7033,3
+Glasgow City,S12000049,Healthy Places,Access to services,Gp travel time,8.316666666666666,5
+Glasgow City,S12000049,Healthy Places,Living conditions,Household overcrowding,4.7,1
+Glasgow City,S12000049,Healthy Places,Access to services,Internet access,0.871,1
+Glasgow City,S12000049,Healthy Places,Economic and working conditions,Job training,10.9,3
+Glasgow City,S12000049,Healthy Places,Crime,Low level crime,89.158986545,1
+Glasgow City,S12000049,Healthy Places,Crime,Personal crime,318.53505025,1
+Glasgow City,S12000049,Healthy Places,Access to services,Pharmacy travel time,6.525,5
+Glasgow City,S12000049,Healthy Places,Access to green space,Private outdoor space,98.1,5
+Glasgow City,S12000049,Healthy Places,Living conditions,Road safety,1.3170489497480362,1
+Glasgow City,S12000049,Healthy Places,Living conditions,Rough sleeping,100.47945313859834,1
+Glasgow City,S12000049,Healthy Places,Access to services,Sports centre travel time,7.466666666666667,5
+Glasgow City,S12000049,Healthy Places,Living conditions,Traffic volume,12.704941325243338,1
+Glasgow City,S12000049,Healthy Places,Economic and working conditions,Unemployment,4.42318411,1
+Glasgow City,S12000049,Healthy Places,Economic and working conditions,Workplace safety,200,5
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Alcohol misuse,169.31823002842478,4
+Highland,S12000017,Healthy Lives,Protective measures,Cancer screening,70.8,4
+Highland,S12000017,Healthy Lives,Protective measures,Child vaccine coverage,90.1275,1
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Drug misuse,49.11659125710874,5
+Highland,S12000017,Healthy Lives,Children and young people,Early years development,16.719846841097638,4
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Healthy eating,24,4
+Highland,S12000017,Healthy Lives,Physiological risk factors,High blood pressure,23,3
+Highland,S12000017,Healthy Lives,Physiological risk factors,Low birth weight,15.200000000000003,4
+Highland,S12000017,Healthy Lives,Children and young people,National five attainment,74.64999999999999,4
+Highland,S12000017,Healthy Lives,Physiological risk factors,Overweight obesity adults,71,1
+Highland,S12000017,Healthy Lives,Physiological risk factors,Overweight obesity children,15.70704744357439,3
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Physical activity,71,5
+Highland,S12000017,Healthy Lives,Children and young people,Pupil absence,21,2
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Sedentary behaviour,19,4
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Sexual health,374,2
+Highland,S12000017,Healthy Lives,Behavioural risk factors,Smoking,15,3
+Highland,S12000017,Healthy Lives,Children and young people,Teenage pregnancy,20.6,4
+Highland,S12000017,Healthy Lives,Children and young people,Young people training,94.9,3
+Highland,S12000017,Healthy People,Mortality,All mortality,1040,4
+Highland,S12000017,Healthy People,Personal wellbeing,Anxiety,2.72,4
+Highland,S12000017,Healthy People,Mortality,Avoidable deaths,290.9,3
+Highland,S12000017,Healthy People,Physical health conditions,Cancer,603.9,3
+Highland,S12000017,Healthy People,Physical health conditions,Cardiovascular conditions,18.446395995078696,3
+Highland,S12000017,Healthy People,Physical health conditions,Dementia,53,3
+Highland,S12000017,Healthy People,Physical health conditions,Diabetes,6.4,4
+Highland,S12000017,Healthy People,Difficulties in daily life,Disability,19.087484008828532,3
+Highland,S12000017,Healthy People,Personal wellbeing,Happiness,7.93,5
+Highland,S12000017,Healthy People,Mortality,Healthy life expectancy,64.672327564479545,4
+Highland,S12000017,Healthy People,Mortality,Infant mortality,3,3
+Highland,S12000017,Healthy People,Personal wellbeing,Life satisfaction,7.87,5
+Highland,S12000017,Healthy People,Personal wellbeing,Life worthwhileness,8.1,5
+Highland,S12000017,Healthy People,Mental health,Mental health conditions,18.2,4
+Highland,S12000017,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8445094744165894,2
+Highland,S12000017,Healthy People,Mental health,Suicides,25.1,1
+Highland,S12000017,Healthy Places,Living conditions,Air pollution,2.3818,5
+Highland,S12000017,Healthy Places,Economic and working conditions,Child poverty,15.6,3
+Highland,S12000017,Healthy Places,Access to services,Gp appointments,0.813,5
+Highland,S12000017,Healthy Places,Access to services,Gp travel time,17.033333333333335,1
+Highland,S12000017,Healthy Places,Living conditions,Household overcrowding,1.4,4
+Highland,S12000017,Healthy Places,Access to services,Internet access,0.908,2
+Highland,S12000017,Healthy Places,Economic and working conditions,Job training,10.3,3
+Highland,S12000017,Healthy Places,Crime,Low level crime,63.298120572,3
+Highland,S12000017,Healthy Places,Crime,Personal crime,210.809893516,3
+Highland,S12000017,Healthy Places,Access to services,Pharmacy travel time,9.083333333333332,3
+Highland,S12000017,Healthy Places,Access to green space,Private outdoor space,93.60000000000001,1
+Highland,S12000017,Healthy Places,Living conditions,Road safety,0.00573449080602562,5
+Highland,S12000017,Healthy Places,Living conditions,Rough sleeping,67.70194219946684,2
+Highland,S12000017,Healthy Places,Access to services,Sports centre travel time,14.841666666666667,1
+Highland,S12000017,Healthy Places,Living conditions,Traffic volume,0.07325238555617127,5
+Highland,S12000017,Healthy Places,Economic and working conditions,Unemployment,2.82805053,4
+Highland,S12000017,Healthy Places,Economic and working conditions,Workplace safety,268,2
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Alcohol misuse,734.4906816441153,1
+Inverclyde,S12000018,Healthy Lives,Protective measures,Cancer screening,63.8,1
+Inverclyde,S12000018,Healthy Lives,Protective measures,Child vaccine coverage,93.66833333333334,2
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Drug misuse,367.52062607309296,1
+Inverclyde,S12000018,Healthy Lives,Children and young people,Early years development,24.874791318864776,1
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Healthy eating,22,3
+Inverclyde,S12000018,Healthy Lives,Physiological risk factors,High blood pressure,26,2
+Inverclyde,S12000018,Healthy Lives,Physiological risk factors,Low birth weight,12.5,5
+Inverclyde,S12000018,Healthy Lives,Children and young people,National five attainment,70.75,2
+Inverclyde,S12000018,Healthy Lives,Physiological risk factors,Overweight obesity adults,64,4
+Inverclyde,S12000018,Healthy Lives,Physiological risk factors,Overweight obesity children,18.587896253602306,1
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Physical activity,63,2
+Inverclyde,S12000018,Healthy Lives,Children and young people,Pupil absence,15.7,3
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Sedentary behaviour,23,2
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Sexual health,465,3
+Inverclyde,S12000018,Healthy Lives,Behavioural risk factors,Smoking,16,2
+Inverclyde,S12000018,Healthy Lives,Children and young people,Teenage pregnancy,22.5,3
+Inverclyde,S12000018,Healthy Lives,Children and young people,Young people training,94,2
+Inverclyde,S12000018,Healthy People,Mortality,All mortality,1360,1
+Inverclyde,S12000018,Healthy People,Personal wellbeing,Anxiety,3.09,3
+Inverclyde,S12000018,Healthy People,Mortality,Avoidable deaths,405.1,1
+Inverclyde,S12000018,Healthy People,Physical health conditions,Cancer,631.6,2
+Inverclyde,S12000018,Healthy People,Physical health conditions,Cardiovascular conditions,19.249425580801635,2
+Inverclyde,S12000018,Healthy People,Physical health conditions,Dementia,55,3
+Inverclyde,S12000018,Healthy People,Physical health conditions,Diabetes,6,2
+Inverclyde,S12000018,Healthy People,Difficulties in daily life,Disability,24.935527446886894,1
+Inverclyde,S12000018,Healthy People,Personal wellbeing,Happiness,7.56,4
+Inverclyde,S12000018,Healthy People,Mortality,Healthy life expectancy,58.53350195567144,2
+Inverclyde,S12000018,Healthy People,Mortality,Infant mortality,3.8,1
+Inverclyde,S12000018,Healthy People,Personal wellbeing,Life satisfaction,7.51,3
+Inverclyde,S12000018,Healthy People,Personal wellbeing,Life worthwhileness,7.74,2
+Inverclyde,S12000018,Healthy People,Mental health,Mental health conditions,24.8,1
+Inverclyde,S12000018,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8157241032921134,3
+Inverclyde,S12000018,Healthy People,Mental health,Suicides,17.4,3
+Inverclyde,S12000018,Healthy Places,Living conditions,Air pollution,3.1327,4
+Inverclyde,S12000018,Healthy Places,Economic and working conditions,Child poverty,18.099999999999998,2
+Inverclyde,S12000018,Healthy Places,Access to services,Gp appointments,0.7033,3
+Inverclyde,S12000018,Healthy Places,Access to services,Gp travel time,11.941666666666666,3
+Inverclyde,S12000018,Healthy Places,Living conditions,Household overcrowding,2.7,1
+Inverclyde,S12000018,Healthy Places,Access to services,Internet access,0.89,1
+Inverclyde,S12000018,Healthy Places,Economic and working conditions,Job training,9.2,2
+Inverclyde,S12000018,Healthy Places,Crime,Low level crime,82.716364565,2
+Inverclyde,S12000018,Healthy Places,Crime,Personal crime,197.983150371,4
+Inverclyde,S12000018,Healthy Places,Access to services,Pharmacy travel time,19.924999999999997,1
+Inverclyde,S12000018,Healthy Places,Access to green space,Private outdoor space,98.9,5
+Inverclyde,S12000018,Healthy Places,Living conditions,Road safety,0.14204595681251356,2
+Inverclyde,S12000018,Healthy Places,Living conditions,Rough sleeping,19.149751053236308,4
+Inverclyde,S12000018,Healthy Places,Access to services,Sports centre travel time,10.475000000000001,3
+Inverclyde,S12000018,Healthy Places,Living conditions,Traffic volume,2.0096414933387785,2
+Inverclyde,S12000018,Healthy Places,Economic and working conditions,Unemployment,3.47703923,2
+Inverclyde,S12000018,Healthy Places,Economic and working conditions,Workplace safety,260,3
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Alcohol misuse,151.6733640336726,5
+North Lanarkshire,S12000050,Healthy Lives,Protective measures,Cancer screening,61.5,1
+North Lanarkshire,S12000050,Healthy Lives,Protective measures,Child vaccine coverage,94.59041666666667,4
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Drug misuse,65.30573013734843,5
+North Lanarkshire,S12000050,Healthy Lives,Children and young people,Early years development,20.41510717931269,2
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+North Lanarkshire,S12000050,Healthy Lives,Physiological risk factors,High blood pressure,23,3
+North Lanarkshire,S12000050,Healthy Lives,Physiological risk factors,Low birth weight,15.400000000000006,3
+North Lanarkshire,S12000050,Healthy Lives,Children and young people,National five attainment,70.35,2
+North Lanarkshire,S12000050,Healthy Lives,Physiological risk factors,Overweight obesity adults,70,2
+North Lanarkshire,S12000050,Healthy Lives,Physiological risk factors,Overweight obesity children,17.755159739892566,1
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Physical activity,62,2
+North Lanarkshire,S12000050,Healthy Lives,Children and young people,Pupil absence,11.6,4
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Sedentary behaviour,23,2
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Sexual health,363.5,1
+North Lanarkshire,S12000050,Healthy Lives,Behavioural risk factors,Smoking,21,1
+North Lanarkshire,S12000050,Healthy Lives,Children and young people,Teenage pregnancy,25.1,2
+North Lanarkshire,S12000050,Healthy Lives,Children and young people,Young people training,92.8,1
+North Lanarkshire,S12000050,Healthy People,Mortality,All mortality,1380,1
+North Lanarkshire,S12000050,Healthy People,Personal wellbeing,Anxiety,3.22,3
+North Lanarkshire,S12000050,Healthy People,Mortality,Avoidable deaths,415.3,1
+North Lanarkshire,S12000050,Healthy People,Physical health conditions,Cancer,629.8,2
+North Lanarkshire,S12000050,Healthy People,Physical health conditions,Cardiovascular conditions,24.594491537852345,1
+North Lanarkshire,S12000050,Healthy People,Physical health conditions,Dementia,58,2
+North Lanarkshire,S12000050,Healthy People,Physical health conditions,Diabetes,6.9,5
+North Lanarkshire,S12000050,Healthy People,Difficulties in daily life,Disability,22.69760498120215,1
+North Lanarkshire,S12000050,Healthy People,Personal wellbeing,Happiness,7.33,2
+North Lanarkshire,S12000050,Healthy People,Mortality,Healthy life expectancy,55.53775746924428,1
+North Lanarkshire,S12000050,Healthy People,Mortality,Infant mortality,4.1,1
+North Lanarkshire,S12000050,Healthy People,Personal wellbeing,Life satisfaction,7.38,2
+North Lanarkshire,S12000050,Healthy People,Personal wellbeing,Life worthwhileness,7.51,1
+North Lanarkshire,S12000050,Healthy People,Mental health,Mental health conditions,22.4,1
+North Lanarkshire,S12000050,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7682471869729588,5
+North Lanarkshire,S12000050,Healthy People,Mental health,Suicides,19.8,2
+North Lanarkshire,S12000050,Healthy Places,Living conditions,Air pollution,4.2271,1
+North Lanarkshire,S12000050,Healthy Places,Economic and working conditions,Child poverty,19.5,2
+North Lanarkshire,S12000050,Healthy Places,Access to services,Gp appointments,0.5471,1
+North Lanarkshire,S12000050,Healthy Places,Access to services,Gp travel time,11.975,3
+North Lanarkshire,S12000050,Healthy Places,Living conditions,Household overcrowding,3.1,1
+North Lanarkshire,S12000050,Healthy Places,Access to services,Internet access,0.943,4
+North Lanarkshire,S12000050,Healthy Places,Economic and working conditions,Job training,4.1,1
+North Lanarkshire,S12000050,Healthy Places,Crime,Low level crime,65.438653096,2
+North Lanarkshire,S12000050,Healthy Places,Crime,Personal crime,241.926495171,2
+North Lanarkshire,S12000050,Healthy Places,Access to services,Pharmacy travel time,10.641666666666666,2
+North Lanarkshire,S12000050,Healthy Places,Access to green space,Private outdoor space,97.8,5
+North Lanarkshire,S12000050,Healthy Places,Living conditions,Road safety,0.17571492189693222,1
+North Lanarkshire,S12000050,Healthy Places,Living conditions,Rough sleeping,8.7747521132528,5
+North Lanarkshire,S12000050,Healthy Places,Access to services,Sports centre travel time,12.441666666666666,2
+North Lanarkshire,S12000050,Healthy Places,Living conditions,Traffic volume,4.451938665747696,1
+North Lanarkshire,S12000050,Healthy Places,Economic and working conditions,Unemployment,3.72989705,1
+North Lanarkshire,S12000050,Healthy Places,Economic and working conditions,Workplace safety,313,1
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Alcohol misuse,142.32049598387442,5
+South Lanarkshire,S12000029,Healthy Lives,Protective measures,Cancer screening,64.7,1
+South Lanarkshire,S12000029,Healthy Lives,Protective measures,Child vaccine coverage,95.03541666666666,4
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Drug misuse,55.76012467834683,5
+South Lanarkshire,S12000029,Healthy Lives,Children and young people,Early years development,18.06853582554517,2
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Healthy eating,18,2
+South Lanarkshire,S12000029,Healthy Lives,Physiological risk factors,High blood pressure,23,4
+South Lanarkshire,S12000029,Healthy Lives,Physiological risk factors,Low birth weight,14.900000000000006,4
+South Lanarkshire,S12000029,Healthy Lives,Children and young people,National five attainment,77.35000000000001,5
+South Lanarkshire,S12000029,Healthy Lives,Physiological risk factors,Overweight obesity adults,69,2
+South Lanarkshire,S12000029,Healthy Lives,Physiological risk factors,Overweight obesity children,15.496983169260082,3
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Physical activity,63,2
+South Lanarkshire,S12000029,Healthy Lives,Children and young people,Pupil absence,18.1,3
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,3
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Sexual health,363.5,1
+South Lanarkshire,S12000029,Healthy Lives,Behavioural risk factors,Smoking,16,2
+South Lanarkshire,S12000029,Healthy Lives,Children and young people,Teenage pregnancy,25.3,2
+South Lanarkshire,S12000029,Healthy Lives,Children and young people,Young people training,95,3
+South Lanarkshire,S12000029,Healthy People,Mortality,All mortality,1230,2
+South Lanarkshire,S12000029,Healthy People,Personal wellbeing,Anxiety,3.27,2
+South Lanarkshire,S12000029,Healthy People,Mortality,Avoidable deaths,339.2,2
+South Lanarkshire,S12000029,Healthy People,Physical health conditions,Cancer,618.4,3
+South Lanarkshire,S12000029,Healthy People,Physical health conditions,Cardiovascular conditions,20.755581345631125,1
+South Lanarkshire,S12000029,Healthy People,Physical health conditions,Dementia,51,4
+South Lanarkshire,S12000029,Healthy People,Physical health conditions,Diabetes,6.9,5
+South Lanarkshire,S12000029,Healthy People,Difficulties in daily life,Disability,20.7677414333249,2
+South Lanarkshire,S12000029,Healthy People,Personal wellbeing,Happiness,7.43,3
+South Lanarkshire,S12000029,Healthy People,Mortality,Healthy life expectancy,61.488379877878685,3
+South Lanarkshire,S12000029,Healthy People,Mortality,Infant mortality,2.3,4
+South Lanarkshire,S12000029,Healthy People,Personal wellbeing,Life satisfaction,7.39,2
+South Lanarkshire,S12000029,Healthy People,Personal wellbeing,Life worthwhileness,7.74,3
+South Lanarkshire,S12000029,Healthy People,Mental health,Mental health conditions,21.9,2
+South Lanarkshire,S12000029,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7903508801800525,3
+South Lanarkshire,S12000029,Healthy People,Mental health,Suicides,16.5,3
+South Lanarkshire,S12000029,Healthy Places,Living conditions,Air pollution,3.9899,1
+South Lanarkshire,S12000029,Healthy Places,Economic and working conditions,Child poverty,15.8,3
+South Lanarkshire,S12000029,Healthy Places,Access to services,Gp appointments,0.5471,1
+South Lanarkshire,S12000029,Healthy Places,Access to services,Gp travel time,11.533333333333331,3
+South Lanarkshire,S12000029,Healthy Places,Living conditions,Household overcrowding,2.2,2
+South Lanarkshire,S12000029,Healthy Places,Access to services,Internet access,0.904,2
+South Lanarkshire,S12000029,Healthy Places,Economic and working conditions,Job training,7.2,1
+South Lanarkshire,S12000029,Healthy Places,Crime,Low level crime,64.532877256,2
+South Lanarkshire,S12000029,Healthy Places,Crime,Personal crime,209.571511465,3
+South Lanarkshire,S12000029,Healthy Places,Access to services,Pharmacy travel time,10.35,2
+South Lanarkshire,S12000029,Healthy Places,Access to green space,Private outdoor space,96.89999999999999,3
+South Lanarkshire,S12000029,Healthy Places,Living conditions,Road safety,0.05298977812353779,3
+South Lanarkshire,S12000029,Healthy Places,Living conditions,Rough sleeping,7.569335109603973,5
+South Lanarkshire,S12000029,Healthy Places,Access to services,Sports centre travel time,10.2,3
+South Lanarkshire,S12000029,Healthy Places,Living conditions,Traffic volume,0.9957568518874166,3
+South Lanarkshire,S12000029,Healthy Places,Economic and working conditions,Unemployment,3.1391885100000003,3
+South Lanarkshire,S12000029,Healthy Places,Economic and working conditions,Workplace safety,276,2
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Alcohol misuse,280.48021342819027,3
+East Lothian,S12000010,Healthy Lives,Protective measures,Cancer screening,69.4,4
+East Lothian,S12000010,Healthy Lives,Protective measures,Child vaccine coverage,95.56625,4
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Drug misuse,126.41769026318097,3
+East Lothian,S12000010,Healthy Lives,Children and young people,Early years development,13.143382352941178,4
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Healthy eating,27,5
+East Lothian,S12000010,Healthy Lives,Physiological risk factors,High blood pressure,25,2
+East Lothian,S12000010,Healthy Lives,Physiological risk factors,Low birth weight,18.5,1
+East Lothian,S12000010,Healthy Lives,Children and young people,National five attainment,72.6,3
+East Lothian,S12000010,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,3
+East Lothian,S12000010,Healthy Lives,Physiological risk factors,Overweight obesity children,15.818181818181817,2
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Physical activity,69,4
+East Lothian,S12000010,Healthy Lives,Children and young people,Pupil absence,21.2,1
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Sedentary behaviour,18,4
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Sexual health,659.5,5
+East Lothian,S12000010,Healthy Lives,Behavioural risk factors,Smoking,10,5
+East Lothian,S12000010,Healthy Lives,Children and young people,Teenage pregnancy,25.4,2
+East Lothian,S12000010,Healthy Lives,Children and young people,Young people training,96.1,4
+East Lothian,S12000010,Healthy People,Mortality,All mortality,1050,4
+East Lothian,S12000010,Healthy People,Personal wellbeing,Anxiety,2.68,5
+East Lothian,S12000010,Healthy People,Mortality,Avoidable deaths,247.6,5
+East Lothian,S12000010,Healthy People,Physical health conditions,Cancer,590.7,4
+East Lothian,S12000010,Healthy People,Physical health conditions,Cardiovascular conditions,11.249444197421077,5
+East Lothian,S12000010,Healthy People,Physical health conditions,Dementia,69,1
+East Lothian,S12000010,Healthy People,Physical health conditions,Diabetes,5.3,1
+East Lothian,S12000010,Healthy People,Difficulties in daily life,Disability,18.13850852708647,4
+East Lothian,S12000010,Healthy People,Personal wellbeing,Happiness,7.21,1
+East Lothian,S12000010,Healthy People,Mortality,Healthy life expectancy,64.70079576565068,4
+East Lothian,S12000010,Healthy People,Mortality,Infant mortality,3.5,2
+East Lothian,S12000010,Healthy People,Personal wellbeing,Life satisfaction,7.43,2
+East Lothian,S12000010,Healthy People,Personal wellbeing,Life worthwhileness,7.74,3
+East Lothian,S12000010,Healthy People,Mental health,Mental health conditions,19.4,3
+East Lothian,S12000010,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7907421480405373,3
+East Lothian,S12000010,Healthy People,Mental health,Suicides,14.9,4
+East Lothian,S12000010,Healthy Places,Living conditions,Air pollution,3.6817,2
+East Lothian,S12000010,Healthy Places,Economic and working conditions,Child poverty,12.8,4
+East Lothian,S12000010,Healthy Places,Access to services,Gp appointments,0.723,4
+East Lothian,S12000010,Healthy Places,Access to services,Gp travel time,9.458333333333332,5
+East Lothian,S12000010,Healthy Places,Living conditions,Household overcrowding,2.3,2
+East Lothian,S12000010,Healthy Places,Access to services,Internet access,0.944,4
+East Lothian,S12000010,Healthy Places,Economic and working conditions,Job training,20.3,5
+East Lothian,S12000010,Healthy Places,Crime,Low level crime,52.46776345,3
+East Lothian,S12000010,Healthy Places,Crime,Personal crime,201.689639837,4
+East Lothian,S12000010,Healthy Places,Access to services,Pharmacy travel time,8.016666666666667,4
+East Lothian,S12000010,Healthy Places,Access to green space,Private outdoor space,95.39999999999999,2
+East Lothian,S12000010,Healthy Places,Living conditions,Road safety,0.06919041958091794,3
+East Lothian,S12000010,Healthy Places,Living conditions,Rough sleeping,48.355899419729205,3
+East Lothian,S12000010,Healthy Places,Access to services,Sports centre travel time,7.816666666666666,5
+East Lothian,S12000010,Healthy Places,Living conditions,Traffic volume,0.9383398604441936,3
+East Lothian,S12000010,Healthy Places,Economic and working conditions,Unemployment,2.81488239,5
+East Lothian,S12000010,Healthy Places,Economic and working conditions,Workplace safety,196,5
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Alcohol misuse,199.09751265683468,4
+West Lothian,S12000040,Healthy Lives,Protective measures,Cancer screening,65,2
+West Lothian,S12000040,Healthy Lives,Protective measures,Child vaccine coverage,94.1375,3
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Drug misuse,116.89114086554645,3
+West Lothian,S12000040,Healthy Lives,Children and young people,Early years development,19.40119760479042,2
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Healthy eating,22,4
+West Lothian,S12000040,Healthy Lives,Physiological risk factors,High blood pressure,21,5
+West Lothian,S12000040,Healthy Lives,Physiological risk factors,Low birth weight,16.700000000000003,2
+West Lothian,S12000040,Healthy Lives,Children and young people,National five attainment,72,2
+West Lothian,S12000040,Healthy Lives,Physiological risk factors,Overweight obesity adults,66,4
+West Lothian,S12000040,Healthy Lives,Physiological risk factors,Overweight obesity children,16.032887975334017,2
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Physical activity,65,3
+West Lothian,S12000040,Healthy Lives,Children and young people,Pupil absence,14.2,3
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,3
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Sexual health,659.5,5
+West Lothian,S12000040,Healthy Lives,Behavioural risk factors,Smoking,16,3
+West Lothian,S12000040,Healthy Lives,Children and young people,Teenage pregnancy,23.1,3
+West Lothian,S12000040,Healthy Lives,Children and young people,Young people training,94.8,3
+West Lothian,S12000040,Healthy People,Mortality,All mortality,1220,2
+West Lothian,S12000040,Healthy People,Personal wellbeing,Anxiety,3.59,1
+West Lothian,S12000040,Healthy People,Mortality,Avoidable deaths,315.5,2
+West Lothian,S12000040,Healthy People,Physical health conditions,Cancer,639.6,2
+West Lothian,S12000040,Healthy People,Physical health conditions,Cardiovascular conditions,13.751926040061633,4
+West Lothian,S12000040,Healthy People,Physical health conditions,Dementia,53,4
+West Lothian,S12000040,Healthy People,Physical health conditions,Diabetes,5.3,1
+West Lothian,S12000040,Healthy People,Difficulties in daily life,Disability,20.882748396883404,2
+West Lothian,S12000040,Healthy People,Personal wellbeing,Happiness,7.25,2
+West Lothian,S12000040,Healthy People,Mortality,Healthy life expectancy,60.482638215324926,2
+West Lothian,S12000040,Healthy People,Mortality,Infant mortality,3,3
+West Lothian,S12000040,Healthy People,Personal wellbeing,Life satisfaction,7.38,2
+West Lothian,S12000040,Healthy People,Personal wellbeing,Life worthwhileness,7.46,1
+West Lothian,S12000040,Healthy People,Mental health,Mental health conditions,20.5,3
+West Lothian,S12000040,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7155167555488987,5
+West Lothian,S12000040,Healthy People,Mental health,Suicides,16.5,3
+West Lothian,S12000040,Healthy Places,Living conditions,Air pollution,3.8394,1
+West Lothian,S12000040,Healthy Places,Economic and working conditions,Child poverty,16.3,3
+West Lothian,S12000040,Healthy Places,Access to services,Gp appointments,0.723,4
+West Lothian,S12000040,Healthy Places,Access to services,Gp travel time,13.733333333333333,2
+West Lothian,S12000040,Healthy Places,Living conditions,Household overcrowding,2,2
+West Lothian,S12000040,Healthy Places,Access to services,Internet access,0.902,2
+West Lothian,S12000040,Healthy Places,Economic and working conditions,Job training,13.9,4
+West Lothian,S12000040,Healthy Places,Crime,Low level crime,64.109619194,3
+West Lothian,S12000040,Healthy Places,Crime,Personal crime,273.772837336,1
+West Lothian,S12000040,Healthy Places,Access to services,Pharmacy travel time,8.933333333333334,3
+West Lothian,S12000040,Healthy Places,Access to green space,Private outdoor space,97.5,4
+West Lothian,S12000040,Healthy Places,Living conditions,Road safety,0.14924398035529715,2
+West Lothian,S12000040,Healthy Places,Living conditions,Rough sleeping,57.12420434143952,3
+West Lothian,S12000040,Healthy Places,Access to services,Sports centre travel time,9.8,4
+West Lothian,S12000040,Healthy Places,Living conditions,Traffic volume,2.750053531765655,2
+West Lothian,S12000040,Healthy Places,Economic and working conditions,Unemployment,3.02829467,4
+West Lothian,S12000040,Healthy Places,Economic and working conditions,Workplace safety,331,1
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Alcohol misuse,310.5225188086159,3
+Midlothian,S12000019,Healthy Lives,Protective measures,Cancer screening,67.9,3
+Midlothian,S12000019,Healthy Lives,Protective measures,Child vaccine coverage,95.615,5
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Drug misuse,146.65529367687313,2
+Midlothian,S12000019,Healthy Lives,Children and young people,Early years development,13.953488372093023,4
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Healthy eating,23,4
+Midlothian,S12000019,Healthy Lives,Physiological risk factors,High blood pressure,20,5
+Midlothian,S12000019,Healthy Lives,Physiological risk factors,Low birth weight,17.299999999999997,1
+Midlothian,S12000019,Healthy Lives,Children and young people,National five attainment,65.9,1
+Midlothian,S12000019,Healthy Lives,Physiological risk factors,Overweight obesity adults,67,3
+Midlothian,S12000019,Healthy Lives,Physiological risk factors,Overweight obesity children,15.996343692870202,2
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Physical activity,71,5
+Midlothian,S12000019,Healthy Lives,Children and young people,Pupil absence,14.2,4
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Sedentary behaviour,17,5
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Sexual health,659.5,5
+Midlothian,S12000019,Healthy Lives,Behavioural risk factors,Smoking,13,4
+Midlothian,S12000019,Healthy Lives,Children and young people,Teenage pregnancy,29.4,1
+Midlothian,S12000019,Healthy Lives,Children and young people,Young people training,95.4,4
+Midlothian,S12000019,Healthy People,Mortality,All mortality,1050,4
+Midlothian,S12000019,Healthy People,Personal wellbeing,Anxiety,2.67,5
+Midlothian,S12000019,Healthy People,Mortality,Avoidable deaths,292.3,3
+Midlothian,S12000019,Healthy People,Physical health conditions,Cancer,645.7,2
+Midlothian,S12000019,Healthy People,Physical health conditions,Cardiovascular conditions,10.543130990415335,5
+Midlothian,S12000019,Healthy People,Physical health conditions,Dementia,55,3
+Midlothian,S12000019,Healthy People,Physical health conditions,Diabetes,5.3,1
+Midlothian,S12000019,Healthy People,Difficulties in daily life,Disability,18.920540729751803,3
+Midlothian,S12000019,Healthy People,Personal wellbeing,Happiness,7.37,2
+Midlothian,S12000019,Healthy People,Mortality,Healthy life expectancy,60.84047739754965,3
+Midlothian,S12000019,Healthy People,Mortality,Infant mortality,1.9,5
+Midlothian,S12000019,Healthy People,Personal wellbeing,Life satisfaction,7.46,3
+Midlothian,S12000019,Healthy People,Personal wellbeing,Life worthwhileness,7.87,3
+Midlothian,S12000019,Healthy People,Mental health,Mental health conditions,19.5,3
+Midlothian,S12000019,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7648498492637141,5
+Midlothian,S12000019,Healthy People,Mental health,Suicides,15.3,4
+Midlothian,S12000019,Healthy Places,Living conditions,Air pollution,3.8111,2
+Midlothian,S12000019,Healthy Places,Economic and working conditions,Child poverty,14.6,4
+Midlothian,S12000019,Healthy Places,Access to services,Gp appointments,0.723,4
+Midlothian,S12000019,Healthy Places,Access to services,Gp travel time,10.116666666666667,4
+Midlothian,S12000019,Healthy Places,Living conditions,Household overcrowding,2.3,2
+Midlothian,S12000019,Healthy Places,Access to services,Internet access,0.936,4
+Midlothian,S12000019,Healthy Places,Economic and working conditions,Job training,14,4
+Midlothian,S12000019,Healthy Places,Crime,Low level crime,52.045759044,3
+Midlothian,S12000019,Healthy Places,Crime,Personal crime,221.16871071,3
+Midlothian,S12000019,Healthy Places,Access to services,Pharmacy travel time,9.391666666666666,3
+Midlothian,S12000019,Healthy Places,Access to green space,Private outdoor space,97.7,4
+Midlothian,S12000019,Healthy Places,Living conditions,Road safety,0.09007404929962594,2
+Midlothian,S12000019,Healthy Places,Living conditions,Rough sleeping,15.26562181966212,5
+Midlothian,S12000019,Healthy Places,Access to services,Sports centre travel time,8.508333333333333,5
+Midlothian,S12000019,Healthy Places,Living conditions,Traffic volume,1.1991107813012702,3
+Midlothian,S12000019,Healthy Places,Economic and working conditions,Unemployment,2.34483956,5
+Midlothian,S12000019,Healthy Places,Economic and working conditions,Workplace safety,166,5
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Alcohol misuse,373.6741620704285,2
+Moray,S12000020,Healthy Lives,Protective measures,Cancer screening,71.2,5
+Moray,S12000020,Healthy Lives,Protective measures,Child vaccine coverage,92.91083333333333,2
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Drug misuse,91.61452402061052,4
+Moray,S12000020,Healthy Lives,Children and young people,Early years development,12.66891891891892,5
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Healthy eating,24,4
+Moray,S12000020,Healthy Lives,Physiological risk factors,High blood pressure,25,2
+Moray,S12000020,Healthy Lives,Physiological risk factors,Low birth weight,18.900000000000006,1
+Moray,S12000020,Healthy Lives,Children and young people,National five attainment,71.64999999999999,2
+Moray,S12000020,Healthy Lives,Physiological risk factors,Overweight obesity adults,71,1
+Moray,S12000020,Healthy Lives,Physiological risk factors,Overweight obesity children,16,2
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Physical activity,67,4
+Moray,S12000020,Healthy Lives,Children and young people,Pupil absence,20.2,2
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,3
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Sexual health,582,5
+Moray,S12000020,Healthy Lives,Behavioural risk factors,Smoking,18,1
+Moray,S12000020,Healthy Lives,Children and young people,Teenage pregnancy,21.5,4
+Moray,S12000020,Healthy Lives,Children and young people,Young people training,95.4,4
+Moray,S12000020,Healthy People,Mortality,All mortality,1130,3
+Moray,S12000020,Healthy People,Personal wellbeing,Anxiety,2.65,5
+Moray,S12000020,Healthy People,Mortality,Avoidable deaths,261.8,4
+Moray,S12000020,Healthy People,Physical health conditions,Cancer,601.5,4
+Moray,S12000020,Healthy People,Physical health conditions,Cardiovascular conditions,15.358506576156131,4
+Moray,S12000020,Healthy People,Physical health conditions,Dementia,59,1
+Moray,S12000020,Healthy People,Physical health conditions,Diabetes,5.6,2
+Moray,S12000020,Healthy People,Difficulties in daily life,Disability,18.268138577310804,4
+Moray,S12000020,Healthy People,Personal wellbeing,Happiness,7.39,3
+Moray,S12000020,Healthy People,Mortality,Healthy life expectancy,62.55146872731044,3
+Moray,S12000020,Healthy People,Mortality,Infant mortality,3.6,2
+Moray,S12000020,Healthy People,Personal wellbeing,Life satisfaction,7.44,3
+Moray,S12000020,Healthy People,Personal wellbeing,Life worthwhileness,7.59,1
+Moray,S12000020,Healthy People,Mental health,Mental health conditions,18.6,4
+Moray,S12000020,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8425344905237766,2
+Moray,S12000020,Healthy People,Mental health,Suicides,20.7,1
+Moray,S12000020,Healthy Places,Living conditions,Air pollution,2.6734,5
+Moray,S12000020,Healthy Places,Economic and working conditions,Child poverty,16.2,3
+Moray,S12000020,Healthy Places,Access to services,Gp appointments,0.6241,1
+Moray,S12000020,Healthy Places,Access to services,Gp travel time,23.666666666666668,1
+Moray,S12000020,Healthy Places,Living conditions,Household overcrowding,1.3,5
+Moray,S12000020,Healthy Places,Access to services,Internet access,NA,3
+Moray,S12000020,Healthy Places,Economic and working conditions,Job training,5.9,1
+Moray,S12000020,Healthy Places,Crime,Low level crime,32.456512516,4
+Moray,S12000020,Healthy Places,Crime,Personal crime,222.21043699499998,2
+Moray,S12000020,Healthy Places,Access to services,Pharmacy travel time,11.116666666666665,2
+Moray,S12000020,Healthy Places,Access to green space,Private outdoor space,95.1,2
+Moray,S12000020,Healthy Places,Living conditions,Road safety,0.010278175757280635,5
+Moray,S12000020,Healthy Places,Living conditions,Rough sleeping,79.22256258582443,1
+Moray,S12000020,Healthy Places,Access to services,Sports centre travel time,12.116666666666667,2
+Moray,S12000020,Healthy Places,Living conditions,Traffic volume,0.22701362107385054,4
+Moray,S12000020,Healthy Places,Economic and working conditions,Unemployment,3.2288044100000004,2
+Moray,S12000020,Healthy Places,Economic and working conditions,Workplace safety,298,2
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Alcohol misuse,2463.6294027565086,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Protective measures,Cancer screening,67.6,3
+Na h-Eileanan Siar,S12000013,Healthy Lives,Protective measures,Child vaccine coverage,96.1875,5
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Drug misuse,434.41354121709804,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Children and young people,Early years development,25.274725274725274,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Healthy eating,19,2
+Na h-Eileanan Siar,S12000013,Healthy Lives,Physiological risk factors,High blood pressure,28,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Physiological risk factors,Low birth weight,16.099999999999994,3
+Na h-Eileanan Siar,S12000013,Healthy Lives,Children and young people,National five attainment,69.75,2
+Na h-Eileanan Siar,S12000013,Healthy Lives,Physiological risk factors,Overweight obesity adults,71,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Physiological risk factors,Overweight obesity children,21.71428571428571,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Physical activity,63,2
+Na h-Eileanan Siar,S12000013,Healthy Lives,Children and young people,Pupil absence,26.9,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Sedentary behaviour,24,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Sexual health,119,1
+Na h-Eileanan Siar,S12000013,Healthy Lives,Behavioural risk factors,Smoking,14,4
+Na h-Eileanan Siar,S12000013,Healthy Lives,Children and young people,Teenage pregnancy,16,5
+Na h-Eileanan Siar,S12000013,Healthy Lives,Children and young people,Young people training,97.6,5
+Na h-Eileanan Siar,S12000013,Healthy People,Mortality,All mortality,1190,2
+Na h-Eileanan Siar,S12000013,Healthy People,Personal wellbeing,Anxiety,2.33,5
+Na h-Eileanan Siar,S12000013,Healthy People,Mortality,Avoidable deaths,293.1,3
+Na h-Eileanan Siar,S12000013,Healthy People,Physical health conditions,Cancer,665.8,1
+Na h-Eileanan Siar,S12000013,Healthy People,Physical health conditions,Cardiovascular conditions,16.84532924961715,3
+Na h-Eileanan Siar,S12000013,Healthy People,Physical health conditions,Dementia,57,2
+Na h-Eileanan Siar,S12000013,Healthy People,Physical health conditions,Diabetes,6.5,4
+Na h-Eileanan Siar,S12000013,Healthy People,Difficulties in daily life,Disability,18.484470418280914,4
+Na h-Eileanan Siar,S12000013,Healthy People,Personal wellbeing,Happiness,8.12,5
+Na h-Eileanan Siar,S12000013,Healthy People,Mortality,Healthy life expectancy,65.68328078078079,5
+Na h-Eileanan Siar,S12000013,Healthy People,Mortality,Infant mortality,3,3
+Na h-Eileanan Siar,S12000013,Healthy People,Personal wellbeing,Life satisfaction,8.24,5
+Na h-Eileanan Siar,S12000013,Healthy People,Personal wellbeing,Life worthwhileness,8.27,5
+Na h-Eileanan Siar,S12000013,Healthy People,Mental health,Mental health conditions,18.5,4
+Na h-Eileanan Siar,S12000013,Healthy People,Physical health conditions,Musculoskeletal conditions,0.9500713865057305,1
+Na h-Eileanan Siar,S12000013,Healthy People,Mental health,Suicides,22.1,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Living conditions,Air pollution,1.7447,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Economic and working conditions,Child poverty,11.600000000000001,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to services,Gp appointments,0.8551000000000001,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to services,Gp travel time,17.766666666666666,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Living conditions,Household overcrowding,0.8,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to services,Internet access,0.859,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Economic and working conditions,Job training,9.2,2
+Na h-Eileanan Siar,S12000013,Healthy Places,Crime,Low level crime,17.228177642,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Crime,Personal crime,120.980091883,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to services,Pharmacy travel time,32.45,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to green space,Private outdoor space,93.4,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Living conditions,Road safety,0.0012930989547937637,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Living conditions,Rough sleeping,57.62581636573184,2
+Na h-Eileanan Siar,S12000013,Healthy Places,Access to services,Sports centre travel time,18.133333333333333,1
+Na h-Eileanan Siar,S12000013,Healthy Places,Living conditions,Traffic volume,0.044708896361994384,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Economic and working conditions,Unemployment,2.62155027,5
+Na h-Eileanan Siar,S12000013,Healthy Places,Economic and working conditions,Workplace safety,257,3
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Alcohol misuse,1942.7792915531334,1
+Orkney Islands,S12000023,Healthy Lives,Protective measures,Cancer screening,70,4
+Orkney Islands,S12000023,Healthy Lives,Protective measures,Child vaccine coverage,94.35083333333333,3
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Drug misuse,216.09075466928385,2
+Orkney Islands,S12000023,Healthy Lives,Children and young people,Early years development,12.925170068027212,5
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Healthy eating,25,5
+Orkney Islands,S12000023,Healthy Lives,Physiological risk factors,High blood pressure,23,4
+Orkney Islands,S12000023,Healthy Lives,Physiological risk factors,Low birth weight,26.900000000000006,1
+Orkney Islands,S12000023,Healthy Lives,Children and young people,National five attainment,45.1,1
+Orkney Islands,S12000023,Healthy Lives,Physiological risk factors,Overweight obesity adults,75,1
+Orkney Islands,S12000023,Healthy Lives,Physiological risk factors,Overweight obesity children,15.060240963855422,3
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Physical activity,62,2
+Orkney Islands,S12000023,Healthy Lives,Children and young people,Pupil absence,15.4,3
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Sedentary behaviour,21,3
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Sexual health,308.5,1
+Orkney Islands,S12000023,Healthy Lives,Behavioural risk factors,Smoking,11,5
+Orkney Islands,S12000023,Healthy Lives,Children and young people,Teenage pregnancy,15.2,5
+Orkney Islands,S12000023,Healthy Lives,Children and young people,Young people training,96.4,5
+Orkney Islands,S12000023,Healthy People,Mortality,All mortality,1010,4
+Orkney Islands,S12000023,Healthy People,Personal wellbeing,Anxiety,2.88,4
+Orkney Islands,S12000023,Healthy People,Mortality,Avoidable deaths,217.8,5
+Orkney Islands,S12000023,Healthy People,Physical health conditions,Cancer,586.6,4
+Orkney Islands,S12000023,Healthy People,Physical health conditions,Cardiovascular conditions,10.490463215258856,5
+Orkney Islands,S12000023,Healthy People,Physical health conditions,Dementia,49,5
+Orkney Islands,S12000023,Healthy People,Physical health conditions,Diabetes,5.9,2
+Orkney Islands,S12000023,Healthy People,Difficulties in daily life,Disability,18.736030828516377,3
+Orkney Islands,S12000023,Healthy People,Personal wellbeing,Happiness,8.11,5
+Orkney Islands,S12000023,Healthy People,Mortality,Healthy life expectancy,74.0637622005324,5
+Orkney Islands,S12000023,Healthy People,Mortality,Infant mortality,1.1,5
+Orkney Islands,S12000023,Healthy People,Personal wellbeing,Life satisfaction,8.17,5
+Orkney Islands,S12000023,Healthy People,Personal wellbeing,Life worthwhileness,8.31,5
+Orkney Islands,S12000023,Healthy People,Mental health,Mental health conditions,18.6,4
+Orkney Islands,S12000023,Healthy People,Physical health conditions,Musculoskeletal conditions,0.9033758023695718,1
+Orkney Islands,S12000023,Healthy People,Mental health,Suicides,27,1
+Orkney Islands,S12000023,Healthy Places,Living conditions,Air pollution,1.8658,5
+Orkney Islands,S12000023,Healthy Places,Economic and working conditions,Child poverty,12.3,5
+Orkney Islands,S12000023,Healthy Places,Access to services,Gp appointments,0.9005,5
+Orkney Islands,S12000023,Healthy Places,Access to services,Gp travel time,11.833333333333334,3
+Orkney Islands,S12000023,Healthy Places,Living conditions,Household overcrowding,0.8,5
+Orkney Islands,S12000023,Healthy Places,Access to services,Internet access,0.906,2
+Orkney Islands,S12000023,Healthy Places,Economic and working conditions,Job training,18.3,5
+Orkney Islands,S12000023,Healthy Places,Crime,Low level crime,15.894641235,5
+Orkney Islands,S12000023,Healthy Places,Crime,Personal crime,132.606721163,5
+Orkney Islands,S12000023,Healthy Places,Access to services,Pharmacy travel time,11.25,2
+Orkney Islands,S12000023,Healthy Places,Access to green space,Private outdoor space,90.3,1
+Orkney Islands,S12000023,Healthy Places,Living conditions,Road safety,0.007877473513021913,5
+Orkney Islands,S12000023,Healthy Places,Living conditions,Rough sleeping,68.18181818181819,1
+Orkney Islands,S12000023,Healthy Places,Access to services,Sports centre travel time,11.616666666666667,3
+Orkney Islands,S12000023,Healthy Places,Living conditions,Traffic volume,0.08911391911606038,5
+Orkney Islands,S12000023,Healthy Places,Economic and working conditions,Unemployment,2.81459479,5
+Orkney Islands,S12000023,Healthy Places,Economic and working conditions,Workplace safety,226,4
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Alcohol misuse,213.14187400741136,4
+Perth and Kinross,S12000048,Healthy Lives,Protective measures,Cancer screening,71.2,5
+Perth and Kinross,S12000048,Healthy Lives,Protective measures,Child vaccine coverage,92.18916666666667,1
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Drug misuse,120.33358898419334,3
+Perth and Kinross,S12000048,Healthy Lives,Children and young people,Early years development,17.383669885864794,3
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Healthy eating,29,5
+Perth and Kinross,S12000048,Healthy Lives,Physiological risk factors,High blood pressure,23,4
+Perth and Kinross,S12000048,Healthy Lives,Physiological risk factors,Low birth weight,16.5,2
+Perth and Kinross,S12000048,Healthy Lives,Children and young people,National five attainment,75.05,5
+Perth and Kinross,S12000048,Healthy Lives,Physiological risk factors,Overweight obesity adults,69,2
+Perth and Kinross,S12000048,Healthy Lives,Physiological risk factors,Overweight obesity children,13.413506012950972,4
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Physical activity,73,5
+Perth and Kinross,S12000048,Healthy Lives,Children and young people,Pupil absence,20.4,2
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Sedentary behaviour,13,5
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Sexual health,577,4
+Perth and Kinross,S12000048,Healthy Lives,Behavioural risk factors,Smoking,10,5
+Perth and Kinross,S12000048,Healthy Lives,Children and young people,Teenage pregnancy,20.7,4
+Perth and Kinross,S12000048,Healthy Lives,Children and young people,Young people training,94.7,2
+Perth and Kinross,S12000048,Healthy People,Mortality,All mortality,990,5
+Perth and Kinross,S12000048,Healthy People,Personal wellbeing,Anxiety,3.02,4
+Perth and Kinross,S12000048,Healthy People,Mortality,Avoidable deaths,256.1,4
+Perth and Kinross,S12000048,Healthy People,Physical health conditions,Cancer,569.5,5
+Perth and Kinross,S12000048,Healthy People,Physical health conditions,Cardiovascular conditions,17.66807834833245,3
+Perth and Kinross,S12000048,Healthy People,Physical health conditions,Dementia,47,5
+Perth and Kinross,S12000048,Healthy People,Physical health conditions,Diabetes,6.1,3
+Perth and Kinross,S12000048,Healthy People,Difficulties in daily life,Disability,17.979404397439467,4
+Perth and Kinross,S12000048,Healthy People,Personal wellbeing,Happiness,7.33,2
+Perth and Kinross,S12000048,Healthy People,Mortality,Healthy life expectancy,63.659295234380075,3
+Perth and Kinross,S12000048,Healthy People,Mortality,Infant mortality,3,3
+Perth and Kinross,S12000048,Healthy People,Personal wellbeing,Life satisfaction,7.56,3
+Perth and Kinross,S12000048,Healthy People,Personal wellbeing,Life worthwhileness,7.91,4
+Perth and Kinross,S12000048,Healthy People,Mental health,Mental health conditions,18.1,4
+Perth and Kinross,S12000048,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8630671003363054,2
+Perth and Kinross,S12000048,Healthy People,Mental health,Suicides,22.5,1
+Perth and Kinross,S12000048,Healthy Places,Living conditions,Air pollution,3.2761,4
+Perth and Kinross,S12000048,Healthy Places,Economic and working conditions,Child poverty,14.399999999999999,4
+Perth and Kinross,S12000048,Healthy Places,Access to services,Gp appointments,0.7025,2
+Perth and Kinross,S12000048,Healthy Places,Access to services,Gp travel time,14.041666666666666,2
+Perth and Kinross,S12000048,Healthy Places,Living conditions,Household overcrowding,1.6,4
+Perth and Kinross,S12000048,Healthy Places,Access to services,Internet access,0.972,5
+Perth and Kinross,S12000048,Healthy Places,Economic and working conditions,Job training,8.6,2
+Perth and Kinross,S12000048,Healthy Places,Crime,Low level crime,51.945473796,3
+Perth and Kinross,S12000048,Healthy Places,Crime,Personal crime,172.247220752,4
+Perth and Kinross,S12000048,Healthy Places,Access to services,Pharmacy travel time,8.766666666666666,4
+Perth and Kinross,S12000048,Healthy Places,Access to green space,Private outdoor space,94.3,2
+Perth and Kinross,S12000048,Healthy Places,Living conditions,Road safety,0.01727448366329838,4
+Perth and Kinross,S12000048,Healthy Places,Living conditions,Rough sleeping,62.27058206607236,2
+Perth and Kinross,S12000048,Healthy Places,Access to services,Sports centre travel time,13.708333333333332,1
+Perth and Kinross,S12000048,Healthy Places,Living conditions,Traffic volume,0.29028562439787864,4
+Perth and Kinross,S12000048,Healthy Places,Economic and working conditions,Unemployment,2.4955739,5
+Perth and Kinross,S12000048,Healthy Places,Economic and working conditions,Workplace safety,280,2
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Alcohol misuse,263.8602582185093,3
+Renfrewshire,S12000038,Healthy Lives,Protective measures,Cancer screening,64.8,2
+Renfrewshire,S12000038,Healthy Lives,Protective measures,Child vaccine coverage,94.99666666666667,4
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Drug misuse,107.56404278068027,3
+Renfrewshire,S12000038,Healthy Lives,Children and young people,Early years development,20.997536945812808,1
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Healthy eating,21,3
+Renfrewshire,S12000038,Healthy Lives,Physiological risk factors,High blood pressure,27,1
+Renfrewshire,S12000038,Healthy Lives,Physiological risk factors,Low birth weight,13.099999999999994,5
+Renfrewshire,S12000038,Healthy Lives,Children and young people,National five attainment,69.89999999999999,2
+Renfrewshire,S12000038,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,3
+Renfrewshire,S12000038,Healthy Lives,Physiological risk factors,Overweight obesity children,14.020270270270272,4
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Physical activity,61,1
+Renfrewshire,S12000038,Healthy Lives,Children and young people,Pupil absence,29.3,1
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Sedentary behaviour,25,1
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Sexual health,465,3
+Renfrewshire,S12000038,Healthy Lives,Behavioural risk factors,Smoking,16,3
+Renfrewshire,S12000038,Healthy Lives,Children and young people,Teenage pregnancy,22,3
+Renfrewshire,S12000038,Healthy Lives,Children and young people,Young people training,94.7,2
+Renfrewshire,S12000038,Healthy People,Mortality,All mortality,1210,2
+Renfrewshire,S12000038,Healthy People,Personal wellbeing,Anxiety,3.26,2
+Renfrewshire,S12000038,Healthy People,Mortality,Avoidable deaths,358.5,2
+Renfrewshire,S12000038,Healthy People,Physical health conditions,Cancer,649.4,2
+Renfrewshire,S12000038,Healthy People,Physical health conditions,Cardiovascular conditions,19.507431919279593,2
+Renfrewshire,S12000038,Healthy People,Physical health conditions,Dementia,60,1
+Renfrewshire,S12000038,Healthy People,Physical health conditions,Diabetes,6,2
+Renfrewshire,S12000038,Healthy People,Difficulties in daily life,Disability,20.703725606150204,2
+Renfrewshire,S12000038,Healthy People,Personal wellbeing,Happiness,7.25,2
+Renfrewshire,S12000038,Healthy People,Mortality,Healthy life expectancy,58.69035011670557,2
+Renfrewshire,S12000038,Healthy People,Mortality,Infant mortality,4.1,1
+Renfrewshire,S12000038,Healthy People,Personal wellbeing,Life satisfaction,7.33,1
+Renfrewshire,S12000038,Healthy People,Personal wellbeing,Life worthwhileness,7.7,2
+Renfrewshire,S12000038,Healthy People,Mental health,Mental health conditions,21.7,2
+Renfrewshire,S12000038,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7744660614509595,4
+Renfrewshire,S12000038,Healthy People,Mental health,Suicides,14,5
+Renfrewshire,S12000038,Healthy Places,Living conditions,Air pollution,3.7427,2
+Renfrewshire,S12000038,Healthy Places,Economic and working conditions,Child poverty,16.400000000000002,2
+Renfrewshire,S12000038,Healthy Places,Access to services,Gp appointments,0.7033,3
+Renfrewshire,S12000038,Healthy Places,Access to services,Gp travel time,12.341666666666669,2
+Renfrewshire,S12000038,Healthy Places,Living conditions,Household overcrowding,2.5,1
+Renfrewshire,S12000038,Healthy Places,Access to services,Internet access,0.933,3
+Renfrewshire,S12000038,Healthy Places,Economic and working conditions,Job training,7.7,1
+Renfrewshire,S12000038,Healthy Places,Crime,Low level crime,64.337636975,3
+Renfrewshire,S12000038,Healthy Places,Crime,Personal crime,207.876749485,3
+Renfrewshire,S12000038,Healthy Places,Access to services,Pharmacy travel time,11.841666666666667,1
+Renfrewshire,S12000038,Healthy Places,Access to green space,Private outdoor space,97.1,3
+Renfrewshire,S12000038,Healthy Places,Living conditions,Road safety,0.21799959526256896,1
+Renfrewshire,S12000038,Healthy Places,Living conditions,Rough sleeping,18.762731853757906,5
+Renfrewshire,S12000038,Healthy Places,Access to services,Sports centre travel time,11.6,3
+Renfrewshire,S12000038,Healthy Places,Living conditions,Traffic volume,3.8402349754937806,1
+Renfrewshire,S12000038,Healthy Places,Economic and working conditions,Unemployment,3.15221183,3
+Renfrewshire,S12000038,Healthy Places,Economic and working conditions,Workplace safety,283,2
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Alcohol misuse,270.48167970358173,3
+East Renfrewshire,S12000011,Healthy Lives,Protective measures,Cancer screening,70.5,4
+East Renfrewshire,S12000011,Healthy Lives,Protective measures,Child vaccine coverage,96.925,5
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Drug misuse,77.37144754988978,4
+East Renfrewshire,S12000011,Healthy Lives,Children and young people,Early years development,16.983240223463685,3
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Healthy eating,25,5
+East Renfrewshire,S12000011,Healthy Lives,Physiological risk factors,High blood pressure,24,3
+East Renfrewshire,S12000011,Healthy Lives,Physiological risk factors,Low birth weight,14.5,5
+East Renfrewshire,S12000011,Healthy Lives,Children and young people,National five attainment,89.9,5
+East Renfrewshire,S12000011,Healthy Lives,Physiological risk factors,Overweight obesity adults,64,5
+East Renfrewshire,S12000011,Healthy Lives,Physiological risk factors,Overweight obesity children,10.790774299835256,5
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Physical activity,65,3
+East Renfrewshire,S12000011,Healthy Lives,Children and young people,Pupil absence,3.2,5
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Sedentary behaviour,18,4
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Sexual health,465,3
+East Renfrewshire,S12000011,Healthy Lives,Behavioural risk factors,Smoking,12,5
+East Renfrewshire,S12000011,Healthy Lives,Children and young people,Teenage pregnancy,12.3,5
+East Renfrewshire,S12000011,Healthy Lives,Children and young people,Young people training,97.7,5
+East Renfrewshire,S12000011,Healthy People,Mortality,All mortality,880.0000000000001,5
+East Renfrewshire,S12000011,Healthy People,Personal wellbeing,Anxiety,3.3,2
+East Renfrewshire,S12000011,Healthy People,Mortality,Avoidable deaths,224.7,5
+East Renfrewshire,S12000011,Healthy People,Physical health conditions,Cancer,582.5,5
+East Renfrewshire,S12000011,Healthy People,Physical health conditions,Cardiovascular conditions,18.814326883491148,2
+East Renfrewshire,S12000011,Healthy People,Physical health conditions,Dementia,62,1
+East Renfrewshire,S12000011,Healthy People,Physical health conditions,Diabetes,6,3
+East Renfrewshire,S12000011,Healthy People,Difficulties in daily life,Disability,15.085528294210256,5
+East Renfrewshire,S12000011,Healthy People,Personal wellbeing,Happiness,7.75,5
+East Renfrewshire,S12000011,Healthy People,Mortality,Healthy life expectancy,66.96044729757713,5
+East Renfrewshire,S12000011,Healthy People,Mortality,Infant mortality,1.9,5
+East Renfrewshire,S12000011,Healthy People,Personal wellbeing,Life satisfaction,7.73,4
+East Renfrewshire,S12000011,Healthy People,Personal wellbeing,Life worthwhileness,7.87,3
+East Renfrewshire,S12000011,Healthy People,Mental health,Mental health conditions,17.2,5
+East Renfrewshire,S12000011,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7878282489033543,4
+East Renfrewshire,S12000011,Healthy People,Mental health,Suicides,11.3,5
+East Renfrewshire,S12000011,Healthy Places,Living conditions,Air pollution,3.8471,1
+East Renfrewshire,S12000011,Healthy Places,Economic and working conditions,Child poverty,8.4,5
+East Renfrewshire,S12000011,Healthy Places,Access to services,Gp appointments,0.7033,3
+East Renfrewshire,S12000011,Healthy Places,Access to services,Gp travel time,9.600000000000001,5
+East Renfrewshire,S12000011,Healthy Places,Living conditions,Household overcrowding,2,2
+East Renfrewshire,S12000011,Healthy Places,Access to services,Internet access,0.885,1
+East Renfrewshire,S12000011,Healthy Places,Economic and working conditions,Job training,12.4,4
+East Renfrewshire,S12000011,Healthy Places,Crime,Low level crime,24.804446274,5
+East Renfrewshire,S12000011,Healthy Places,Crime,Personal crime,114.965006176,5
+East Renfrewshire,S12000011,Healthy Places,Access to services,Pharmacy travel time,8.891666666666667,4
+East Renfrewshire,S12000011,Healthy Places,Access to green space,Private outdoor space,97.5,4
+East Renfrewshire,S12000011,Healthy Places,Living conditions,Road safety,0.15494674399124617,1
+East Renfrewshire,S12000011,Healthy Places,Living conditions,Rough sleeping,60.851926977687626,2
+East Renfrewshire,S12000011,Healthy Places,Access to services,Sports centre travel time,9.741666666666667,4
+East Renfrewshire,S12000011,Healthy Places,Living conditions,Traffic volume,2.8183091101518887,2
+East Renfrewshire,S12000011,Healthy Places,Economic and working conditions,Unemployment,3.10884986,3
+East Renfrewshire,S12000011,Healthy Places,Economic and working conditions,Workplace safety,228,3
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Alcohol misuse,1364.4656820156388,1
+Shetland Islands,S12000027,Healthy Lives,Protective measures,Cancer screening,74.2,5
+Shetland Islands,S12000027,Healthy Lives,Protective measures,Child vaccine coverage,92.3,1
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Drug misuse,592.7030837580929,1
+Shetland Islands,S12000027,Healthy Lives,Children and young people,Early years development,19.886363636363637,2
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Healthy eating,15,1
+Shetland Islands,S12000027,Healthy Lives,Physiological risk factors,High blood pressure,27,1
+Shetland Islands,S12000027,Healthy Lives,Physiological risk factors,Low birth weight,20.900000000000006,1
+Shetland Islands,S12000027,Healthy Lives,Children and young people,National five attainment,77.75000000000001,5
+Shetland Islands,S12000027,Healthy Lives,Physiological risk factors,Overweight obesity adults,68,3
+Shetland Islands,S12000027,Healthy Lives,Physiological risk factors,Overweight obesity children,13.06532663316583,5
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Physical activity,63,2
+Shetland Islands,S12000027,Healthy Lives,Children and young people,Pupil absence,6.7,5
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Sedentary behaviour,22,2
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Sexual health,230.5,1
+Shetland Islands,S12000027,Healthy Lives,Behavioural risk factors,Smoking,11,5
+Shetland Islands,S12000027,Healthy Lives,Children and young people,Teenage pregnancy,18.3,4
+Shetland Islands,S12000027,Healthy Lives,Children and young people,Young people training,97.4,5
+Shetland Islands,S12000027,Healthy People,Mortality,All mortality,1010,5
+Shetland Islands,S12000027,Healthy People,Personal wellbeing,Anxiety,2.04,5
+Shetland Islands,S12000027,Healthy People,Mortality,Avoidable deaths,233.8,5
+Shetland Islands,S12000027,Healthy People,Physical health conditions,Cancer,551.9,5
+Shetland Islands,S12000027,Healthy People,Physical health conditions,Cardiovascular conditions,12.467419635099912,4
+Shetland Islands,S12000027,Healthy People,Physical health conditions,Dementia,58,2
+Shetland Islands,S12000027,Healthy People,Physical health conditions,Diabetes,5.4,1
+Shetland Islands,S12000027,Healthy People,Difficulties in daily life,Disability,17.170618519324197,5
+Shetland Islands,S12000027,Healthy People,Personal wellbeing,Happiness,8.22,5
+Shetland Islands,S12000027,Healthy People,Mortality,Healthy life expectancy,66.378160418483,5
+Shetland Islands,S12000027,Healthy People,Mortality,Infant mortality,2,5
+Shetland Islands,S12000027,Healthy People,Personal wellbeing,Life satisfaction,7.93,5
+Shetland Islands,S12000027,Healthy People,Personal wellbeing,Life worthwhileness,7.97,4
+Shetland Islands,S12000027,Healthy People,Mental health,Mental health conditions,17.5,5
+Shetland Islands,S12000027,Healthy People,Physical health conditions,Musculoskeletal conditions,0.8223847124748532,3
+Shetland Islands,S12000027,Healthy People,Mental health,Suicides,14.4,5
+Shetland Islands,S12000027,Healthy Places,Living conditions,Air pollution,1.7516,5
+Shetland Islands,S12000027,Healthy Places,Economic and working conditions,Child poverty,9.700000000000001,5
+Shetland Islands,S12000027,Healthy Places,Access to services,Gp appointments,0.8740000000000001,5
+Shetland Islands,S12000027,Healthy Places,Access to services,Gp travel time,27.208333333333332,1
+Shetland Islands,S12000027,Healthy Places,Living conditions,Household overcrowding,1.1,5
+Shetland Islands,S12000027,Healthy Places,Access to services,Internet access,0.978,5
+Shetland Islands,S12000027,Healthy Places,Economic and working conditions,Job training,NA,4
+Shetland Islands,S12000027,Healthy Places,Crime,Low level crime,6.9504778454,5
+Shetland Islands,S12000027,Healthy Places,Crime,Personal crime,96.003475239,5
+Shetland Islands,S12000027,Healthy Places,Access to services,Pharmacy travel time,7.3,5
+Shetland Islands,S12000027,Healthy Places,Access to green space,Private outdoor space,92.80000000000001,1
+Shetland Islands,S12000027,Healthy Places,Living conditions,Road safety,0.002726030422697692,5
+Shetland Islands,S12000027,Healthy Places,Living conditions,Rough sleeping,21.73913043478261,4
+Shetland Islands,S12000027,Healthy Places,Access to services,Sports centre travel time,8.975,5
+Shetland Islands,S12000027,Healthy Places,Living conditions,Traffic volume,0.09527476327328435,5
+Shetland Islands,S12000027,Healthy Places,Economic and working conditions,Unemployment,2.1359968900000004,5
+Shetland Islands,S12000027,Healthy Places,Economic and working conditions,Workplace safety,228,3
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Alcohol misuse,388.9549335350697,2
+Stirling,S12000030,Healthy Lives,Protective measures,Cancer screening,68.9,3
+Stirling,S12000030,Healthy Lives,Protective measures,Child vaccine coverage,93.01875000000001,2
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Drug misuse,281.2492011160413,2
+Stirling,S12000030,Healthy Lives,Children and young people,Early years development,17.63848396501458,3
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Healthy eating,19,2
+Stirling,S12000030,Healthy Lives,Physiological risk factors,High blood pressure,24,3
+Stirling,S12000030,Healthy Lives,Physiological risk factors,Low birth weight,16,3
+Stirling,S12000030,Healthy Lives,Children and young people,National five attainment,79.55000000000001,5
+Stirling,S12000030,Healthy Lives,Physiological risk factors,Overweight obesity adults,65,4
+Stirling,S12000030,Healthy Lives,Physiological risk factors,Overweight obesity children,13.30049261083744,4
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Physical activity,71,5
+Stirling,S12000030,Healthy Lives,Children and young people,Pupil absence,10.3,4
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Sedentary behaviour,18,5
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Sexual health,477.5,4
+Stirling,S12000030,Healthy Lives,Behavioural risk factors,Smoking,17,2
+Stirling,S12000030,Healthy Lives,Children and young people,Teenage pregnancy,19.1,4
+Stirling,S12000030,Healthy Lives,Children and young people,Young people training,95.6,4
+Stirling,S12000030,Healthy People,Mortality,All mortality,1040,4
+Stirling,S12000030,Healthy People,Personal wellbeing,Anxiety,3.24,3
+Stirling,S12000030,Healthy People,Mortality,Avoidable deaths,297.6,3
+Stirling,S12000030,Healthy People,Physical health conditions,Cancer,613.7,3
+Stirling,S12000030,Healthy People,Physical health conditions,Cardiovascular conditions,17.90770560899168,3
+Stirling,S12000030,Healthy People,Physical health conditions,Dementia,56,2
+Stirling,S12000030,Healthy People,Physical health conditions,Diabetes,6.6,4
+Stirling,S12000030,Healthy People,Difficulties in daily life,Disability,17.85593162856949,4
+Stirling,S12000030,Healthy People,Personal wellbeing,Happiness,7.57,4
+Stirling,S12000030,Healthy People,Mortality,Healthy life expectancy,65.33775542954959,4
+Stirling,S12000030,Healthy People,Mortality,Infant mortality,3.5,2
+Stirling,S12000030,Healthy People,Personal wellbeing,Life satisfaction,7.56,3
+Stirling,S12000030,Healthy People,Personal wellbeing,Life worthwhileness,7.82,3
+Stirling,S12000030,Healthy People,Mental health,Mental health conditions,17.8,5
+Stirling,S12000030,Healthy People,Physical health conditions,Musculoskeletal conditions,0.7902441799670356,4
+Stirling,S12000030,Healthy People,Mental health,Suicides,14,5
+Stirling,S12000030,Healthy Places,Living conditions,Air pollution,3.4145,4
+Stirling,S12000030,Healthy Places,Economic and working conditions,Child poverty,13.200000000000001,4
+Stirling,S12000030,Healthy Places,Access to services,Gp appointments,0.7078,4
+Stirling,S12000030,Healthy Places,Access to services,Gp travel time,11.633333333333333,3
+Stirling,S12000030,Healthy Places,Living conditions,Household overcrowding,1.8,3
+Stirling,S12000030,Healthy Places,Access to services,Internet access,0.953,5
+Stirling,S12000030,Healthy Places,Economic and working conditions,Job training,15.6,5
+Stirling,S12000030,Healthy Places,Crime,Low level crime,40.203177348,4
+Stirling,S12000030,Healthy Places,Crime,Personal crime,209.12136604399998,3
+Stirling,S12000030,Healthy Places,Access to services,Pharmacy travel time,9.258333333333333,3
+Stirling,S12000030,Healthy Places,Access to green space,Private outdoor space,95.39999999999999,2
+Stirling,S12000030,Healthy Places,Living conditions,Road safety,0.02219608357575451,4
+Stirling,S12000030,Healthy Places,Living conditions,Rough sleeping,48.10261892036344,3
+Stirling,S12000030,Healthy Places,Access to services,Sports centre travel time,15.1,1
+Stirling,S12000030,Healthy Places,Living conditions,Traffic volume,0.35322847402455726,4
+Stirling,S12000030,Healthy Places,Economic and working conditions,Unemployment,3.06247526,4
+Stirling,S12000030,Healthy Places,Economic and working conditions,Workplace safety,227,4`;
+
+        async function initializeData() {
+            try {                
+                Papa.parse(csvData, {
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        healthData = results.data;
+                        initializeVisualization();
+                    },
+                    error: function(error) {
+                        showError('Error parsing data: ' + error.message);
+                    }
+                });
+            } catch (error) {
+                showError('Error loading data: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error">
+                    ${message}
+                    <br>
+                    Please try refreshing the page or contact support if the problem persists.
+                </div>
+            `;
+        }
+
+        function initializeVisualization() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="region-selector">
+                    <h3>Select Regions to Compare</h3>
+                    <div class="checkbox-grid" id="regionCheckboxes"></div>
+                    <button onclick="selectAllRegions()">Select All</button>
+                    <button onclick="deselectAllRegions()">Deselect All</button>
+                </div>
+                <div id="scorecard"></div>
+                <div class="legend">
+                    <h4>Performance Quintiles</h4>
+                    <div class="legend-items">
+                        <div class="legend-item quintile-1">Quintile 1 (Lowest)</div>
+                        <div class="legend-item quintile-2">Quintile 2</div>
+                        <div class="legend-item quintile-3">Quintile 3</div>
+                        <div class="legend-item quintile-4">Quintile 4</div>
+                        <div class="legend-item quintile-5">Quintile 5 (Highest)</div>
+                    </div>
+                    <p style="margin-top: 10px;">Values are highlighted when regions are selected for comparison</p>
+                </div>
+            `;
+
+            const regions = [...new Set(healthData.map(row => row.ltla24_name))];
+            
+            // Initialize region selector
+            const checkboxContainer = document.getElementById('regionCheckboxes');
+            regions.forEach(region => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <input type="checkbox" id="${region}" value="${region}" 
+                           onchange="toggleRegion('${region}')">
+                    <label for="${region}">${region}</label>
+                `;
+                checkboxContainer.appendChild(div);
+            });
+
+            // Group data by domain and subdomain
+            const groupedData = _.groupBy(healthData, 'domain');
+            
+            // Create scorecard
+            const scorecard = document.getElementById('scorecard');
+            scorecard.innerHTML = '';
+
+            Object.entries(groupedData).forEach(([domain, domainData]) => {
+                const domainSection = document.createElement('div');
+                domainSection.className = 'domain-section';
+                
+                domainSection.innerHTML = `<div class="domain-header">${domain}</div>`;
+                
+                const subdomainData = _.groupBy(domainData, 'subdomain');
+                
+                Object.entries(subdomainData).forEach(([subdomain, indicators]) => {
+                    if (subdomain === 'NA') return;
+                    
+                    const subdomainSection = document.createElement('div');
+                    subdomainSection.className = 'subdomain-section';
+                    subdomainSection.innerHTML = `<div class="subdomain-header">${subdomain}</div>`;
+                    
+                    const indicatorGroups = _.groupBy(indicators, 'indicator');
+                    
+                    Object.entries(indicatorGroups).forEach(([indicator, values]) => {
+                        const row = document.createElement('div');
+                        row.className = 'indicator-row';
+                        
+                        const nameCell = document.createElement('div');
+                        nameCell.className = 'indicator-name';
+                        nameCell.textContent = indicator;
+                        
+                        const valuesSection = document.createElement('div');
+                        valuesSection.className = 'indicator-values';
+                        
+                        // Sort values by region
+                        const sortedValues = _.sortBy(values, 'ltla24_name');
+                        
+                        sortedValues.forEach(item => {
+                            const valueCell = document.createElement('div');
+                            valueCell.className = `value-cell quintile-${item.quantile}`;
+                            valueCell.dataset.region = item.ltla24_name;
+                            
+                            // Create tooltip
+                            const tooltip = document.createElement('div');
+                            tooltip.className = 'tooltip';
+                            const valueToDisplay = item.value === 'NA' ? 'Data is missing' : item.value.toFixed(1);
+                            tooltip.textContent = `${item.ltla24_name}\n${item.indicator}: ${valueToDisplay} ${indicatorUnits[item.indicator]}`;
+                            valueCell.appendChild(tooltip);
+                            
+                            valuesSection.appendChild(valueCell);
+                        });
+                        
+                        row.appendChild(nameCell);
+                        row.appendChild(valuesSection);
+                        subdomainSection.appendChild(row);
+                    });
+                    
+                    domainSection.appendChild(subdomainSection);
+                });
+                
+                scorecard.appendChild(domainSection);
+            });
+
+            updateHighlighting();
+        }
+
+        function toggleRegion(region) {
+            if (selectedRegions.has(region)) {
+                selectedRegions.delete(region);
+            } else {
+                selectedRegions.add(region);
+            }
+            updateHighlighting();
+        }
+
+        function selectAllRegions() {
+            const checkboxes = document.querySelectorAll('#regionCheckboxes input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                selectedRegions.add(checkbox.value);
+            });
+            updateHighlighting();
+        }
+
+        function deselectAllRegions() {
+            const checkboxes = document.querySelectorAll('#regionCheckboxes input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                selectedRegions.delete(checkbox.value);
+            });
+            updateHighlighting();
+        }
+
+        function updateHighlighting() {
+            const valueCells = document.querySelectorAll('.value-cell');
+            valueCells.forEach(cell => {
+                cell.classList.toggle('highlighted', 
+                    selectedRegions.has(cell.dataset.region));
+            });
+        }
+
+        // Initialize the visualization
+        initializeData().catch(error => {
+            showError('Error initializing visualization: ' + error.message);
+        });
+    </script>
+</body>
+</html>
