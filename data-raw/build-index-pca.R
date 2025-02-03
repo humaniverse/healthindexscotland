@@ -56,14 +56,16 @@ names(indicators)[-1] <- sub(".rda$", "", basename(files))
 toflip <- c("lives_alcohol_misuse", "lives_drug_misuse", "lives_early_years_development",
             "lives_high_blood_pressure", "lives_low_birth_weight",
             "lives_overweight_obesity_adults", "lives_overweight_obesity_children",
-            "lives_pupil_absence", "lives_sedentary_behaviour", "lives_smoking",
-            "lives_teenage_pregnancy",
-            # "lives_sexual_health"  # NOTE: missing from data
+            "lives_pupil_absence", "lives_sedentary_behaviour", "lives_sexual_health",
+            "lives_smoking", "lives_teenage_pregnancy",
+
             "people_all_mortality", "people_anxiety", "people_avoidable_deaths",
             "people_cancer", "people_cardiovascular_conditions", "people_dementia",
-            "people_disability", "people_infant_mortality", "people_mental_health_conditions",
-            "people_musculoskeletal_conditions", "people_suicides",
-            # "people_diabetes", "people_kidney_and_liver_disease"  # NOTE: missing
+            "people_diabetes", "people_disability", "people_infant_mortality",
+            "people_mental_health_conditions", "people_musculoskeletal_conditions",
+            "people_suicides",
+            # missing kidney/liver disease and respiratory conditions
+
             "places_air_pollution", "places_child_poverty", "places_gp_travel_time",
             "places_household_overcrowding", "places_low_level_crime",
             "places_personal_crime", "places_pharmacy_travel_time",
@@ -132,21 +134,20 @@ subdomains$people_difficulties_in_daily_life <- indicators[c("people_disability"
 subdomains$people_mental_health              <- indicators[c("people_mental_health_conditions", "people_suicides")]    # NOTE: missing self-harm
 subdomains$people_mortality                  <- indicators[c("people_avoidable_deaths", "people_infant_mortality", "people_healthy_life_expectancy", "people_all_mortality")]
 subdomains$people_personal_wellbeing         <- indicators[c("people_life_worthwhileness", "people_anxiety", "people_happiness", "people_life_satisfaction")]
-subdomains$people_physical_health_conditions <- indicators[c("people_cancer", "people_cardiovascular_conditions", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: diabetes, kidney, and respiratory are missing
+subdomains$people_physical_health_conditions <- indicators[c("people_cancer", "people_cardiovascular_conditions", "people_diabetes", "people_dementia", "people_musculoskeletal_conditions")]  # NOTE: kidney, and respiratory are missing
 
-subdomains$lives_behavioural_risk_factors   <- indicators[c("lives_alcohol_misuse", "lives_drug_misuse", "lives_healthy_eating", "lives_physical_activity", "lives_sedentary_behaviour", "lives_smoking")]  # NOTE: sexual health is missing
+subdomains$lives_behavioural_risk_factors   <- indicators[c("lives_alcohol_misuse", "lives_drug_misuse", "lives_healthy_eating", "lives_physical_activity", "lives_sedentary_behaviour", "lives_sexual_health", "lives_smoking")]
 subdomains$lives_children_and_young_people  <- indicators[c("lives_early_years_development", "lives_pupil_absence", "lives_national_five_attainment", "lives_teenage_pregnancy", "lives_young_people_training")]
 subdomains$lives_physiological_risk_factors <- indicators[c("lives_high_blood_pressure", "lives_low_birth_weight", "lives_overweight_obesity_adults", "lives_overweight_obesity_children")]
 subdomains$lives_protective_measures        <- indicators[c("lives_cancer_screening", "lives_child_vaccine_coverage")]
 
 subdomains$places_access_to_green_space           <- indicators[c("places_private_outdoor_space")]
-subdomains$places_access_to_services              <- indicators[c("places_gp_travel_time", "places_pharmacy_travel_time", "places_sports_centre_travel_time", "places_internet_access")]  # NOTE: missing acceptable gp appointments
+subdomains$places_access_to_services              <- indicators[c("places_gp_travel_time", "places_pharmacy_travel_time", "places_sports_centre_travel_time", "places_internet_access", "places_gp_appointments")]
 subdomains$places_crime                           <- indicators[c("places_low_level_crime", "places_personal_crime")]
 subdomains$places_economic_and_working_conditions <- indicators[c("places_child_poverty", "places_job_training", "places_unemployment", "places_workplace_safety")]
 subdomains$places_living_conditions               <- indicators[c("places_air_pollution", "places_household_overcrowding", "places_road_safety", "places_rough_sleeping")]  # NOTE: noise complaints is missing
 
 subdomains <- data.frame(ltla24_code = indicators$ltla24_code, sapply(subdomains, build_pc_indicators))
-
 
 scores <- data.frame(ltla24_code = indicators$ltla24_code)
 
