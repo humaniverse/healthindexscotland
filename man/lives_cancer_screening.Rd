@@ -11,6 +11,9 @@ A data frame with 32 row and 3 variables:
 \item{cancer_screening_uptake}{Percentage of cancer screening uptake. Only
 bowel cancer screening uptake is included here.}
 \item{year}{Time period - three year aggregates}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

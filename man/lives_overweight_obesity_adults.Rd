@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{adult_overweight_obesity_percentage}{Percentage of adults clinically classed
 as overweight and obese.}
 \item{year}{Time frame}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

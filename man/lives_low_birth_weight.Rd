@@ -10,6 +10,9 @@ A data frame with 32 rows and 3 variables:
 \item{ltla24_code}{Local Authority Code}
 \item{not_healthy_birth_rate_percentage}{Percentage of babies born not at a healthy birth weight}
 \item{year}{Time period - three year aggregate}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

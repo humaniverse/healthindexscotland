@@ -13,6 +13,9 @@ childhood immunisation statistics (6in1, PCV, rotavirus, MenB, (12 months); 6in1
 MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
 4in1, MMR2 (4-6 years))}
 \item{year}{School Year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

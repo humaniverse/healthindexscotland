@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
 injuries per 100k population}
 \item{year}{Time period}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

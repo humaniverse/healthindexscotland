@@ -15,6 +15,9 @@ yes to Alzheimer's disease or other cause of dementia in the national GP
 Patient Survey. The only available dementia data at Local Authority level in
 Scotland focuses on nursing care residents across all sectors.}
 \item{year}{Time period - census data in the year up to 31/03/2024}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

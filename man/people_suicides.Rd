@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{suicides_per_100k}{Deaths from suicide (16+).
 Age standardised rate per 100,000.}
 \item{year}{Time period - 5 year aggregate}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

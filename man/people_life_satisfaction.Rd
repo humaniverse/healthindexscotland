@@ -12,6 +12,9 @@ A data frame with 32 rows and 3 variables:
 \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
 of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
 \item{year}{Time period}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

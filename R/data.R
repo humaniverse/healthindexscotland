@@ -14,6 +14,9 @@
 #' in which they have an alcohol-related stay, even though the same patient may
 #' be admitted to hospital several times in a year. Mid 2022 population estimates are used.}
 #' \item{year}{Financial year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -34,6 +37,9 @@
 #' \item{cancer_screening_uptake}{Percentage of cancer screening uptake. Only
 #' bowel cancer screening uptake is included here.}
 #' \item{year}{Time period - three year aggregates}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -54,6 +60,9 @@
 #' Cardiovascular conditions includes angina, coronary heart disease, heart
 #' attack, and heart failure. Scottish 2022 mid year population estimates were used}
 #' \item{year}{Financial year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -74,6 +83,9 @@
 #' absolute low incomes families (where a household's income is below 60% of
 #' the median income in 2010/11, adjusted for inflation).}
 #' \item{year}{Financial Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -92,6 +104,9 @@
 #' MenB Booster (24 months); 6in1, MMR1, Hib/MenC, 4in1, MMR2 (3-5 years); MMR1,
 #' 4in1, MMR2 (4-6 years))}
 #' \item{year}{School Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -117,6 +132,9 @@
 #'  all diagnostic information regarding the full stay is available. Mid 2022 population
 #'  estimates are used.}
 #' \item{year}{Financial year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -138,6 +156,9 @@
 #' a concern in one or more domains, out of total number of recorded reviews while
 #' child is 2 and in the cohort.}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -157,6 +178,9 @@
 #' \item{healthy_eating_percent}{Percentage of people that consume
 #' 5 portions or more of fruit and vegetable per day}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -175,6 +199,9 @@
 #' \item{ high_blood_pressure_percentage}{Percentage of adults (excluding pregnant
 #' women) diagnosed with high blood pressure}
 #' \item{year}{Time period - four year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -191,6 +218,9 @@
 #' \item{job_related_training_perc}{Percentage of all who received job related
 #'  training in last 4 wks - aged 16-64}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -208,6 +238,9 @@
 #' \item{infant_mortality_rate_per_1k}{Rate of infants per 1k that have died
 #' under the age of 1}
 #' \item{year}{Time period - five year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -223,6 +256,9 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{not_healthy_birth_rate_percentage}{Percentage of babies born not at a healthy birth weight}
 #' \item{year}{Time period - three year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -240,6 +276,9 @@
 #' \item{national_five_attainment_percent}{Grade A-C percentage in Maths
 #' and English (average of the two subjects taken)}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -258,6 +297,9 @@
 #' \item{adult_overweight_obesity_percentage}{Percentage of adults clinically classed
 #' as overweight and obese.}
 #' \item{year}{Time frame}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -277,6 +319,9 @@
 #' as overweight, obese, and severely obese. BMI is used as the unit of measurement.
 #' Based on children in Primary 1 (aged 4-5).}
 #' \item{year}{School Year period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -295,6 +340,9 @@
 #' \item{activity_levels_met_percent}{Percentage of people that meet the recommended
 #' activity levels}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -313,6 +361,9 @@
 #' \item{pupil_absence_per_1k}{Crude exclusion rate of pupil absence per 1,000
 #' students}
 #' \item{year}{School year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -332,6 +383,9 @@
 #' \item{sedentary_behaviour_percentage}{Percentage of people with very low
 #' activity levels, defined as less than 30 minutes activity a week}
 #' \item{year}{Time period - four year period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -351,6 +405,9 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{sexual_health_rate_100k}{Rate of chlamydia per 100,000}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -368,6 +425,9 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{smoking_percent}{Percentage of people that are current smokers}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -386,6 +446,9 @@
 #' \item{teenage_pregnancy_per_1k}{Crude rate of teenage pregnancies per 1,000
 #' females aged 15-19}
 #' \item{year}{Time period - three year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -407,6 +470,9 @@
 #' looked for work in the four weeks prior to interview or were waiting to start
 #' a job they had already obtained}
 #' \item{year}{Financial Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -425,6 +491,9 @@
 #' \item{non_fatal_injuries_per_100k_employees}{Rate of non-fatal employee
 #' injuries per 100k population}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -443,6 +512,9 @@
 #' \item{young_people_participation_education_training_employment_percentage}{Percentage
 #' of 16-19 year olds in education, training or employment}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -460,6 +532,9 @@
 #' \item{anxiety_score_out_of_10}{Average personal ratings on feelings of
 #' anxiety out of 10 - 10 is most anxious, 1 is least anxious}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #' ...
 #' }
 #' @source \url{https://www.ons.gov.uk/datasets/wellbeing-local-authority/editions/time-series/versions/4}
@@ -476,6 +551,9 @@
 #' \item{avoidable_mortality_rate_per_100k}{Age-standardised avoidable mortality rates per
 #' 100k}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -494,6 +572,9 @@
 #' \item{cancer_registration_rate_per_100k}{Cancer registrations per 100k,
 #' standardised by age-sex}
 #' \item{year}{Time period - three year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #' ...
 #' }
 #' @source \url{https://scotland.shinyapps.io/ScotPHO_profiles_tool/}
@@ -514,6 +595,9 @@
 #' Patient Survey. The only available dementia data at Local Authority level in
 #' Scotland focuses on nursing care residents across all sectors.}
 #' \item{year}{Time period - census data in the year up to 31/03/2024}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -545,6 +629,9 @@
 #' with long-term health problem/disability that limits daily activities by a
 #' lot or by a little.}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #' ...
 #' }
 #' @source \url{https://statistics.ukdataservice.ac.uk/dataset/scotland-s-census-2022-uv303a-long-term-health-problem-or-disability-by-sex-by-age-20-groups/resource/5ccf8e62-96d1-4b13-8871-39082b0c5f49}
@@ -561,6 +648,9 @@
 #' \item{happiness_score_out_of_10}{Average personal ratings on feelings of
 #' happiness out of 10; 10 - most happy, 1 - least happy}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -577,6 +667,9 @@
 #' \item{healthy_life_expectancy_male}{Weighted population average healthy life
 #' expectancy for men and women}
 #' \item{year}{Time period - three year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -595,6 +688,9 @@
 #' \item{life_satisfaction_score_out_of_10}{Average personal ratings on feelings
 #' of life satisfaction out of 10, 10 - most satisfied, 1 - least satisfied}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -613,6 +709,9 @@
 #' \item{worthwhile_score_out_of_10}{Average personal ratings on feelings
 #' of life worthwhileness out of 10, 10 - most worthwhile, 1 - least worthwhile}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -630,6 +729,9 @@
 #' \item{mental_health_conditions_percentage}{Percentage of population prescribed
 #' drugs for anxiety, depression or psychosis}
 #' \item{year}{Time period - financial year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -647,6 +749,9 @@
 #' \item{death_rate_per_100k}{age-sex standardised rate for all causes of
 #' mortality per 100k}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -667,6 +772,9 @@
 #' gathers data on Weighted number of people answering yes to 'Arthritis or
 #' ongoing problem with back or joints'.}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -683,6 +791,9 @@
 #' \item{suicides_per_100k}{Deaths from suicide (16+).
 #' Age standardised rate per 100,000.}
 #' \item{year}{Time period - 5 year aggregate}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -700,6 +811,9 @@
 #' \item{acceptable_gp_appointments}{The percentage of people who rated their GP
 #' practice as positive for the care provided}
 #' \item{year}{Time period}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #' ...
 #' }
 #' @source \url{https://www.gov.scot/publications/health-and-care-experience-survey-results-by-geography/}
@@ -715,6 +829,9 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{air_pollution_weighted}{Population-weighted annual mean PM2.5}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -737,6 +854,9 @@
 #'   \item{gp_mean_travel_time}{Mean travel time (in minutes) to the nearest
 #'   GP among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'   ...
 #' }
 #' @source \url{https://openstreetmap.org/}
@@ -756,6 +876,9 @@
 #' \item{household_overcrowding_percentage}{Percentage of households
 #' experiencing household overcrowding}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -774,6 +897,9 @@
 #' \item{internet_access_percentage}{Percentage of households with home internet
 #' access. Data is missing for Moray and South Ayrshire}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -793,6 +919,9 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{low_level_crimes_per_10000}{Number of low-level crimes per 10,000 people}
 #'   \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -812,6 +941,9 @@
 #'   \item{ltla24_code}{Local Authority Code}
 #'   \item{personal_crimes_per_10000}{Number of personal crimes per 10,000 people}
 #'   \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -834,6 +966,9 @@
 #'   \item{pharmacy_mean_travel_time}{Mean travel time (in minutes) to the nearest
 #'   pharmacy among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'   ...
 #' }
 #' @source \url{https://openstreetmap.org/}
@@ -851,6 +986,9 @@
 #' \item{private_outdoor_space_percentage}{Percentage of addresses with access
 #' to private outdoor space}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -868,6 +1006,9 @@
 #' \item{ltla24_code}{Local Authority Code}
 #' \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -887,6 +1028,9 @@
 #' at least one member of the household was sleeping rough within the previous
 #' three months, normalised per 100,000 residents.}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'
 #' ...
 #' }
@@ -909,6 +1053,9 @@
 #'   \item{sports_centre_mean_travel_time}{Mean travel time (in minutes) to the nearest
 #'   sports centre among all the Intermediate Zones within a Local Authority}
 #'   \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #'   ...
 #' }
 #' @source \url{https://openstreetmap.org/}
@@ -926,6 +1073,9 @@
 #' \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
 #' of traffic across each local authority for the whole year.}
 #' \item{year}{Year}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
 #' ...
 #' }
 #' @source \url{https://roadtraffic.dft.gov.uk/}
