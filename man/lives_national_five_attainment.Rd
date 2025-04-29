@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{national_five_attainment_percent}{Grade A-C percentage in Maths
 and English (average of the two subjects taken)}
 \item{year}{Time period}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

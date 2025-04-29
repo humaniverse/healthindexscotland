@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{traffic_volume}{The raw local authority traffic figures give the total volume (vehicle miles)
 of traffic across each local authority for the whole year.}
 \item{year}{Year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 ...
 }
 }

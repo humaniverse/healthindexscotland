@@ -14,6 +14,9 @@ Rheumatoid Arthritis. England's Health Index musculoskeletal conditions
 gathers data on Weighted number of people answering yes to 'Arthritis or
 ongoing problem with back or joints'.}
 \item{year}{Year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

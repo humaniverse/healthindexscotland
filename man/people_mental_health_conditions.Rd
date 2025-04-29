@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{mental_health_conditions_percentage}{Percentage of population prescribed
 drugs for anxiety, depression or psychosis}
 \item{year}{Time period - financial year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

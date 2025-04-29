@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{infant_mortality_rate_per_1k}{Rate of infants per 1k that have died
 under the age of 1}
 \item{year}{Time period - five year aggregate}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

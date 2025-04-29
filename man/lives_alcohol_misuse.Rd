@@ -15,6 +15,9 @@ within the financial year. Patients are counted only once in the financial year
 in which they have an alcohol-related stay, even though the same patient may
 be admitted to hospital several times in a year. Mid 2022 population estimates are used.}
 \item{year}{Financial year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

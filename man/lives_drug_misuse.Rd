@@ -17,6 +17,9 @@ speciality and/or hospital. Stays are counted at the point of discharge, when
 all diagnostic information regarding the full stay is available. Mid 2022 population
 estimates are used.}
 \item{year}{Financial year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

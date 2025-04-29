@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{teenage_pregnancy_per_1k}{Crude rate of teenage pregnancies per 1,000
 females aged 15-19}
 \item{year}{Time period - three year aggregate}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

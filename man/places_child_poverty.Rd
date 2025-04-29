@@ -12,6 +12,9 @@ A data drame with 32 rows and 3 variables:
 absolute low incomes families (where a household's income is below 60\% of
 the median income in 2010/11, adjusted for inflation).}
 \item{year}{Financial Year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

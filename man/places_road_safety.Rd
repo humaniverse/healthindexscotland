@@ -10,6 +10,9 @@ A data frame with 32 rows and 3 variables:
 \item{ltla24_code}{Local Authority Code}
 \item{road_accident_count_by_area}{Number of people killed or seriously injured, normalised by land area (km^2)}
 \item{year}{Year}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

@@ -12,6 +12,9 @@ A data frame with 32 rows and 3 variables:
 as overweight, obese, and severely obese. BMI is used as the unit of measurement.
 Based on children in Primary 1 (aged 4-5).}
 \item{year}{School Year period}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }

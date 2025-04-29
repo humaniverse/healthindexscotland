@@ -11,6 +11,9 @@ A data frame with 32 rows and 3 variables:
 \item{young_people_participation_education_training_employment_percentage}{Percentage
 of 16-19 year olds in education, training or employment}
 \item{year}{Time period}
+\item{domain}{Indicator domain - lives, people, or places}
+\item{subdomain}{Indicator subdomain}
+\item{is_higher_better}{Does higher scores correspond to better outcomes}
 
 ...
 }
