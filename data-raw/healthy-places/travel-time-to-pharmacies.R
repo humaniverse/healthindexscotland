@@ -60,8 +60,8 @@ sco_pharmacies_lad <-
   filter(!is.na(ltla21_code)) |>
   mutate(
     # Round coords to 3 decimal points to save memory
-    lat = st_coordinates(geometry)[,2] |> round(3),
-    lng = st_coordinates(geometry)[,1] |> round(3)
+    lat = st_coordinates(geometry)[, 2] |> round(3),
+    lng = st_coordinates(geometry)[, 1] |> round(3)
   ) |>
   st_drop_geometry() |>
   as_tibble() |>
@@ -122,8 +122,8 @@ iz11_centroids <-
   st_transform(crs = 4326) |>
   mutate(
     # Round coords to 3 decimal points to save memory
-    lat = st_coordinates(geometry)[,2] |> round(3),
-    lng = st_coordinates(geometry)[,1] |> round(3)
+    lat = st_coordinates(geometry)[, 2] |> round(3),
+    lng = st_coordinates(geometry)[, 1] |> round(3)
   ) |>
   st_drop_geometry() |>
   select(
@@ -143,7 +143,7 @@ pharmacy_travel_time <- tibble()
 # Start loop at row 4; the first three rows are the English LADs
 # We don't need to calculate travel times within them
 for (i in 4:nrow(sco_lad)) {
-  current_ltla_code <- sco_lad[i,]$ltla21_code
+  current_ltla_code <- sco_lad[i, ]$ltla21_code
 
   current_iz_codes <-
     lookup_dz11_iz11_ltla20 |>
@@ -157,7 +157,7 @@ for (i in 4:nrow(sco_lad)) {
 
   # Get pharmacies in the current LAD and its neighbouring LADs
   current_neighbours <-
-    sco_lad[neighbours[[i]],] |>
+    sco_lad[neighbours[[i]], ] |>
     pull(ltla21_code)
 
   current_pharmacies <-
@@ -179,9 +179,12 @@ for (i in 4:nrow(sco_lad)) {
     current_locations_df <- bind_rows(current_iz_centroid, current_pharmacies)
 
     # Then use the approach shown in Travel Time's R package readme: https://docs.traveltime.com/api/sdks/r
-    current_locations <- apply(current_locations_df, 1, function(x)
-      make_location(id = x['id'], coords = list(lat = as.numeric(x["lat"]),
-                                                lng = as.numeric(x["lng"]))))
+    current_locations <- apply(current_locations_df, 1, function(x) {
+      make_location(id = x["id"], coords = list(
+        lat = as.numeric(x["lat"]),
+        lng = as.numeric(x["lng"])
+      ))
+    })
     current_locations <- unlist(current_locations, recursive = FALSE)
 
     current_search <-
@@ -189,7 +192,7 @@ for (i in 4:nrow(sco_lad)) {
         id = str_glue("search {current_iz_centroid$id}"), # Make up an ID for the search so each search is unique
         departure_location_id = current_iz_centroid$id,
         arrival_location_ids = as.list(current_pharmacies$id),
-        travel_time = 10800,  # 3 hours (in seconds)
+        travel_time = 10800, # 3 hours (in seconds)
         properties = list("travel_time"),
         arrival_time_period = "weekday_morning",
         transportation = list(type = "public_transport")
@@ -231,8 +234,34 @@ for (i in 4:nrow(sco_lad)) {
 # since it takes quite a while to calculate
 write_csv(pharmacy_travel_time, "data-raw/healthy-places/pharmacy_travel_time.csv")
 
-# pharmacy_travel_time <- read_csv("data-raw/healthy-places/pharmacy_travel_time.csv")
+pharmacy_travel_time <- read_csv("data-raw/healthy-places/pharmacy_travel_time.csv")
 
+# ---- Calculate travel time at IZ level ----
+iz <- lookup_dz11_iz11_ltla20 |>
+  distinct(iz11_code)
+
+# Right skew in the data
+pharmacy_travel_time |>
+  ggplot(aes(x = travel_time_mins)) +
+  geom_histogram(binwidth = 5)
+
+places_pharmacy_travel_time_iz <- pharmacy_travel_time |>
+  group_by(iz11_code) |>
+  summarise(
+    pharmacy_median_travel_time = median(travel_time_mins, na.rm = TRUE)
+  ) |>
+  ungroup() |>
+  right_join(iz, by = "iz11_code") |> # Include all IZs
+  mutate(
+    pharmacy_median_travel_time = replace_na(pharmacy_median_travel_time, 999), # 999 means unreachable
+    is_within_3_hours = pharmacy_median_travel_time != 999,
+    year = year(now()),
+    domain = "places",
+    subdomain = "access to services",
+    is_higher_better = FALSE
+  )
+
+# ---- Calculate travel time at Local Authority level ----
 # Look up Local Authorities for each Intermediate Zone and pharmacy
 lookup_iz_lad <-
   lookup_dz11_iz11_ltla20 |>
@@ -245,7 +274,7 @@ pharmacy_travel_time <-
 # What are the fastest travel times within each Intermediate Zone?
 pharmacy_travel_time_fastest <-
   pharmacy_travel_time |>
-  select(-osm_id) |>  # We don't need to know the pharmacy ID for this
+  select(-osm_id) |> # We don't need to know the pharmacy ID for this
   group_by(iz11_code) |>
   filter(travel_time_mins == min(travel_time_mins)) |>
   ungroup() |>
@@ -266,8 +295,11 @@ places_pharmacy_travel_time <-
   summarise(median_travel_time = median(travel_time_mins, na.rm = TRUE)) |>
   ungroup() |>
   mutate(year = year(now())) |>
-  rename(ltla24_code = ltla21_code,
-         pharmacy_median_travel_time = median_travel_time)
+  rename(
+    ltla24_code = ltla21_code,
+    pharmacy_median_travel_time = median_travel_time
+  )
 
 # ---- Save output to data/ folder ----
 usethis::use_data(places_pharmacy_travel_time, overwrite = TRUE)
+usethis::use_data(places_pharmacy_travel_time_iz, overwrite = TRUE)

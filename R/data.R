@@ -732,6 +732,31 @@
 #'
 "places_gp_travel_time"
 
+#' Travel time to GPs
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' GP in each Intermerdiate Zone. This may include GPs located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 1279 rows and 7 variables:
+#' \describe{
+#' \item{iz11_code}{Intermediate Zone Code}
+#' \item{gp_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   GP. 999 is a pseudo-value that indicates there are no GPs within 3 hours
+#'   of the IZ.}
+#' \item{is_within_3_hours}{Is there a GP within 3 hours of the centre of the IZ?}
+#' \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_gp_travel_time_iz"
+
 #' Percentage Household Overcrowding (2022)
 #'
 #' A dataset containing statistics on the percentage of households experiencing
@@ -829,6 +854,32 @@
 #'
 "places_pharmacy_travel_time"
 
+#' Travel time to Sports Centress
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' pharmacy in each Intermediate Zone. This may include pharmacies location in
+#' England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 1279 rows and 7 variables:
+#' \describe{
+#' \item{iz11_code}{Intermediate Zone Code}
+#' \item{pharmacy_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   pharmacy. 999 is a pseudo-value that indicates there are no pharmacies within 3 hours
+#'   of the IZ.}
+#' \item{is_within_3_hours}{Is there a pharmacy within 3 hours of the centre of the IZ?}
+#' \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_pharmacy_travel_time_iz"
+
 #' Percentage of Addresses with Access to Private Outdoor Space (2020)
 #'
 #' A dataset containing statistics on the percentage of addresses with access
@@ -903,6 +954,32 @@
 #' @source \url{https://openstreetmap.org/}
 #'
 "places_sports_centre_travel_time"
+
+#' Travel time to Sports Facilities
+#'
+#' A dataset containing the average (median) travel time (in minutes) to the nearest
+#' Sports Centre in each Intermediate Zone. This may include Sports Centres
+#' located in England.
+#'
+#' Travel times are calculated using the TravelTime API (https://traveltime.com/apis/distance-matrix)
+#' and are based on travelling by public transport on a weekday morning.
+#'
+#' @format A data frame with 1279 rows and 7 variables:
+#' \describe{
+#' \item{iz11_code}{Intermediate Zone Code}
+#' \item{sports_centre_median_travel_time}{Median travel time (in minutes) to the nearest
+#'   sports centre. 999 is a pseudo-value that indicates there are no sports centres within 3 hours
+#'   of the IZ.}
+#' \item{is_within_3_hours}{Is there a  sports centre within 3 hours of the centre of the IZ?}
+#' \item{year}{Year the data was last updated}
+#' \item{domain}{Indicator domain - lives, people, or places}
+#' \item{subdomain}{Indicator subdomain}
+#' \item{is_higher_better}{Does higher scores correspond to better outcomes}
+#'   ...
+#' }
+#' @source \url{https://openstreetmap.org/}
+#'
+"places_sports_centre_travel_time_iz"
 
 #' Road traffic volume (2023)
 #'
